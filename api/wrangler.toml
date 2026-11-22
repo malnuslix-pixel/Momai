@@ -1,0 +1,23 @@
+name = "mwalimu-api"
+main = "worker.mjs"
+compatibility_date = "2026-11-01"
+
+# Create the KV namespace once:  npx wrangler kv namespace create DATA
+# then paste the id it prints below.
+[[kv_namespaces]]
+binding = "DATA"
+id = "REPLACE_WITH_KV_ID"
+
+[vars]
+ALLOWED_ORIGINS = "https://www.example.com,https://example.com"   # your real site origin(s), no trailing slash
+NOTIFY_TO = "editor@example.com"                                    # where form submissions are emailed
+MAIL_FROM = "Mwalimu Family <noreply@example.com>"                  # a sender verified with your email provider
+MODEL = "claude-haiku-5-5"
+CHAT_DAILY_CAP = "3000"
+
+# Secrets (never put these in this file):
+#   npx wrangler secret put ANTHROPIC_API_KEY
+#   npx wrangler secret put RESEND_API_KEY
+#
+# To serve the API from the same domain as the site, add a route, e.g.:
+# routes = [{ pattern = "www.example.com/api/*", zone_name = "example.com" }]

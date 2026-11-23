@@ -109,6 +109,7 @@ export default function TutorPage() {
     }}>
       {/* Top Header */}
       <header style={{
+        position: 'relative',
         background: '#2c5f2d',
         color: '#fff',
         padding: '0.85rem 1.25rem',

@@ -53,6 +53,7 @@
 }
 
 .cr-app header {
+  position: relative;
   display: flex;
   flex-wrap: wrap;
   gap: 0.6rem 1rem;

@@ -5,7 +5,10 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { FeedItem, Submission, Subscriber, SiteFlags, SiteConfig, AuditLogEntry, VerificationCheck } from './types';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://mcavjbrvtqxokecpiqln.supabase.co';
+const DEFAULT_SUPABASE_URL = 'https://mcavjbrvtqxokecpiqln.supabase.co';
+const DUMMY_BUILD_KEY = 'placeholder-anon-key-build-only';
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || DEFAULT_SUPABASE_URL;
 const supabaseAnonKey =
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
   process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
@@ -14,17 +17,25 @@ const supabaseServiceKey =
   process.env.SUPABASE_SERVICE_ROLE_KEY ||
   '';
 
-export const isSupabaseConfigured = Boolean(supabaseUrl && supabaseAnonKey && !supabaseUrl.includes('your-project'));
+export const isSupabaseConfigured = Boolean(
+  supabaseUrl &&
+  supabaseAnonKey &&
+  !supabaseUrl.includes('your-project')
+);
 
-// Public client for client-side and read operations
-export const supabase: SupabaseClient = createClient(supabaseUrl, supabaseAnonKey, {
-  auth: { persistSession: false },
-});
+// Public client for client-side and read operations (safe dummy fallback prevents static collection build crash)
+export const supabase: SupabaseClient = createClient(
+  supabaseUrl || DEFAULT_SUPABASE_URL,
+  supabaseAnonKey || DUMMY_BUILD_KEY,
+  {
+    auth: { persistSession: false },
+  }
+);
 
 // Admin client for backend operations requiring service role privileges
 export const getAdminClient = (): SupabaseClient => {
   if (supabaseServiceKey && supabaseServiceKey.length > 10) {
-    return createClient(supabaseUrl, supabaseServiceKey, {
+    return createClient(supabaseUrl || DEFAULT_SUPABASE_URL, supabaseServiceKey, {
       auth: { persistSession: false },
     });
   }

@@ -1,16 +1,33 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import Script from 'next/script';
 import Link from 'next/link';
 import '@/styles/mwalimu-site.css';
-import { SITE_MARKUP } from '@/lib/site-markup';
+
+// TypeScript Components
+import Header from '@/components/Header';
+import Hero from '@/components/Hero';
+import RoleChooser from '@/components/RoleChooser';
+import NewsSection from '@/components/NewsSection';
+import LibrarySection from '@/components/LibrarySection';
+import TeachingSection from '@/components/TeachingSection';
+import ToolsSection from '@/components/ToolsSection';
+import NoticesSection from '@/components/NoticesSection';
+import ExamsHub from '@/components/ExamsHub';
+import CoursesAndGames from '@/components/CoursesAndGames';
+import ParentsAndJobs from '@/components/ParentsAndJobs';
+import AboutAndContact from '@/components/AboutAndContact';
+import Footer from '@/components/Footer';
+import FloatingWidgets from '@/components/FloatingWidgets';
 
 export default function HomePage() {
   const [isMaintenance, setIsMaintenance] = useState(false);
+  const [activeNav, setActiveNav] = useState('home');
+  const [activeStoryId, setActiveStoryId] = useState<string | null>(null);
 
+  // Initialize routing from URL hash
   useEffect(() => {
-    // 1. Fetch live configuration flags from Supabase backend
+    // 1. Fetch live config flags from backend
     fetch('/api/config')
       .then((r) => r.json())
       .then((data) => {
@@ -18,13 +35,61 @@ export default function HomePage() {
           setIsMaintenance(true);
         }
       })
-      .catch((err) => console.warn('Config fetch notice:', err));
+      .catch((err) => console.warn('Config notice:', err));
 
-    // 2. Register Service Worker for PWA
+    // 2. Register Service Worker for PWA offline capabilities
     if ('serviceWorker' in navigator && window.location.protocol.startsWith('http')) {
       navigator.serviceWorker.register('/sw.js').catch(() => {});
     }
+
+    // 3. Handle initial hash routing
+    const handleHash = () => {
+      const hash = window.location.hash;
+      if (hash.startsWith('#/s')) {
+        const storyId = hash.replace('#/', '');
+        setActiveStoryId(storyId);
+        setActiveNav('news');
+        window.scrollTo({ top: 0, behavior: 'instant' });
+      } else if (hash) {
+        setActiveStoryId(null);
+        const sectionId = hash.replace('#', '');
+        setActiveNav(sectionId);
+        const el = document.getElementById(sectionId);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth' });
+        }
+      } else {
+        setActiveStoryId(null);
+        setActiveNav('home');
+      }
+    };
+
+    handleHash();
+    window.addEventListener('hashchange', handleHash);
+    return () => window.removeEventListener('hashchange', handleHash);
   }, []);
+
+  const handleNavClick = (hash: string) => {
+    window.location.hash = hash;
+    if (hash.startsWith('#/s')) {
+      const sId = hash.replace('#/', '');
+      setActiveStoryId(sId);
+      setActiveNav('news');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      setActiveStoryId(null);
+      const targetId = hash.replace('#', '');
+      setActiveNav(targetId);
+      if (targetId === 'home') {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        const el = document.getElementById(targetId);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth' });
+        }
+      }
+    }
+  };
 
   if (isMaintenance) {
     return (
@@ -58,14 +123,52 @@ export default function HomePage() {
 
   return (
     <>
-      {/* Exact Site Markup - 100% faithful to original design */}
-      <div dangerouslySetInnerHTML={{ __html: SITE_MARKUP }} />
+      {/* Top fixed progress bar */}
+      <div className="bar" aria-hidden="true" />
 
-      {/* Main Interactive Educational Logic & Client Glue */}
-      <Script
-        src="/mwalimu-main.js"
-        strategy="afterInteractive"
-      />
+      {/* Main Header & Nav */}
+      <Header onNavClick={handleNavClick} activeNav={activeNav} />
+
+      {/* Main Application Container */}
+      <main style={{ minHeight: '80vh' }}>
+        {/* If article view is active, render reader only */}
+        {activeStoryId ? (
+          <NewsSection
+            onNavClick={handleNavClick}
+            activeStoryId={activeStoryId}
+            onSelectStory={(id) => {
+              setActiveStoryId(id);
+              if (!id) handleNavClick('#news');
+            }}
+          />
+        ) : (
+          <>
+            <Hero onNavClick={handleNavClick} />
+            <RoleChooser onNavClick={handleNavClick} />
+            <NewsSection
+              onNavClick={handleNavClick}
+              activeStoryId={null}
+              onSelectStory={(id) => {
+                if (id) handleNavClick(`#/${id}`);
+              }}
+            />
+            <LibrarySection onNavClick={handleNavClick} />
+            <TeachingSection onNavClick={handleNavClick} />
+            <ToolsSection />
+            <NoticesSection />
+            <ExamsHub onNavClick={handleNavClick} />
+            <CoursesAndGames />
+            <ParentsAndJobs onNavClick={handleNavClick} />
+            <AboutAndContact />
+          </>
+        )}
+      </main>
+
+      {/* Footer */}
+      <Footer onNavClick={handleNavClick} />
+
+      {/* Non-overlapping Floating Action Widgets */}
+      <FloatingWidgets onNavClick={handleNavClick} />
     </>
   );
 }

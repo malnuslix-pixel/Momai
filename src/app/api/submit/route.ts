@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase, getAdminClient, SEED_SUBMISSIONS } from '@/lib/supabase';
-import { SubmissionType } from '@/lib/types';
+import { Submission, SubmissionType } from '@/lib/types';
 
 const TYPES: Record<SubmissionType, string> = {
   job: 'Job listing',
@@ -53,7 +53,7 @@ export async function POST(req: NextRequest) {
       /title|role|subject|topic|package|position/i.test(l)
     )?.[1] || `${TYPES[type]} submission`;
 
-    const record = {
+    const record: Submission = {
       ref,
       type,
       label: TYPES[type],

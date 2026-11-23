@@ -154,9 +154,9 @@ export default function Header({ onNavClick, activeNav }: HeaderProps) {
                 <li><Link href="/leaderboard" onClick={() => { setMenuOpen(false); setOpenDropdown(null); }}>🏆 Leaderboard</Link></li>
                 <li><Link href="/pricing" onClick={() => { setMenuOpen(false); setOpenDropdown(null); }}>💳 Pricing</Link></li>
                 <li><a href="#library" onClick={(e) => { e.preventDefault(); handleLink('#library'); }}>Library</a></li>
-                <li><a href="#tools" onClick={(e) => { e.preventDefault(); handleLink('#tools'); }}>Tutoring</a></li>
+                <li><a href="#tutoring" onClick={(e) => { e.preventDefault(); handleLink('#tutoring'); }}>Tutoring</a></li>
                 <li><a href="#tools" onClick={(e) => { e.preventDefault(); handleLink('#tools'); }}>Tools</a></li>
-                <li><a href="#courses" onClick={(e) => { e.preventDefault(); handleLink('#courses'); }}>Videos</a></li>
+                <li><a href="#videos" onClick={(e) => { e.preventDefault(); handleLink('#videos'); }}>Videos</a></li>
               </ul>
             </li>
 
@@ -216,7 +216,8 @@ export default function Header({ onNavClick, activeNav }: HeaderProps) {
               </a>
               <ul>
                 <li><a href="#parents" onClick={(e) => { e.preventDefault(); handleLink('#parents'); }}>Parents</a></li>
-                <li><a href="#parents" onClick={(e) => { e.preventDefault(); handleLink('#parents'); }}>Help & glossary</a></li>
+                <li><a href="#exams" onClick={(e) => { e.preventDefault(); handleLink('#exams'); }}>Exams</a></li>
+                <li><a href="#help" onClick={(e) => { e.preventDefault(); handleLink('#help'); }}>Help & glossary</a></li>
                 <li><a href="#notices" onClick={(e) => { e.preventDefault(); handleLink('#notices'); }}>Notices</a></li>
               </ul>
             </li>

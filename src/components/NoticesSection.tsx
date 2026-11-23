@@ -1,6 +1,31 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { submitOnlineForm } from '@/lib/mwalimu-data';
+
+const INITIAL_NOTICES = [
+  {
+    category: 'Exams',
+    date: '20 Nov 2026',
+    title: 'Results release windows targeted by Ministry of Education',
+    body: 'Education CS Julius Ogamba confirmed that KJSEA results are expected in December 2026, while KCSE and KPSEA results are targeted for January 2027.',
+    url: '#/s1'
+  },
+  {
+    category: 'Safety',
+    date: '21 Nov 2026',
+    title: 'Results scam alert: Never pay anyone claiming early access',
+    body: 'KNEC and MoE remind families that results are accessible strictly via official SMS codes and verified portals without any advance payment.',
+    url: '#/s4'
+  },
+  {
+    category: 'Community',
+    date: '18 Nov 2026',
+    title: 'Schools and community organisations announcement desk',
+    body: 'Registered educational charities, schools, and alumni groups can submit verified community education notices for publication.',
+    url: ''
+  }
+];
 
 const CHECKLIST = {
   en: [
@@ -20,10 +45,20 @@ const CHECKLIST = {
 };
 
 export default function NoticesSection() {
+  const [noticeCategory, setNoticeCategory] = useState('All');
   const [lang, setLang] = useState<'en' | 'sw'>('en');
   const [checkedItems, setCheckedItems] = useState<boolean[]>([false, false, false, false, false]);
   const [kjseaCountdown, setKjseaCountdown] = useState({ d: 0, h: 0, m: 0, s: 0 });
   const [kcseCountdown, setKcseCountdown] = useState({ d: 0, h: 0, m: 0, s: 0 });
+
+  // Submit Notice Form
+  const [org, setOrg] = useState('');
+  const [noticeTitle, setNoticeTitle] = useState('');
+  const [noticeDetails, setNoticeDetails] = useState('');
+  const [noticeContact, setNoticeContact] = useState('');
+  const [noticeConsent, setNoticeConsent] = useState(false);
+  const [noticeSubmitting, setNoticeSubmitting] = useState(false);
+  const [noticeRef, setNoticeRef] = useState<string | null>(null);
 
   useEffect(() => {
     try {
@@ -71,20 +106,73 @@ export default function NoticesSection() {
   const completedCount = checkedItems.filter(Boolean).length;
   const progressPct = Math.round((completedCount / checkedItems.length) * 100);
 
+  const handleSubmitNotice = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!org || !noticeTitle || !noticeDetails || !noticeContact || !noticeConsent) return;
+
+    setNoticeSubmitting(true);
+    const fields: [string, string][] = [
+      ['Organisation', org],
+      ['Notice Title', noticeTitle],
+      ['Details & Dates', noticeDetails],
+      ['Official Contact', noticeContact]
+    ];
+
+    const res = await submitOnlineForm('note', 'Notice', noticeTitle, fields, noticeConsent);
+    setNoticeRef(res.ref);
+    setNoticeSubmitting(false);
+  };
+
+  const filteredNotices = INITIAL_NOTICES.filter(n => {
+    if (noticeCategory === 'All') return true;
+    return n.category === noticeCategory;
+  });
+
   return (
     <section className="sec cine c2 mb board" id="notices" aria-labelledby="nth">
       <div className="gy" aria-hidden="true" />
       <div className="w">
         <h2 className="sh" id="nth">Notice board</h2>
-        <p className="sub">Education notices, deadlines and community announcements. Always confirm exact details with the issuing office.</p>
+        <p className="sub">
+          Education notices, deadlines and community announcements. Always confirm exact details with the issuing office.
+        </p>
 
         <div className="warn">
           <h3 style={{ color: 'var(--hd)' }}>Before you act on a notice</h3>
           <ul className="kf">
-            <li>Check who issued it and the date.</li>
-            <li>Confirm through the official office or website.</li>
+            <li>Check who issued it and the date of announcement.</li>
+            <li>Confirm through the official school office or ministry website.</li>
             <li>Never pay to receive a service that should be free.</li>
           </ul>
+        </div>
+
+        {/* Notice Category Filter */}
+        <div className="chips" style={{ margin: '1.5rem 0' }}>
+          {['All', 'Exams', 'Safety', 'Community'].map(cat => (
+            <button
+              key={cat}
+              className={`chip ${noticeCategory === cat ? 'on' : ''}`}
+              onClick={() => setNoticeCategory(cat)}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
+
+        {/* Notices Grid */}
+        <div className="x2" style={{ marginBottom: '2.5rem' }}>
+          {filteredNotices.map((n, idx) => (
+            <div key={idx} style={{ background: '#16251a', border: '1px solid #2a3d2d', borderRadius: '16px', padding: '1.5rem' }}>
+              <span className="tag">{n.category} · {n.date}</span>
+              <h3 style={{ color: '#fff', fontSize: '1.25rem', marginTop: '0.5rem' }}>{n.title}</h3>
+              <p style={{ color: '#d6efd6', fontSize: '0.92rem', margin: '0.6rem 0' }}>{n.body}</p>
+              {n.url && (
+                <a className="dl" href={n.url} style={{ color: '#f4a261', fontWeight: 700 }}>
+                  Read the story →
+                </a>
+              )}
+            </div>
+          ))}
         </div>
 
         <div className="eg" style={{ marginTop: '2rem' }}>
@@ -150,6 +238,73 @@ export default function NoticesSection() {
               </p>
             )}
           </div>
+        </div>
+
+        {/* SUBMIT A NOTICE FORM */}
+        <div className="fm" style={{ maxWidth: '640px', margin: '3rem auto 0', background: '#fff', color: '#1a1a1a', borderRadius: '20px', padding: '2rem' }}>
+          <h3 style={{ fontSize: '1.4rem', color: '#1a3d1b', marginBottom: '0.4rem' }}>Submit a notice for review</h3>
+          <p style={{ fontSize: '0.88rem', color: '#666', marginBottom: '1.2rem' }}>
+            Schools, institutions and community groups can submit official announcements. Our desk verifies them before publication.
+          </p>
+
+          {noticeRef ? (
+            <div style={{ padding: '1rem', background: '#eaf5eb', borderRadius: '10px', color: '#1f7a3a' }}>
+              <h4>✅ Notice Submitted for Review</h4>
+              <p style={{ fontSize: '0.92rem', margin: '0.4rem 0' }}>
+                Reference Code: <b>{noticeRef}</b>. The editorial team will verify and publish your notice.
+              </p>
+              <button className="gb" onClick={() => setNoticeRef(null)}>Submit Another Notice</button>
+            </div>
+          ) : (
+            <form onSubmit={handleSubmitNotice}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.8rem' }}>
+                <div>
+                  <label>Organisation / School:</label>
+                  <input className="sel" type="text" value={org} onChange={(e) => setOrg(e.target.value)} required placeholder="e.g. Nairobi Teachers Forum" />
+                </div>
+                <div>
+                  <label>Notice Title:</label>
+                  <input className="sel" type="text" value={noticeTitle} onChange={(e) => setNoticeTitle(e.target.value)} required placeholder="e.g. Free Term 1 CBC Workshop" />
+                </div>
+              </div>
+
+              <div style={{ marginTop: '0.8rem' }}>
+                <label>Details & Dates:</label>
+                <textarea
+                  className="sel"
+                  rows={4}
+                  value={noticeDetails}
+                  onChange={(e) => setNoticeDetails(e.target.value)}
+                  required
+                  placeholder="State the date, venue, target audience, and key information..."
+                />
+              </div>
+
+              <div style={{ marginTop: '0.8rem' }}>
+                <label>Official Contact (Email / Phone):</label>
+                <input className="sel" type="text" value={noticeContact} onChange={(e) => setNoticeContact(e.target.value)} required placeholder="e.g. info@organisation.or.ke" />
+              </div>
+
+              <label className="ck" style={{ margin: '1rem 0' }}>
+                <input
+                  type="checkbox"
+                  checked={noticeConsent}
+                  onChange={(e) => setNoticeConsent(e.target.checked)}
+                  required
+                />
+                <span>I confirm this notice is accurate and from my organisation.</span>
+              </label>
+
+              <button
+                type="submit"
+                className="btn b1"
+                disabled={noticeSubmitting || !noticeConsent}
+                style={{ minHeight: '48px', width: '100%' }}
+              >
+                {noticeSubmitting ? 'Submitting Notice...' : 'Send Notice for Review'}
+              </button>
+            </form>
+          )}
         </div>
       </div>
     </section>

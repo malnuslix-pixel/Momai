@@ -1,13 +1,22 @@
 'use client';
 
 import React, { useState } from 'react';
-import { GRADES, downloadWordDocument } from '@/lib/mwalimu-data';
+import {
+  GRADES,
+  TEACHING_TEMPLATES,
+  downloadTemplateByType,
+  downloadWordDocument,
+  downloadTimetableDoc
+} from '@/lib/mwalimu-data';
 
 interface TeachingSectionProps {
   onNavClick: (hash: string) => void;
 }
 
 export default function TeachingSection({ onNavClick }: TeachingSectionProps) {
+  // Category filter
+  const [filterType, setFilterType] = useState<string>('All');
+
   // Timetable Generator State
   const [classesStr, setClassesStr] = useState('Grade 7, Grade 8, Grade 9');
   const [subjectsStr, setSubjectsStr] = useState('Mathematics, English, Kiswahili, Integrated Science, Social Studies, Agriculture, Creative Arts, Pre-Technical');
@@ -53,6 +62,15 @@ export default function TeachingSection({ onNavClick }: TeachingSectionProps) {
     );
   };
 
+  const filteredTemplates = TEACHING_TEMPLATES.filter(t => {
+    if (filterType === 'All') return true;
+    if (filterType === 'Exams') return t.category === 'Exams';
+    if (filterType === 'Schemes') return t.category === 'Schemes';
+    if (filterType === 'Lesson notes') return t.category === 'Lesson notes';
+    if (filterType === 'Records') return t.category === 'Records';
+    return true;
+  });
+
   return (
     <section className="sec cine" id="teaching" aria-labelledby="th">
       <div className="gy" aria-hidden="true" />
@@ -62,6 +80,40 @@ export default function TeachingSection({ onNavClick }: TeachingSectionProps) {
           Free, original templates and tools for Kenyan teachers: schemes of work, lesson notes, exams and records. Everything downloads as an editable Word (.doc) file.
         </p>
 
+        {/* Filter Chips */}
+        <div className="chips" style={{ marginBottom: '1.5rem' }}>
+          {['All', 'Schemes', 'Lesson notes', 'Exams', 'Records'].map(cat => (
+            <button
+              key={cat}
+              className={`chip ${filterType === cat ? 'on' : ''}`}
+              onClick={() => setFilterType(cat)}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
+
+        {/* Downloadable Templates Grid */}
+        <div className="cg" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.2rem', marginBottom: '2.5rem' }}>
+          {filteredTemplates.map((item, idx) => (
+            <div key={idx} className="gl" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+              <div>
+                <span className="tag">{item.category}</span>
+                <h3 style={{ marginTop: '0.6rem', fontSize: '1.25rem' }}>{item.title}</h3>
+                <p style={{ fontSize: '0.88rem', opacity: 0.85 }}>{item.targetGrades} · Editable Word (.doc)</p>
+              </div>
+              <button
+                className="gb"
+                onClick={() => downloadTemplateByType(item.typeId, item.filename)}
+                style={{ marginTop: '1rem', width: 'fit-content' }}
+              >
+                Download Free (.doc)
+              </button>
+            </div>
+          ))}
+        </div>
+
+        {/* Generator Cards */}
         <div className="eg" style={{ marginTop: '2rem' }}>
           {/* Timetable Generator */}
           <div className="gl">
@@ -94,12 +146,19 @@ export default function TeachingSection({ onNavClick }: TeachingSectionProps) {
               <option value={9}>9</option>
             </select>
 
-            <button className="gb" onClick={handleGenerateTimetable}>
-              Generate Timetable
-            </button>
+            <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.5rem', flexWrap: 'wrap' }}>
+              <button className="gb" onClick={handleGenerateTimetable}>
+                Generate Timetable
+              </button>
+              {generatedTimetable && (
+                <button className="gb o" onClick={() => downloadTimetableDoc(generatedTimetable)}>
+                  Download Word (.doc)
+                </button>
+              )}
+            </div>
 
             {generatedTimetable && (
-              <div className="tw" style={{ marginTop: '1rem' }}>
+              <div className="tw" style={{ marginTop: '1rem', maxHeight: '280px', overflowY: 'auto' }}>
                 {generatedTimetable.map((clsItem, idx) => (
                   <div key={idx} style={{ marginBottom: '1.2rem' }}>
                     <h4 style={{ color: '#f4a261', margin: '0.6rem 0' }}>{clsItem.className}</h4>
@@ -166,7 +225,7 @@ export default function TeachingSection({ onNavClick }: TeachingSectionProps) {
               <option value="Term 3">Term 3</option>
             </select>
 
-            <label htmlFor="sw2">Teaching Weeks</label>
+            <label htmlFor="sw2">Weeks</label>
             <input
               type="number"
               id="sw2"
@@ -176,12 +235,22 @@ export default function TeachingSection({ onNavClick }: TeachingSectionProps) {
               onChange={(e) => setSchemeWeeks(Number(e.target.value))}
             />
 
-            <button className="gb" onClick={handleDownloadScheme}>
+            <button className="gb" onClick={handleDownloadScheme} style={{ marginTop: '0.8rem' }}>
               Download scheme (.doc)
             </button>
-            <p style={{ fontSize: '0.88rem', opacity: 0.85, marginTop: '0.5rem' }}>
-              Downloads an editable Microsoft Word document formatted with standard KICD Competency Based Curriculum (CBC) columns.
+            <p style={{ fontSize: '0.85rem', marginTop: '0.6rem', opacity: 0.85 }}>
+              Includes standard 10-column CBC scheme layout ready to fill from KICD curriculum designs.
             </p>
+          </div>
+        </div>
+
+        {/* Where Next */}
+        <div style={{ marginTop: '3rem', borderTop: '1px solid rgba(255,255,255,0.15)', paddingTop: '1.5rem' }}>
+          <h4 style={{ color: '#f4a261', marginBottom: '0.6rem' }}>Where next?</h4>
+          <div className="chips">
+            <button className="chip on" onClick={() => onNavClick('#jobs')}>Education Jobs →</button>
+            <button className="chip on" onClick={() => onNavClick('#library')}>Learning Library →</button>
+            <button className="chip on" onClick={() => onNavClick('#tools')}>Classroom Tools →</button>
           </div>
         </div>
       </div>

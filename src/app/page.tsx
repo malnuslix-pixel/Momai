@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import '@/styles/mwalimu-site.css';
 
@@ -9,16 +8,23 @@ import '@/styles/mwalimu-site.css';
 import Header from '@/components/Header';
 import Hero from '@/components/Hero';
 import RoleChooser from '@/components/RoleChooser';
+import SearchSection from '@/components/SearchSection';
 import NewsSection from '@/components/NewsSection';
 import Footer from '@/components/Footer';
 
-// Code-Split Below-the-Fold Components for Blazing-Fast Initial Load
+// Code-Split Sections for Fast Performance
 const LibrarySection = dynamic(() => import('@/components/LibrarySection'), { ssr: true });
 const TeachingSection = dynamic(() => import('@/components/TeachingSection'), { ssr: true });
 const ToolsSection = dynamic(() => import('@/components/ToolsSection'), { ssr: true });
 const NoticesSection = dynamic(() => import('@/components/NoticesSection'), { ssr: true });
+const ExamsHubSection = dynamic(() => import('@/components/ExamsHubSection'), { ssr: true });
 const CoursesAndGames = dynamic(() => import('@/components/CoursesAndGames'), { ssr: true });
+const TutoringSection = dynamic(() => import('@/components/TutoringSection'), { ssr: true });
 const ParentsAndJobs = dynamic(() => import('@/components/ParentsAndJobs'), { ssr: true });
+const AdvertiseSection = dynamic(() => import('@/components/AdvertiseSection'), { ssr: true });
+const VideosSection = dynamic(() => import('@/components/VideosSection'), { ssr: true });
+const HelpGlossarySection = dynamic(() => import('@/components/HelpGlossarySection'), { ssr: true });
+const ActivitySection = dynamic(() => import('@/components/ActivitySection'), { ssr: true });
 const AboutAndContact = dynamic(() => import('@/components/AboutAndContact'), { ssr: true });
 const FloatingWidgets = dynamic(() => import('@/components/FloatingWidgets'), { ssr: false });
 
@@ -54,8 +60,7 @@ export default function HomePage() {
         window.scrollTo({ top: 0, behavior: 'instant' });
       } else if (hash) {
         setActiveStoryId(null);
-        let sectionId = hash.replace('#', '');
-        if (HASH_ALIASES[sectionId]) sectionId = HASH_ALIASES[sectionId];
+        const sectionId = hash.replace('#', '');
         setActiveNav(sectionId);
         const el = document.getElementById(sectionId);
         if (el) {
@@ -72,14 +77,6 @@ export default function HomePage() {
     return () => window.removeEventListener('hashchange', handleHash);
   }, []);
 
-  // Map legacy / dead hash targets to real section IDs
-  const HASH_ALIASES: Record<string, string> = {
-    tutoring: 'tools',
-    videos: 'courses',
-    help: 'parents',
-    exams: 'notices',
-  };
-
   const handleNavClick = (hash: string) => {
     if (hash.startsWith('#/s')) {
       window.location.hash = hash;
@@ -89,15 +86,12 @@ export default function HomePage() {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
       setActiveStoryId(null);
-      let targetId = hash.replace('#', '');
-      // Resolve aliases so dead anchors still navigate
-      if (HASH_ALIASES[targetId]) targetId = HASH_ALIASES[targetId];
+      const targetId = hash.replace('#', '');
       window.location.hash = `#${targetId}`;
       setActiveNav(targetId);
       if (targetId === 'home' || targetId === '') {
         window.scrollTo({ top: 0, behavior: 'smooth' });
       } else {
-        // Use requestAnimationFrame so the DOM has settled after any state change
         requestAnimationFrame(() => {
           const el = document.getElementById(targetId);
           if (el) {
@@ -157,6 +151,7 @@ export default function HomePage() {
           <>
             <Hero onNavClick={handleNavClick} />
             <RoleChooser onNavClick={handleNavClick} />
+            <SearchSection onNavClick={handleNavClick} />
             <NewsSection
               onNavClick={handleNavClick}
               activeStoryId={null}
@@ -168,8 +163,14 @@ export default function HomePage() {
             <TeachingSection onNavClick={handleNavClick} />
             <ToolsSection />
             <NoticesSection />
+            <ExamsHubSection onNavClick={handleNavClick} />
             <CoursesAndGames />
+            <TutoringSection onNavClick={handleNavClick} />
             <ParentsAndJobs onNavClick={handleNavClick} />
+            <AdvertiseSection onNavClick={handleNavClick} />
+            <VideosSection />
+            <HelpGlossarySection />
+            <ActivitySection onNavClick={handleNavClick} />
             <AboutAndContact />
           </>
         )}

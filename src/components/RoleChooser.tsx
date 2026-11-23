@@ -33,14 +33,14 @@ export default function RoleChooser({ onNavClick }: RoleChooserProps) {
               <li><a href="#news" onClick={(e) => { e.preventDefault(); onNavClick('#news'); }}>Read the news</a></li>
               <li><a href="#notices" onClick={(e) => { e.preventDefault(); onNavClick('#notices'); }}>Check notices</a></li>
               <li><a href="#parents" onClick={(e) => { e.preventDefault(); onNavClick('#parents'); }}>Plan Grade 10 and beyond</a></li>
-              <li><a href="#tools" onClick={(e) => { e.preventDefault(); onNavClick('#tools'); }}>Find a tutor</a></li>
+              <li><a href="#tutoring" onClick={(e) => { e.preventDefault(); onNavClick('#tutoring'); }}>Find a tutor</a></li>
             </ol>
           </div>
 
           <div>
             <h3>🎒 Learner</h3>
             <ol className="jn">
-              <li><a href="#tools" onClick={(e) => { e.preventDefault(); onNavClick('#tools'); }}>Practise maths</a></li>
+              <li><a href="#tutoring" onClick={(e) => { e.preventDefault(); onNavClick('#tutoring'); }}>Practise maths</a></li>
               <li><a href="#tools" onClick={(e) => { e.preventDefault(); onNavClick('#tools'); }}>Use the calculators</a></li>
               <li><a href="#library" onClick={(e) => { e.preventDefault(); onNavClick('#library'); }}>Revise with notes</a></li>
               <li><a href="#courses" onClick={(e) => { e.preventDefault(); onNavClick('#courses'); }}>Build new skills</a></li>
@@ -56,7 +56,7 @@ export default function RoleChooser({ onNavClick }: RoleChooserProps) {
         </p>
 
         <div className="x2" style={{ margin: 0 }}>
-          <a className="x2c" href="#tools" onClick={(e) => { e.preventDefault(); onNavClick('#tools'); }}>
+          <a className="x2c" href="#tutoring" onClick={(e) => { e.preventDefault(); onNavClick('#tutoring'); }}>
             <h3>📐 Tutoring and practice</h3>
             <p>Find a tutor, practise maths, or apply to tutor.</p>
           </a>

@@ -1,6 +1,6 @@
 /* Mwalimu Family Service Worker - Offline Revision & Past Papers Caching
    Bump VERSION whenever cache assets change */
-const VERSION = 'mf-v4-cache-bust';
+const VERSION = 'mf-v5-complete-site';
 const PRECACHE_ASSETS = [
   '/',
   '/offline',
@@ -8,6 +8,21 @@ const PRECACHE_ASSETS = [
   '/tutor',
   '/leaderboard',
   '/privacy',
+  '/learn',
+  '/teach',
+  '/tools',
+  '/jobs',
+  '/advertise',
+  '/exams',
+  '/tutoring',
+  '/notices',
+  '/courses',
+  '/games',
+  '/videos',
+  '/about',
+  '/help',
+  '/parents',
+  '/activity',
   '/favicon.ico',
   '/manifest.webmanifest',
   '/icons/favicon-32.png',

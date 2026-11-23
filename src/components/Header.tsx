@@ -72,6 +72,9 @@ export default function Header({ onNavClick, activeNav }: HeaderProps) {
   const handleLink = (hash: string) => {
     setMenuOpen(false);
     setOpenDropdown(null);
+    if (typeof document !== 'undefined' && document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
     onNavClick(hash);
   };
 

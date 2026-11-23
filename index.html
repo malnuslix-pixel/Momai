@@ -225,7 +225,7 @@ header.sol,.vw header{backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10
 @media(max-width:900px){.nl,.tc3{grid-template-columns:1fr}}
 .x2{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.2rem;margin:1.5rem 0 3rem}.x2>*{background:var(--card);border:1px solid var(--ln);border-radius:16px;padding:1.3rem;display:block}.x2 h3{font-size:1.25rem;margin-bottom:.4rem}.x2 p{font-size:.95rem}a.x2c:hover{border-color:var(--gl)}.warn{border-left:5px solid var(--ac);background:var(--card);padding:1.2rem 1.4rem;border-radius:0 12px 12px 0;margin:1rem 0 2.5rem}.ctl{display:flex;gap:.3rem}.ctl button{background:none;border:1px solid rgba(255,255,255,.6);color:#fff;border-radius:6px;padding:.3rem .6rem;cursor:pointer;font:inherit;font-size:.8rem}
 .mq:hover .mt,.mq:focus-within .mt{animation-play-state:paused}
-.lite .hero{height:auto}.lite .stage{position:relative;height:auto;padding:8rem 0 5rem}.lite .scenes{height:auto}.lite .scene{display:none}.lite .scene:first-child{display:flex;position:static;opacity:1;transform:none;margin-bottom:2rem}.lite .stage{padding-bottom:6rem}.lite .rv{opacity:1;transform:none}.lite .sun,.lite .ring,.lite .gy{display:none}.lite .mt{animation:none}
+.lite .rv{opacity:1;transform:none}.lite .gy{display:none}.lite .mt{animation:none}
 @media print{header,.bar,.fab,.tick,footer,.ctl,.btn,.gb{display:none!important}body{font-size:12pt;background:#fff;color:#000}p,h1,h2,h3{color:#000}}
 .mgx{position:absolute;inset:-4%;z-index:0;pointer-events:none;animation:kb 48s ease-in-out infinite alternate}.mgx svg{width:100%;height:100%;display:block}
 @keyframes kb{from{transform:scale(1.02) translate(-1%,.5%)}to{transform:scale(1.14) translate(1.5%,-1%)}}@keyframes lsw{from{transform:translateX(-25%)}to{transform:translateX(25%)}}
@@ -238,8 +238,8 @@ section.mb .sh,section.mb .sub,section.mb .pbn h1,section.mb .pbn p,section.mb .
 section.mb .x2>*{box-shadow:0 22px 50px rgba(0,0,0,.5)}section.mb .x2 p,section.mb .x2 .fe{text-shadow:none}
 #home .mgx,#home .gy,#home .eq,#home .shp{display:none!important}.lite .mgx{display:none}.lite section.mb::after{animation:none}
 @media(prefers-reduced-motion:reduce){.mgx,section.mb::after{animation:none}}
-.dd{position:relative}.dd>a::after{content:" ▾";font-size:.75em}.dd>ul{display:none;position:absolute;top:100%;left:0;background:#2c5f2d;border-radius:10px;padding:.4rem;min-width:190px;flex-direction:column;box-shadow:0 12px 30px rgba(0,0,0,.35);z-index:5}.dd:hover>ul,.dd:focus-within>ul{display:flex}.dd:has(ul a.active)>a{background:var(--ac);color:#1a1a1a}
-@media(max-width:900px){.dd>ul{display:flex;position:static;background:none;box-shadow:none;padding:0 0 0 1rem}}
+.dd{position:relative}.dd>a::after{content:" ▾";font-size:.75em}.dd>ul{display:none;position:absolute;top:100%;left:0;background:#2c5f2d;border-radius:10px;padding:.4rem;min-width:190px;flex-direction:column;box-shadow:0 12px 30px rgba(0,0,0,.35);z-index:250}.dd:hover>ul{display:flex}.dd:has(ul a.active)>a{background:var(--ac);color:#1a1a1a}
+@media(max-width:900px){.dd>ul{display:none;position:static;background:none;box-shadow:none;padding:0 0 0 1rem}.dd.dd-open>ul{display:flex}}
 .jn{padding-left:1.2rem}.jn li{margin:.35rem 0}.jn a{color:var(--gl);font-weight:600}.nx a.chip{display:inline-block}section.mb .nx h3,section.mb .nx a{color:#fff;border-color:#fff}
 .eq,.shp{transition:opacity .9s}.shp{transform-box:fill-box;transform-origin:center;animation:spn 40s linear infinite}@keyframes spn{to{transform:rotate(360deg)}}.lite .shp{animation:none}#hcount .gy{display:none}@media(prefers-reduced-motion:reduce){.shp{animation:none}}
 .tsec{position:relative;overflow:hidden;isolation:isolate;color:#fff;background:radial-gradient(110% 90% at 20% 10%,#3f7d44 0%,#24512a 45%,#0c1d0e 100%)}.tsec::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;box-shadow:inset 0 0 170px 45px rgba(0,0,0,.65)}.tsec::after{content:"";position:absolute;inset:-30%;z-index:0;pointer-events:none;background:linear-gradient(105deg,transparent 40%,rgba(255,244,214,.1) 50%,transparent 60%);animation:lsw 14s ease-in-out infinite alternate}.tsec>.w{position:relative;z-index:1}
@@ -252,7 +252,7 @@ section.mb .x2>*{box-shadow:0 22px 50px rgba(0,0,0,.5)}section.mb .x2 p,section.
 <div class="nav">
 <a href="#home" class="logo" aria-label="Mwalimu Family home"><span aria-hidden="true">🏡</span> Mwalimu Family</a>
 <button class="tg" aria-expanded="false" aria-controls="menu">☰ Menu</button>
-<nav aria-label="Main"><ul id="menu"><li><a href="#news">News</a></li><li class="dd"><a href="#library">Learn</a><ul><li><a href="#library">Library</a></li><li><a href="#tutoring">Tutoring</a></li><li><a href="#tools">Tools</a></li><li><a href="#videos">Videos</a></li></ul></li><li><a href="#courses">Courses</a></li><li><a href="#games">Games</a></li><li class="dd"><a href="#teaching">Teach</a><ul><li><a href="#teaching">Teaching</a></li><li><a href="#jobs">Jobs</a></li></ul></li><li class="dd"><a href="#parents">Families</a><ul><li><a href="#parents">Parents</a></li><li><a href="#exams">Exams</a></li><li><a href="#help">Help and glossary</a></li><li><a href="#notices">Notices</a></li></ul></li><li><a href="#advertise">Advertise</a></li><li><a href="#about">About</a></li><li><a href="#contact" class="cta">Contact</a></li></ul></nav>
+<nav aria-label="Main"><ul id="menu"><li><a href="#news">News</a></li><li class="dd"><a href="#library">Learn</a><ul><li><a href="#library">Library</a></li><li><a href="#tutoring">Tutoring</a></li><li><a href="#tools">Tools</a></li><li><a href="#videos">Videos</a></li></ul></li><li><a href="#courses">Courses</a></li><li><a href="#games">Games</a></li><li class="dd"><a href="#teaching">Teach</a><ul><li><a href="#teaching">Teaching</a></li><li><a href="#jobs">Jobs</a></li></ul></li><li class="dd"><a href="#parents">Families</a><ul><li><a href="#parents">Parents</a></li><li><a href="#help">Help and glossary</a></li><li><a href="#notices">Notices</a></li></ul></li><li><a href="#advertise">Advertise</a></li><li><a href="#about">About</a></li><li><a href="#contact" class="cta">Contact</a></li></ul></nav>
 <div class="ctl"><button id="lt" title="Low-data mode: no heavy animation">Lite</button><button id="fa" aria-label="Change text size">A+</button><button id="sl">Kiswahili</button></div>
 </div>
 </header>
@@ -520,6 +520,7 @@ addEventListener('scroll',onS,{passive:true});onS();
 var tg=$('.tg')[0],menu=$('#menu')[0];
 tg.addEventListener('click',function(){var o=menu.classList.toggle('open');hd.classList.toggle('open',o);tg.setAttribute('aria-expanded',o)});
 links.forEach(function(l){l.addEventListener('click',function(){menu.classList.remove('open');hd.classList.remove('open');tg.setAttribute('aria-expanded','false')})});
+$('.dd>a').forEach(function(a){a.addEventListener('click',function(e){if(innerWidth<=900){e.preventDefault();a.parentElement.classList.toggle('dd-open')}a.blur()})});
 function count(el){var to=+el.dataset.to,t0=null;if(rm){el.textContent=to.toLocaleString('en-US');return}
 function f(t){t0=t0||t;var k=Math.min(1,(t-t0)/1600);el.textContent=Math.round(to*(1-Math.pow(1-k,3))).toLocaleString('en-US');if(k<1)requestAnimationFrame(f)}requestAnimationFrame(f)}
 if('IntersectionObserver' in window){

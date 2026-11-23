@@ -1,6 +1,6 @@
 /* Mwalimu Family Service Worker - Offline Revision & Past Papers Caching
    Bump VERSION whenever cache assets change */
-const VERSION = 'mf-v3-speed';
+const VERSION = 'mf-v4-cache-bust';
 const PRECACHE_ASSETS = [
   '/',
   '/offline',

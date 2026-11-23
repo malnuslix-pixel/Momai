@@ -2329,14 +2329,14 @@ section.mb .sh, section.mb .sub, section.mb .pbn h1, section.mb .pbn p, section.
     list-style: none;
   }
 
-  /* Invisible hover bridge so mouse moving from link to dropdown never loses hover */
-  .dd::after {
+  /* Invisible hover bridge on the dropdown so mouse moving into it never loses hover */
+  .dd > ul::before {
     content: "";
     position: absolute;
-    top: 100%;
+    top: -10px;
     left: 0;
     right: 0;
-    height: 12px;
+    height: 10px;
   }
 
   /* Desktop dropdown appears and disappears strictly on hover trigger */

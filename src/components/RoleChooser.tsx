@@ -1,9 +1,10 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 
 interface RoleChooserProps {
-  onNavClick: (hash: string) => void;
+  onNavClick?: (hash: string) => void;
 }
 
 export default function RoleChooser({ onNavClick }: RoleChooserProps) {
@@ -21,29 +22,29 @@ export default function RoleChooser({ onNavClick }: RoleChooserProps) {
           <div>
             <h3>👩🏾‍🏫 Teacher</h3>
             <ol className="jn">
-              <li><a href="#library" onClick={(e) => { e.preventDefault(); onNavClick('#library'); }}>Download templates</a></li>
-              <li><a href="#teaching" onClick={(e) => { e.preventDefault(); onNavClick('#teaching'); }}>Plan your term</a></li>
-              <li><a href="#jobs" onClick={(e) => { e.preventDefault(); onNavClick('#jobs'); }}>Find or post jobs</a></li>
+              <li><Link href="/learn">Download templates</Link></li>
+              <li><Link href="/teach">Plan your term & schemes</Link></li>
+              <li><Link href="/jobs">Find or post jobs</Link></li>
             </ol>
           </div>
 
           <div>
             <h3>👨🏾‍👩🏾‍👧🏾 Parent</h3>
             <ol className="jn">
-              <li><a href="#news" onClick={(e) => { e.preventDefault(); onNavClick('#news'); }}>Read the news</a></li>
-              <li><a href="#notices" onClick={(e) => { e.preventDefault(); onNavClick('#notices'); }}>Check notices</a></li>
-              <li><a href="#parents" onClick={(e) => { e.preventDefault(); onNavClick('#parents'); }}>Plan Grade 10 and beyond</a></li>
-              <li><a href="#tutoring" onClick={(e) => { e.preventDefault(); onNavClick('#tutoring'); }}>Find a tutor</a></li>
+              <li><Link href="/#news">Read education news</Link></li>
+              <li><Link href="/notices">Check official notices</Link></li>
+              <li><Link href="/parents">Plan Grade 10 pathways</Link></li>
+              <li><Link href="/tutoring">Find a vetted tutor</Link></li>
             </ol>
           </div>
 
           <div>
             <h3>🎒 Learner</h3>
             <ol className="jn">
-              <li><a href="#tutoring" onClick={(e) => { e.preventDefault(); onNavClick('#tutoring'); }}>Practise maths</a></li>
-              <li><a href="#tools" onClick={(e) => { e.preventDefault(); onNavClick('#tools'); }}>Use the calculators</a></li>
-              <li><a href="#library" onClick={(e) => { e.preventDefault(); onNavClick('#library'); }}>Revise with notes</a></li>
-              <li><a href="#courses" onClick={(e) => { e.preventDefault(); onNavClick('#courses'); }}>Build new skills</a></li>
+              <li><Link href="/tutoring">Practise daily maths</Link></li>
+              <li><Link href="/tools">Use KCSE & cluster calculators</Link></li>
+              <li><Link href="/learn">Revise with notes</Link></li>
+              <li><Link href="/courses">Build practical skills</Link></li>
             </ol>
           </div>
         </div>
@@ -52,30 +53,30 @@ export default function RoleChooser({ onNavClick }: RoleChooserProps) {
           I want to…
         </h2>
         <p className="sub" style={{ marginBottom: '1.2rem' }}>
-          Go directly to a service.
+          Go directly to a dedicated service page.
         </p>
 
         <div className="x2" style={{ margin: 0 }}>
-          <a className="x2c" href="#tutoring" onClick={(e) => { e.preventDefault(); onNavClick('#tutoring'); }}>
+          <Link className="x2c" href="/tutoring">
             <h3>📐 Tutoring and practice</h3>
             <p>Find a tutor, practise maths, or apply to tutor.</p>
-          </a>
-          <a className="x2c" href="#courses" onClick={(e) => { e.preventDefault(); onNavClick('#courses'); }}>
+          </Link>
+          <Link className="x2c" href="/courses">
             <h3>🎓 Courses and skills</h3>
             <p>Self-paced guides in digital, study, money and career skills.</p>
-          </a>
-          <a className="x2c" href="#games" onClick={(e) => { e.preventDefault(); onNavClick('#games'); }}>
+          </Link>
+          <Link className="x2c" href="/games">
             <h3>🎮 Games and quizzes</h3>
             <p>Subject quizzes and learning games with saved scores.</p>
-          </a>
-          <a className="x2c" href="#jobs" onClick={(e) => { e.preventDefault(); onNavClick('#jobs'); }}>
+          </Link>
+          <Link className="x2c" href="/jobs">
             <h3>💼 Education jobs</h3>
             <p>Browse vacancies or post one for review.</p>
-          </a>
-          <a className="x2c" href="#advertise" onClick={(e) => { e.preventDefault(); onNavClick('#advertise'); }}>
+          </Link>
+          <Link className="x2c" href="/advertise">
             <h3>📢 Advertise with us</h3>
             <p>Promote your school, product or event to Kenyan families.</p>
-          </a>
+          </Link>
         </div>
       </div>
     </section>

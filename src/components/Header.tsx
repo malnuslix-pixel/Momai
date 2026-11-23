@@ -4,11 +4,11 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 
 interface HeaderProps {
-  onNavClick: (hash: string) => void;
-  activeNav: string;
+  onNavClick?: (hash: string) => void;
+  activeNav?: string;
 }
 
-export default function Header({ onNavClick, activeNav }: HeaderProps) {
+export default function Header({ onNavClick, activeNav = 'home' }: HeaderProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -69,13 +69,9 @@ export default function Header({ onNavClick, activeNav }: HeaderProps) {
     document.documentElement.lang = next;
   };
 
-  const handleLink = (hash: string) => {
+  const closeMenu = () => {
     setMenuOpen(false);
     setOpenDropdown(null);
-    if (typeof document !== 'undefined' && document.activeElement instanceof HTMLElement) {
-      document.activeElement.blur();
-    }
-    onNavClick(hash);
   };
 
   const toggleDropdown = (name: string, e: React.MouseEvent) => {
@@ -87,17 +83,14 @@ export default function Header({ onNavClick, activeNav }: HeaderProps) {
   return (
     <header className={`site-header ${isScrolled ? 'sol' : ''}`}>
       <div className="nav">
-        <a
-          href="#home"
-          onClick={(e) => {
-            e.preventDefault();
-            handleLink('#home');
-          }}
+        <Link
+          href="/"
+          onClick={closeMenu}
           className="logo"
           aria-label="Mwalimu Family home"
         >
           <span aria-hidden="true">🏠</span> Mwalimu Family
-        </a>
+        </Link>
 
         <div className="ctl">
           <button onClick={toggleLite} title="Low-data mode: no heavy animation">
@@ -123,133 +116,127 @@ export default function Header({ onNavClick, activeNav }: HeaderProps) {
         <nav aria-label="Main">
           <ul id="menu" className={menuOpen ? 'open' : ''}>
             <li>
-              <a
-                href="#news"
+              <Link
+                href="/#news"
                 className={activeNav === 'news' ? 'active' : ''}
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleLink('#news');
-                }}
+                onClick={closeMenu}
               >
                 {lang === 'sw' ? 'Habari' : 'News'}
-              </a>
+              </Link>
             </li>
 
             <li className={`dd ${openDropdown === 'learn' ? 'dd-open' : ''}`}>
-              <a
-                href="#library"
+              <Link
+                href="/learn"
                 onClick={(e) => {
                   if (typeof window !== 'undefined' && window.innerWidth < 900) {
                     toggleDropdown('learn', e);
                   } else {
-                    e.preventDefault();
-                    handleLink('#library');
+                    closeMenu();
                   }
                 }}
               >
                 {lang === 'sw' ? 'Jifunze' : 'Learn'}
-              </a>
+              </Link>
               <ul>
-                <li><Link href="/tutor" onClick={() => { setMenuOpen(false); setOpenDropdown(null); }}>🤖 AI Tutor</Link></li>
-                <li><Link href="/leaderboard" onClick={() => { setMenuOpen(false); setOpenDropdown(null); }}>🏆 Leaderboard</Link></li>
-                <li><Link href="/pricing" onClick={() => { setMenuOpen(false); setOpenDropdown(null); }}>💳 Pricing</Link></li>
-                <li><a href="#library" onClick={(e) => { e.preventDefault(); handleLink('#library'); }}>Library</a></li>
-                <li><a href="#tutoring" onClick={(e) => { e.preventDefault(); handleLink('#tutoring'); }}>Tutoring</a></li>
-                <li><a href="#tools" onClick={(e) => { e.preventDefault(); handleLink('#tools'); }}>Tools</a></li>
-                <li><a href="#videos" onClick={(e) => { e.preventDefault(); handleLink('#videos'); }}>Videos</a></li>
+                <li><Link href="/tutor" onClick={closeMenu}>🤖 AI Tutor</Link></li>
+                <li><Link href="/leaderboard" onClick={closeMenu}>🏆 Leaderboard</Link></li>
+                <li><Link href="/pricing" onClick={closeMenu}>💳 Pricing</Link></li>
+                <li><Link href="/learn" onClick={closeMenu}>📚 Library</Link></li>
+                <li><Link href="/tutoring" onClick={closeMenu}>📐 Tutoring</Link></li>
+                <li><Link href="/tools" onClick={closeMenu}>🧮 Tools</Link></li>
+                <li><Link href="/videos" onClick={closeMenu}>📺 Videos</Link></li>
               </ul>
             </li>
 
             <li>
-              <a
-                href="#courses"
+              <Link
+                href="/courses"
                 className={activeNav === 'courses' ? 'active' : ''}
-                onClick={(e) => { e.preventDefault(); handleLink('#courses'); }}
+                onClick={closeMenu}
               >
                 Courses
-              </a>
+              </Link>
             </li>
 
             <li>
-              <a
-                href="#games"
+              <Link
+                href="/games"
                 className={activeNav === 'games' ? 'active' : ''}
-                onClick={(e) => { e.preventDefault(); handleLink('#games'); }}
+                onClick={closeMenu}
               >
                 Games
-              </a>
+              </Link>
             </li>
 
             <li className={`dd ${openDropdown === 'teach' ? 'dd-open' : ''}`}>
-              <a
-                href="#teaching"
+              <Link
+                href="/teach"
                 onClick={(e) => {
                   if (typeof window !== 'undefined' && window.innerWidth < 900) {
                     toggleDropdown('teach', e);
                   } else {
-                    e.preventDefault();
-                    handleLink('#teaching');
+                    closeMenu();
                   }
                 }}
               >
                 {lang === 'sw' ? 'Fundisha' : 'Teach'}
-              </a>
+              </Link>
               <ul>
-                <li><a href="#teaching" onClick={(e) => { e.preventDefault(); handleLink('#teaching'); }}>Teaching</a></li>
-                <li><a href="#jobs" onClick={(e) => { e.preventDefault(); handleLink('#jobs'); }}>Jobs</a></li>
+                <li><Link href="/teach" onClick={closeMenu}>👩🏾‍🏫 Teaching Materials</Link></li>
+                <li><Link href="/jobs" onClick={closeMenu}>💼 Education Jobs</Link></li>
               </ul>
             </li>
 
             <li className={`dd ${openDropdown === 'families' ? 'dd-open' : ''}`}>
-              <a
-                href="#parents"
+              <Link
+                href="/parents"
                 onClick={(e) => {
                   if (typeof window !== 'undefined' && window.innerWidth < 900) {
                     toggleDropdown('families', e);
                   } else {
-                    e.preventDefault();
-                    handleLink('#parents');
+                    closeMenu();
                   }
                 }}
               >
                 {lang === 'sw' ? 'Familia' : 'Families'}
-              </a>
+              </Link>
               <ul>
-                <li><a href="#parents" onClick={(e) => { e.preventDefault(); handleLink('#parents'); }}>Parents</a></li>
-                <li><a href="#exams" onClick={(e) => { e.preventDefault(); handleLink('#exams'); }}>Exams</a></li>
-                <li><a href="#help" onClick={(e) => { e.preventDefault(); handleLink('#help'); }}>Help & glossary</a></li>
-                <li><a href="#notices" onClick={(e) => { e.preventDefault(); handleLink('#notices'); }}>Notices</a></li>
+                <li><Link href="/parents" onClick={closeMenu}>👨🏾‍👩🏾‍👧🏾 Parents’ Hub</Link></li>
+                <li><Link href="/exams" onClick={closeMenu}>📝 Exams Hub</Link></li>
+                <li><Link href="/help" onClick={closeMenu}>❓ Help & Glossary</Link></li>
+                <li><Link href="/notices" onClick={closeMenu}>📢 Notice Board</Link></li>
               </ul>
             </li>
 
             <li>
-              <a
-                href="#advertise"
+              <Link
+                href="/advertise"
                 className={activeNav === 'advertise' ? 'active' : ''}
-                onClick={(e) => { e.preventDefault(); handleLink('#advertise'); }}
+                onClick={closeMenu}
               >
                 Advertise
-              </a>
+              </Link>
             </li>
 
             <li>
-              <a
-                href="#about"
+              <Link
+                href="/about"
                 className={activeNav === 'about' ? 'active' : ''}
-                onClick={(e) => { e.preventDefault(); handleLink('#about'); }}
+                onClick={closeMenu}
               >
                 About
-              </a>
+              </Link>
             </li>
 
             <li>
-              <a
-                href="#contact"
+              <Link
+                href="/about#contact"
                 className="cta"
-                onClick={(e) => { e.preventDefault(); handleLink('#contact'); }}
+                onClick={closeMenu}
               >
                 Contact
-              </a>
+              </Link>
             </li>
           </ul>
         </nav>

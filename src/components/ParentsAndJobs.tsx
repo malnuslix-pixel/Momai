@@ -5,6 +5,7 @@ import { downloadSchoolCalendar, submitOnlineForm } from '@/lib/mwalimu-data';
 
 interface ParentsAndJobsProps {
   onNavClick: (hash: string) => void;
+  mode?: 'all' | 'parents' | 'jobs';
 }
 
 const SAMPLE_JOBS = [
@@ -42,7 +43,7 @@ const SAMPLE_JOBS = [
   }
 ];
 
-export default function ParentsAndJobs({ onNavClick }: ParentsAndJobsProps) {
+export default function ParentsAndJobs({ onNavClick, mode = 'all' }: ParentsAndJobsProps) {
   // Term Calendar
   const [t1Open, setT1Open] = useState('2026-01-05');
   const [t1Close, setT1Close] = useState('2026-04-03');
@@ -105,6 +106,7 @@ export default function ParentsAndJobs({ onNavClick }: ParentsAndJobsProps) {
   return (
     <>
       {/* PARENTS HUB SECTION */}
+      {mode !== 'jobs' && (
       <section className="sec" id="parents" aria-labelledby="ph">
         <div className="w">
           <h2 className="sh rv" id="ph">Parents’ hub</h2>
@@ -235,8 +237,10 @@ export default function ParentsAndJobs({ onNavClick }: ParentsAndJobsProps) {
           </div>
         </div>
       </section>
+      )}
 
       {/* EDUCATION JOBS SECTION */}
+      {mode !== 'parents' && (
       <section className="sec mb bp" id="jobs" aria-labelledby="jbh">
         <div className="w">
           <h2 className="sh" id="jbh">Education jobs</h2>
@@ -407,6 +411,7 @@ export default function ParentsAndJobs({ onNavClick }: ParentsAndJobsProps) {
           </div>
         </div>
       </section>
+      )}
     </>
   );
 }

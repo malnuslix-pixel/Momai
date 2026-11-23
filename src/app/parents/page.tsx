@@ -30,7 +30,7 @@ export default function ParentsPage() {
             </p>
           </div>
         </div>
-        <ParentsAndJobs onNavClick={handleNavClick} />
+        <ParentsAndJobs mode="parents" onNavClick={handleNavClick} />
       </main>
       <Footer onNavClick={handleNavClick} />
       <FloatingWidgets onNavClick={handleNavClick} />

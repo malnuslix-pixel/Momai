@@ -4,7 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 
 interface FooterProps {
-  onNavClick: (hash: string) => void;
+  onNavClick?: (hash: string) => void;
 }
 
 export default function Footer({ onNavClick }: FooterProps) {
@@ -39,30 +39,30 @@ export default function Footer({ onNavClick }: FooterProps) {
           </div>
           <div>
             <h4>Explore</h4>
-            <a href="#news" onClick={(e) => { e.preventDefault(); onNavClick('#news'); }}>News</a>
-            <a href="#library" onClick={(e) => { e.preventDefault(); onNavClick('#library'); }}>Library</a>
-            <a href="#teaching" onClick={(e) => { e.preventDefault(); onNavClick('#teaching'); }}>Teaching</a>
-            <a href="#tools" onClick={(e) => { e.preventDefault(); onNavClick('#tools'); }}>Tools</a>
-            <a href="#tutoring" onClick={(e) => { e.preventDefault(); onNavClick('#tutoring'); }}>Tutoring</a>
-            <a href="#jobs" onClick={(e) => { e.preventDefault(); onNavClick('#jobs'); }}>Jobs</a>
-            <a href="#advertise" onClick={(e) => { e.preventDefault(); onNavClick('#advertise'); }}>Advertise</a>
+            <Link href="/#news">News</Link>
+            <Link href="/learn">Library</Link>
+            <Link href="/teach">Teaching</Link>
+            <Link href="/tools">Tools</Link>
+            <Link href="/tutoring">Tutoring</Link>
+            <Link href="/jobs">Jobs</Link>
+            <Link href="/advertise">Advertise</Link>
           </div>
           <div>
             <h4>Learn</h4>
-            <a href="#exams" onClick={(e) => { e.preventDefault(); onNavClick('#exams'); }}>Exams hub</a>
-            <a href="#games" onClick={(e) => { e.preventDefault(); onNavClick('#games'); }}>Games & quizzes</a>
-            <a href="#courses" onClick={(e) => { e.preventDefault(); onNavClick('#courses'); }}>Courses</a>
-            <a href="#help" onClick={(e) => { e.preventDefault(); onNavClick('#help'); }}>Help & glossary</a>
-            <a href="#notices" onClick={(e) => { e.preventDefault(); onNavClick('#notices'); }}>Notice board</a>
+            <Link href="/exams">Exams hub</Link>
+            <Link href="/games">Games & quizzes</Link>
+            <Link href="/courses">Courses</Link>
+            <Link href="/help">Help & glossary</Link>
+            <Link href="/notices">Notice board</Link>
             <Link href="/tutor">🤖 AI Tutor</Link>
             <Link href="/leaderboard">🏆 Leaderboard</Link>
           </div>
           <div>
             <h4>Company</h4>
-            <a href="#activity" onClick={(e) => { e.preventDefault(); onNavClick('#activity'); }}>My activity</a>
-            <a href="#videos" onClick={(e) => { e.preventDefault(); onNavClick('#videos'); }}>Videos</a>
-            <a href="#about" onClick={(e) => { e.preventDefault(); onNavClick('#about'); }}>About</a>
-            <a href="#contact" onClick={(e) => { e.preventDefault(); onNavClick('#contact'); }}>Contact</a>
+            <Link href="/activity">My activity</Link>
+            <Link href="/videos">Videos</Link>
+            <Link href="/about">About</Link>
+            <Link href="/about#contact">Contact</Link>
             <Link href="/pricing">💳 Pricing</Link>
           </div>
         </div>

@@ -8,7 +8,11 @@ import {
   WORD_SCRAMBLE_WORDS
 } from '@/lib/mwalimu-data';
 
-export default function CoursesAndGames() {
+interface CoursesAndGamesProps {
+  mode?: 'all' | 'courses' | 'games';
+}
+
+export default function CoursesAndGames({ mode = 'all' }: CoursesAndGamesProps) {
   // ==========================================
   // COURSES STATE & LOGIC
   // ==========================================
@@ -216,6 +220,7 @@ export default function CoursesAndGames() {
   return (
     <>
       {/* COURSES SECTION */}
+      {mode !== 'games' && (
       <section className="sec alt" id="courses" aria-labelledby="crh">
         <div className="w">
           <h2 className="sh" id="crh">Courses and skills</h2>
@@ -338,8 +343,10 @@ export default function CoursesAndGames() {
           </div>
         </div>
       </section>
+      )}
 
       {/* GAMES AND QUIZZES SECTION */}
+      {mode !== 'courses' && (
       <section className="sec" id="games" aria-labelledby="gmh">
         <div className="w">
           <h2 className="sh" id="gmh">Games and quizzes</h2>
@@ -585,6 +592,7 @@ export default function CoursesAndGames() {
           </div>
         </div>
       </section>
+      )}
     </>
   );
 }

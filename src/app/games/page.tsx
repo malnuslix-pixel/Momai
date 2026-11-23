@@ -30,7 +30,7 @@ export default function GamesPage() {
             </p>
           </div>
         </div>
-        <CoursesAndGames />
+        <CoursesAndGames mode="games" />
       </main>
       <Footer onNavClick={handleNavClick} />
       <FloatingWidgets onNavClick={handleNavClick} />

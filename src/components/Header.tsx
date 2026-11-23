@@ -66,6 +66,7 @@ export default function Header({ onNavClick, activeNav }: HeaderProps) {
 
   const toggleDropdown = (name: string, e: React.MouseEvent) => {
     e.preventDefault();
+    e.stopPropagation();
     setOpenDropdown(prev => prev === name ? null : name);
   };
 
@@ -120,14 +121,17 @@ export default function Header({ onNavClick, activeNav }: HeaderProps) {
               </a>
             </li>
 
-            <li className={`dd ${openDropdown === 'learn' ? 'dd-open' : ''}`}>
+            <li
+              className={`dd ${openDropdown === 'learn' ? 'dd-open' : ''}`}
+              onMouseLeave={() => setOpenDropdown(null)}
+            >
               <a href="#library" onClick={(e) => { toggleDropdown('learn', e); }}>
                 {lang === 'sw' ? 'Jifunze' : 'Learn'}
               </a>
               <ul>
-                <li><Link href="/tutor" onClick={() => setMenuOpen(false)}>🤖 AI Tutor</Link></li>
-                <li><Link href="/leaderboard" onClick={() => setMenuOpen(false)}>🏆 Leaderboard</Link></li>
-                <li><Link href="/pricing" onClick={() => setMenuOpen(false)}>💳 Pricing</Link></li>
+                <li><Link href="/tutor" onClick={() => { setMenuOpen(false); setOpenDropdown(null); }}>🤖 AI Tutor</Link></li>
+                <li><Link href="/leaderboard" onClick={() => { setMenuOpen(false); setOpenDropdown(null); }}>🏆 Leaderboard</Link></li>
+                <li><Link href="/pricing" onClick={() => { setMenuOpen(false); setOpenDropdown(null); }}>💳 Pricing</Link></li>
                 <li><a href="#library" onClick={(e) => { e.preventDefault(); handleLink('#library'); }}>Library</a></li>
                 <li><a href="#tools" onClick={(e) => { e.preventDefault(); handleLink('#tools'); }}>Tutoring</a></li>
                 <li><a href="#tools" onClick={(e) => { e.preventDefault(); handleLink('#tools'); }}>Tools</a></li>
@@ -155,7 +159,10 @@ export default function Header({ onNavClick, activeNav }: HeaderProps) {
               </a>
             </li>
 
-            <li className={`dd ${openDropdown === 'teach' ? 'dd-open' : ''}`}>
+            <li
+              className={`dd ${openDropdown === 'teach' ? 'dd-open' : ''}`}
+              onMouseLeave={() => setOpenDropdown(null)}
+            >
               <a href="#teaching" onClick={(e) => { toggleDropdown('teach', e); }}>
                 {lang === 'sw' ? 'Fundisha' : 'Teach'}
               </a>
@@ -165,7 +172,10 @@ export default function Header({ onNavClick, activeNav }: HeaderProps) {
               </ul>
             </li>
 
-            <li className={`dd ${openDropdown === 'families' ? 'dd-open' : ''}`}>
+            <li
+              className={`dd ${openDropdown === 'families' ? 'dd-open' : ''}`}
+              onMouseLeave={() => setOpenDropdown(null)}
+            >
               <a href="#parents" onClick={(e) => { toggleDropdown('families', e); }}>
                 {lang === 'sw' ? 'Familia' : 'Families'}
               </a>

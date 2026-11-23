@@ -209,7 +209,7 @@ nav {
   width: 100%;
 }
 
-nav ul {
+nav > ul {
   display: none;
   flex-direction: column;
   width: 100%;
@@ -226,11 +226,11 @@ nav ul {
   list-style: none;
 }
 
-nav ul.open {
+nav > ul.open {
   display: flex !important;
 }
 
-nav ul li {
+nav > ul > li {
   width: 100%;
 }
 
@@ -275,10 +275,10 @@ nav a.cta {
   padding: 0.25rem 0.4rem;
   box-shadow: none;
   border-left: 3px solid var(--ac);
+  list-style: none;
 }
 
-.dd.dd-open > ul,
-.dd-open > ul {
+.dd.dd-open > ul {
   display: flex !important;
 }
 
@@ -2256,7 +2256,7 @@ section.mb .sh, section.mb .sub, section.mb .pbn h1, section.mb .pbn p, section.
     flex-shrink: 1;
   }
 
-  nav ul {
+  nav > ul {
     display: flex !important;
     flex-direction: row;
     background: none;
@@ -2267,6 +2267,11 @@ section.mb .sh, section.mb .sub, section.mb .pbn h1, section.mb .pbn p, section.
     border-top: none;
     gap: 0.15rem;
     align-items: center;
+    width: auto;
+  }
+
+  nav > ul > li {
+    width: auto;
   }
 
   nav a {
@@ -2305,7 +2310,7 @@ section.mb .sh, section.mb .sub, section.mb .pbn h1, section.mb .pbn p, section.
   }
 
   .dd > ul {
-    display: none;
+    display: none !important;
     position: absolute;
     top: 100%;
     left: 0;
@@ -2319,11 +2324,11 @@ section.mb .sh, section.mb .sub, section.mb .pbn h1, section.mb .pbn p, section.
     z-index: 250;
     margin: 0;
     border-left: none;
+    list-style: none;
   }
 
-  .dd.dd-open > ul,
   .dd:hover > ul,
-  .dd:focus-within > ul {
+  .dd.dd-open > ul {
     display: flex !important;
   }
 

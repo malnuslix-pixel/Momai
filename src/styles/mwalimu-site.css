@@ -290,23 +290,23 @@ nav a.cta {
   border-bottom: 1px solid rgba(255, 255, 255, 0.04);
 }
 
-/* 3. HERO — FULL MODE DEFAULT (all scenes visible, static layout) */
+/* 3. HERO — CINEMATIC SCROLLING (DEFAULT / FULL MODE) */
 .hero {
-  height: auto;
+  height: 250vh;
   background: #1a3d1b;
   position: relative;
 }
 
 .stage {
-  position: relative;
-  height: auto;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100dvh;
   overflow: hidden;
   background: linear-gradient(160deg, #1a3d1b, #2c5f2d 70%, #4a8c4b);
   color: #fff;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  padding: 5.5rem 0 2.5rem;
 }
 
 .sun {
@@ -336,24 +336,20 @@ nav a.cta {
 .scenes {
   position: relative;
   width: 100%;
-  height: auto;
+  height: 50vh;
 }
 
 .scene {
-  position: static;
+  position: absolute;
+  inset: 0;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  opacity: 1;
-  visibility: visible;
-  transform: none;
-  pointer-events: auto;
-  margin-bottom: 2.5rem;
-  transition: none;
-}
-
-.scene:last-child {
-  margin-bottom: 0;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(40px);
+  transition: opacity 0.6s ease, transform 0.6s ease, visibility 0.6s;
+  pointer-events: none;
 }
 
 .scene.on {
@@ -361,11 +357,6 @@ nav a.cta {
   visibility: visible;
   transform: none;
   pointer-events: auto;
-}
-
-/* Sun & ring hidden in full mode (static hero) */
-.sun, .ring {
-  display: none;
 }
 
 .scene h1 {
@@ -2180,34 +2171,49 @@ section.mb .sh, section.mb .sub, section.mb .pbn h1, section.mb .pbn p, section.
     margin: 0.3rem 0 0.8rem;
   }
 
-  /* Mobile hero — full mode: static, all scenes stacked */
+  /* Mobile hero — full mode: cinematic scrolling */
   .hero {
-    height: auto;
+    height: 220vh;
   }
 
   .stage {
-    padding: 4.5rem 0 3.5rem;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    height: 100dvh;
+    padding: 0;
+    display: flex;
+    align-items: center;
   }
 
   .scenes {
-    height: auto;
+    height: 48vh;
   }
 
   .scene {
-    margin-bottom: 1.8rem;
-  }
-
-  .scene:last-child {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(30px);
     margin-bottom: 0;
   }
 
+  .scene.on {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    pointer-events: auto;
+  }
+
   .scene h1 {
-    font-size: clamp(1.6rem, 7vw, 2.4rem);
+    font-size: clamp(1.5rem, 6.5vw, 2.2rem);
   }
 
   .scene p {
-    font-size: 0.9rem;
-    margin: 0.5rem 0 0.8rem;
+    font-size: 0.88rem;
+    margin: 0.4rem 0 0.75rem;
+    line-height: 1.45;
   }
 
   .scene .btns {
@@ -2215,7 +2221,7 @@ section.mb .sh, section.mb .sub, section.mb .pbn h1, section.mb .pbn p, section.
   }
 
   .scene .btns .btn {
-    padding: 0.55rem 1.2rem;
+    padding: 0.55rem 1.1rem;
     font-size: 0.88rem;
   }
 
@@ -2716,13 +2722,18 @@ section.mb .sh, section.mb .sub, section.mb .pbn h1, section.mb .pbn p, section.
     color: #1a1a1a;
   }
 
-  /* Desktop Hero — full mode: static layout, all scenes visible */
+  /* Desktop Hero — full mode: cinematic scrolling */
   .hero {
-    height: auto;
+    height: 300vh;
   }
 
   .stage {
-    padding: 6.5rem 0 3rem;
+    height: 100vh;
+    padding: 0;
+  }
+
+  .scenes {
+    height: 55vh;
   }
 
   .scene h1 {
@@ -2849,33 +2860,48 @@ section.mb .sh, section.mb .sub, section.mb .pbn h1, section.mb .pbn p, section.
   }
 }
 
-/* 10. LITE MODE — CINEMATIC SCROLLING HERO */
-/* In lite mode the hero becomes a tall scroll-driven cinematic experience */
+/* 10. LITE MODE — LOW-DATA & STATIC HERO */
+/* In lite mode the hero displays all content statically with zero heavy animations */
 .lite .hero {
-  height: 250vh !important;
+  height: auto !important;
 }
 
 .lite .stage {
-  position: sticky !important;
-  top: 0 !important;
-  height: 100vh !important;
-  padding: 0 !important;
-  flex-direction: row !important;
+  position: relative !important;
+  top: auto !important;
+  height: auto !important;
+  padding: 5.5rem 0 2.5rem !important;
+  display: flex !important;
+  flex-direction: column !important;
   align-items: center !important;
 }
 
+.lite .sun,
+.lite .ring {
+  display: none !important;
+}
+
 .lite .scenes {
-  height: 50vh !important;
+  position: relative !important;
+  width: 100% !important;
+  height: auto !important;
 }
 
 .lite .scene {
-  position: absolute !important;
-  inset: 0 !important;
-  opacity: 0 !important;
-  visibility: hidden !important;
-  transform: translateY(40px) !important;
-  transition: opacity 0.6s ease, transform 0.6s ease, visibility 0.6s !important;
-  pointer-events: none !important;
+  position: static !important;
+  inset: auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: none !important;
+  pointer-events: auto !important;
+  margin-bottom: 2.5rem !important;
+  transition: none !important;
+}
+
+.lite .scene:last-child {
   margin-bottom: 0 !important;
 }
 
@@ -2886,53 +2912,50 @@ section.mb .sh, section.mb .sub, section.mb .pbn h1, section.mb .pbn p, section.
   pointer-events: auto !important;
 }
 
-/* Show sun & ring in lite mode cinematic hero */
-.lite .sun {
-  display: block !important;
+/* In lite mode, position ticker cleanly below the scenes */
+.lite .tick {
+  position: relative !important;
+  bottom: auto !important;
+  margin-top: 1.5rem !important;
+  width: 100% !important;
 }
 
-.lite .ring {
-  display: block !important;
-}
-
-/* Disable heavy background glyphs to keep it lightweight */
-.lite .gy, .lite .mgx {
+/* Disable heavy background glyphs and ticker animation in lite mode */
+.lite .gy,
+.lite .mgx {
   display: none !important;
 }
 
-/* Ticker still scrolls in lite */
+.lite .mt {
+  animation: none !important;
+}
+
 .lite .rv {
   opacity: 1 !important;
   transform: none !important;
 }
 
-/* Lite mode on mobile: shorter scroll track */
+/* Lite mode responsive tweaks */
 @media screen and (max-width: 640px) {
-  .lite .hero {
-    height: 200vh !important;
+  .lite .stage {
+    padding: 4.5rem 0 2rem !important;
   }
 
-  .lite .scenes {
-    height: 45vh !important;
+  .lite .scene {
+    margin-bottom: 1.8rem !important;
   }
 
   .lite .scene h1 {
-    font-size: clamp(1.5rem, 7vw, 2.2rem) !important;
+    font-size: clamp(1.5rem, 6.5vw, 2.2rem) !important;
   }
 
   .lite .scene p {
     font-size: 0.88rem !important;
-    margin: 0.4rem 0 0.7rem !important;
-  }
-}
-
-@media screen and (min-width: 900px) {
-  .lite .hero {
-    height: 300vh !important;
+    margin: 0.4rem 0 0.75rem !important;
   }
 
-  .lite .scenes {
-    height: 55vh !important;
+  .lite .tick {
+    margin-top: 1.2rem !important;
   }
 }
 
@@ -2942,26 +2965,21 @@ section.mb .sh, section.mb .sub, section.mb .pbn h1, section.mb .pbn p, section.
     scroll-behavior: auto;
   }
 
-  /* Force static hero even if lite mode is on */
-  .hero,
-  .lite .hero {
+  .hero {
     height: auto !important;
   }
 
-  .stage,
-  .lite .stage {
+  .stage {
     position: relative !important;
     height: auto !important;
-    padding: 4rem 0 3rem !important;
+    padding: 4.5rem 0 2rem !important;
   }
 
-  .scenes,
-  .lite .scenes {
+  .scenes {
     height: auto !important;
   }
 
-  .scene,
-  .lite .scene {
+  .scene {
     position: static !important;
     opacity: 1 !important;
     visibility: visible !important;
@@ -2970,14 +2988,23 @@ section.mb .sh, section.mb .sub, section.mb .pbn h1, section.mb .pbn p, section.
     pointer-events: auto !important;
   }
 
+  .scene:last-child {
+    margin-bottom: 0 !important;
+  }
+
+  .tick {
+    position: relative !important;
+    bottom: auto !important;
+    margin-top: 1.5rem !important;
+  }
+
   .rv {
     opacity: 1;
     transform: none;
     transition: none;
   }
 
-  .sun, .ring,
-  .lite .sun, .lite .ring {
+  .sun, .ring {
     display: none !important;
   }
 

@@ -34,7 +34,7 @@ export default function VideosSection() {
         </div>
       </div>
 
-      <div className="vs" tabIndex={0} aria-label="Video categories" style={{ marginTop: '1.5rem' }}>
+      <div className="vs" tabIndex={0} aria-label="Video categories" style={{ marginTop: '1rem' }}>
         {VIDEOS.map((v, idx) => (
           <a
             key={idx}
@@ -57,7 +57,7 @@ export default function VideosSection() {
       </div>
 
       {/* Subscribe CTA Placed Below Video Cards */}
-      <div className="w" style={{ textAlign: 'center', marginTop: '2.5rem' }}>
+      <div className="w" style={{ textAlign: 'center', marginTop: '1.5rem' }}>
         <a
           className="btn b1"
           href="https://youtube.com/@mwalimufamily"

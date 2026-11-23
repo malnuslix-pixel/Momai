@@ -9,12 +9,12 @@ interface RoleChooserProps {
 
 export default function RoleChooser({ onNavClick }: RoleChooserProps) {
   return (
-    <section className="sec" id="haud" aria-labelledby="hau" style={{ padding: '3.5rem 0' }}>
+    <section className="sec" id="haud" aria-labelledby="hau">
       <div className="w">
-        <h2 className="sh" id="hau" style={{ fontSize: 'clamp(1.8rem, 4vw, 2.6rem)' }}>
+        <h2 className="sh" id="hau">
           I am a…
         </h2>
-        <p className="sub" style={{ marginBottom: '1.2rem' }}>
+        <p className="sub">
           Choose your role to find the most relevant resources.
         </p>
 
@@ -49,10 +49,10 @@ export default function RoleChooser({ onNavClick }: RoleChooserProps) {
           </div>
         </div>
 
-        <h2 className="sh" id="hiw" style={{ fontSize: 'clamp(1.8rem, 4vw, 2.6rem)', marginTop: '3.5rem' }}>
+        <h2 className="sh" id="hiw" style={{ marginTop: '2.5rem' }}>
           I want to…
         </h2>
-        <p className="sub" style={{ marginBottom: '1.2rem' }}>
+        <p className="sub">
           Go directly to a dedicated service page.
         </p>
 

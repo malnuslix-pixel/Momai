@@ -54,7 +54,7 @@ body {
 /* Defer rendering of heavy below-the-fold sections until user scrolls near them */
 #portals, #videos, #about, #contact {
   content-visibility: auto;
-  contain-intrinsic-size: auto 600px;
+  contain-intrinsic-size: auto 400px;
 }
 
 /* Ensure smooth image and SVG rendering */

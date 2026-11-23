@@ -10,8 +10,22 @@ interface HeroProps {
 export default function Hero({ onNavClick }: HeroProps) {
   const heroRef = useRef<HTMLElement>(null);
   const [activeScene, setActiveScene] = useState(0);
+  const [isLite, setIsLite] = useState(false);
 
+  // Detect lite mode on mount and when it toggles
   useEffect(() => {
+    const checkLite = () => document.documentElement.classList.contains('lite');
+    setIsLite(checkLite());
+
+    const observer = new MutationObserver(() => setIsLite(checkLite()));
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    return () => observer.disconnect();
+  }, []);
+
+  // Cinematic scroll only in LITE mode
+  useEffect(() => {
+    if (!isLite) return;
+
     const handleScroll = () => {
       const hero = heroRef.current;
       if (!hero) return;
@@ -31,7 +45,7 @@ export default function Hero({ onNavClick }: HeroProps) {
       window.removeEventListener('scroll', handleScroll);
       window.removeEventListener('resize', handleScroll);
     };
-  }, []);
+  }, [isLite]);
 
   return (
     <section className="hero" id="home" ref={heroRef} aria-label="Introduction">
@@ -42,8 +56,8 @@ export default function Hero({ onNavClick }: HeroProps) {
         <div className="w" style={{ position: 'relative', width: '100%' }}>
           <div className="scenes">
             {/* Scene 1 */}
-            <div className={`scene ${activeScene === 0 ? 'on' : ''}`}>
-              <h1>Kenya’s school news, made clear.</h1>
+            <div className={`scene ${!isLite || activeScene === 0 ? 'on' : ''}`}>
+              <h1>Kenya&apos;s school news, made clear.</h1>
               <p>What exam timelines, policies and placements mean for your family, explained in plain words.</p>
               <div className="btns">
                 <Link href="/learn" className="btn b1">
@@ -56,7 +70,7 @@ export default function Hero({ onNavClick }: HeroProps) {
             </div>
 
             {/* Scene 2 */}
-            <div className={`scene ${activeScene === 1 ? 'on' : ''}`}>
+            <div className={`scene ${!isLite || activeScene === 1 ? 'on' : ''}`}>
               <h1>Classroom-ready resources.</h1>
               <p>Schemes of work, lesson plans and records for every grade, built for Kenyan teachers.</p>
               <div className="btns">
@@ -70,7 +84,7 @@ export default function Hero({ onNavClick }: HeroProps) {
             </div>
 
             {/* Scene 3 */}
-            <div className={`scene ${activeScene === 2 ? 'on' : ''}`}>
+            <div className={`scene ${!isLite || activeScene === 2 ? 'on' : ''}`}>
               <h1>Practical skills for school and work.</h1>
               <p>Short courses in study, money, digital and career skills, with Kenyan examples.</p>
               <div className="btns">

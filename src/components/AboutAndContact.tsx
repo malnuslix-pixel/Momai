@@ -43,7 +43,7 @@ export default function AboutAndContact() {
       <section className="sec alt" id="about" aria-labelledby="ah">
         <div className="w">
           <h2 className="sh" id="ah">About Mwalimu Family</h2>
-          <p className="sub" style={{ maxWidth: '36em', fontSize: '1.2rem' }}>
+          <p className="sub" style={{ maxWidth: '36em' }}>
             “Mwalimu” means <em>teacher</em> in Swahili. We publish independent education news, verified curriculum templates and learning tools for Kenyan teachers, parents and learners.
           </p>
 

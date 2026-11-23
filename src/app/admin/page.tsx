@@ -251,7 +251,7 @@ export default function AdminPage() {
           st: 'published',
           exp: new Date(Date.now() + 60 * 864e5).toISOString().slice(0, 10),
         });
-        showToast('New item added to Supabase!');
+        showToast('New item added!');
       }
     } catch {
       showToast('Item saved locally.');
@@ -323,7 +323,7 @@ export default function AdminPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ banner }),
       });
-      showToast('Emergency banner saved to Supabase!');
+      showToast('Emergency banner saved!');
     } catch {}
   };
 
@@ -596,7 +596,7 @@ export default function AdminPage() {
       <header>
         <h1>Mwalimu Family · Admin Dashboard</h1>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
-          <span className="p ok">Supabase Connected</span>
+          <span className="p ok">System Online</span>
           <button className="b s" onClick={toggleTheme}>
             {theme === 'light' ? '🌙 Dark mode' : '☀️ Light mode'}
           </button>
@@ -886,7 +886,7 @@ export default function AdminPage() {
                 </div>
 
                 <button type="submit" className="b">
-                  Publish to Supabase
+                  Publish Item
                 </button>
               </form>
             </div>
@@ -1283,7 +1283,7 @@ export default function AdminPage() {
                 <h2>Technical uptime & latency</h2>
                 {[
                   ['Next.js Application Engine', '100%'],
-                  ['Supabase Database Connection', '100%'],
+                  ['Database Connection', '100%'],
                   ['PWA Service Worker Cache', 'Healthy'],
                   ['Static Assets CDN', '18 ms'],
                 ].map(([svc, stat], i) => (
@@ -1411,23 +1411,12 @@ export default function AdminPage() {
               </div>
 
               <div className="card">
-                <h2>Supabase Backend Status</h2>
-                <div style={{ padding: '0.6rem 0', borderBottom: '1px solid var(--ln)' }}>
-                  <b>Project URL:</b> <code>{process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://mcavjbrvtqxokecpiqln.supabase.co'}</code>
-                </div>
-                <div style={{ padding: '0.6rem 0', borderBottom: '1px solid var(--ln)' }}>
-                  <b>API Status:</b> <span className="p ok">Connected & Synced</span>
-                </div>
-                <div style={{ padding: '0.6rem 0', borderBottom: '1px solid var(--ln)' }}>
-                  <b>Data Tables:</b> items, submissions, subscribers, assistant_logs, site_config, audit_log, verification_checks
-                </div>
-
-                <h3 style={{ marginTop: '1.2rem', fontSize: '1.05rem' }}>Going Live Checklist</h3>
+                <h2>Deployment Checklist</h2>
                 <ol className="mu" style={{ paddingLeft: '1.2rem', lineHeight: 1.7 }}>
-                  <li>Run the SQL migration script in <code>supabase/schema.sql</code> in your Supabase SQL editor.</li>
-                  <li>Verify that RLS policies allow public insertions on submissions and subscribers.</li>
-                  <li>Confirm <code>ADMIN_SECRET_KEY</code> is set in <code>.env.local</code>.</li>
-                  <li>Deploy Next.js application to Vercel, Netlify, or your preferred hosting provider.</li>
+                  <li>Confirm <code>ADMIN_SECRET_KEY</code> is set in environment variables.</li>
+                  <li>Verify that database RLS policies allow public insertions on submissions and subscribers.</li>
+                  <li>Deploy the application to your hosting provider.</li>
+                  <li>Test all public forms and admin actions post-deploy.</li>
                 </ol>
               </div>
             </div>

@@ -290,22 +290,23 @@ nav a.cta {
   border-bottom: 1px solid rgba(255, 255, 255, 0.04);
 }
 
-/* 3. HERO — CINEMATIC SCROLLING */
+/* 3. HERO — FULL MODE DEFAULT (all scenes visible, static layout) */
 .hero {
-  height: 400vh;
+  height: auto;
   background: #1a3d1b;
   position: relative;
 }
 
 .stage {
-  position: sticky;
-  top: 0;
-  height: 100vh;
+  position: relative;
+  height: auto;
   overflow: hidden;
   background: linear-gradient(160deg, #1a3d1b, #2c5f2d 70%, #4a8c4b);
   color: #fff;
   display: flex;
+  flex-direction: column;
   align-items: center;
+  padding: 5.5rem 0 2.5rem;
 }
 
 .sun {
@@ -335,20 +336,24 @@ nav a.cta {
 .scenes {
   position: relative;
   width: 100%;
-  height: 60vh;
+  height: auto;
 }
 
 .scene {
-  position: absolute;
-  inset: 0;
+  position: static;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(40px);
-  transition: opacity 0.6s ease, transform 0.6s ease, visibility 0.6s;
-  pointer-events: none;
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  pointer-events: auto;
+  margin-bottom: 2.5rem;
+  transition: none;
+}
+
+.scene:last-child {
+  margin-bottom: 0;
 }
 
 .scene.on {
@@ -358,8 +363,13 @@ nav a.cta {
   pointer-events: auto;
 }
 
+/* Sun & ring hidden in full mode (static hero) */
+.sun, .ring {
+  display: none;
+}
+
 .scene h1 {
-  font-size: clamp(2.4rem, 7vw, 6.5rem);
+  font-size: clamp(2rem, 7vw, 6.5rem);
   color: #fff;
   font-weight: 800;
   line-height: 1.1;
@@ -368,9 +378,9 @@ nav a.cta {
 
 .scene p {
   color: rgba(255, 255, 255, 0.9);
-  font-size: clamp(1rem, 2vw, 1.4rem);
+  font-size: clamp(0.95rem, 2vw, 1.4rem);
   max-width: 30em;
-  margin: 1.2rem 0 1.8rem;
+  margin: 0.8rem 0 1.2rem;
   line-height: 1.5;
 }
 
@@ -384,13 +394,13 @@ nav a.cta {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0.8rem 2rem;
+  padding: 0.65rem 1.6rem;
   border-radius: 50px;
   font-weight: 600;
   border: 2px solid transparent;
   transition: transform 0.3s, background 0.3s;
   cursor: pointer;
-  font-size: 1rem;
+  font-size: 0.95rem;
   text-decoration: none;
 }
 
@@ -481,20 +491,20 @@ nav a.cta {
 
 /* 4. SECTIONS & TYPOGRAPHY (MOBILE DEFAULT) */
 .sec {
-  padding: 3.2rem 0;
+  padding: 2rem 0;
   content-visibility: auto;
-  contain-intrinsic-size: 1px 600px;
+  contain-intrinsic-size: 1px 400px;
 }
 
 .sh {
-  font-size: clamp(1.65rem, 5.5vw, 2.3rem);
+  font-size: clamp(1.5rem, 5.5vw, 2.3rem);
   font-weight: 800;
   line-height: 1.15;
 }
 
 .sub {
-  font-size: 0.98rem;
-  margin: 0.6rem 0 1.4rem;
+  font-size: 0.95rem;
+  margin: 0.4rem 0 1rem;
   max-width: 34em;
   line-height: 1.5;
 }
@@ -551,8 +561,8 @@ nav a.cta {
   padding: 1.25rem;
   display: grid;
   grid-template-columns: 1fr;
-  gap: 1.4rem;
-  margin-bottom: 2rem;
+  gap: 1rem;
+  margin-bottom: 1.2rem;
 }
 
 .feat h3 {
@@ -731,11 +741,11 @@ nav a.cta {
 .vals, .two, .cg, .eg, .ng, .nl, .tc3, .x2, .ex3, .wk, .qk, .ft2, .grid, .g2, .xg {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 1.2rem;
+  gap: 0.85rem;
 }
 
 .vals {
-  margin-top: 2rem;
+  margin-top: 1.2rem;
 }
 
 .vals div {
@@ -776,7 +786,7 @@ nav a.cta {
 .contact {
   background: #1a3d1b;
   color: #fff;
-  padding: 3.5rem 0;
+  padding: 2.5rem 0;
 }
 
 .contact h2, .contact p {
@@ -854,8 +864,8 @@ nav a.cta {
 footer {
   background: #111;
   color: #aaa;
-  padding: 2rem 0 calc(6rem + env(safe-area-inset-bottom, 0px));
-  font-size: 0.88rem;
+  padding: 1.5rem 0 calc(5rem + env(safe-area-inset-bottom, 0px));
+  font-size: 0.85rem;
 }
 
 footer .fc {
@@ -1577,14 +1587,14 @@ main > section:not([hidden]) {
 .pbn {
   position: relative;
   z-index: 2;
-  padding: 5.5rem 0 2rem;
+  padding: 5rem 0 1.5rem;
   background: radial-gradient(60% 120% at 85% 0, rgba(244, 162, 97, 0.28), transparent 60%),
               linear-gradient(160deg, #16341a, #2c5f2d);
 }
 
 @media (min-width: 768px) {
   .pbn {
-    padding: 6.8rem 0 2.6rem;
+    padding: 6rem 0 2rem;
   }
 }
 
@@ -1675,9 +1685,9 @@ main > section:not([hidden]) {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
-  gap: 0.8rem;
+  gap: 0.6rem;
   flex-wrap: wrap;
-  margin-bottom: 1.2rem;
+  margin-bottom: 0.8rem;
 }
 
 .hh h2 {
@@ -1697,7 +1707,7 @@ main > section:not([hidden]) {
   background: #16341a;
   color: #fff;
   text-align: center;
-  padding: 4rem 0;
+  padding: 2.5rem 0;
 }
 
 .band h2, .band p {
@@ -2137,7 +2147,7 @@ section.mb .sh, section.mb .sub, section.mb .pbn h1, section.mb .pbn p, section.
   }
 
   button, a.btn, a.gb, .chip {
-    min-height: 42px;
+    min-height: 44px;
   }
 
   input[type="text"], input[type="search"], input[type="tel"], input[type="email"], select, textarea {
@@ -2156,17 +2166,169 @@ section.mb .sh, section.mb .sub, section.mb .pbn h1, section.mb .pbn p, section.
     flex-shrink: 0;
   }
 
+  /* Tight mobile section spacing */
+  .sec {
+    padding: 1.5rem 0;
+  }
+
+  .sh {
+    font-size: clamp(1.3rem, 5vw, 1.8rem);
+  }
+
+  .sub {
+    font-size: 0.9rem;
+    margin: 0.3rem 0 0.8rem;
+  }
+
+  /* Mobile hero — full mode: static, all scenes stacked */
+  .hero {
+    height: auto;
+  }
+
+  .stage {
+    padding: 4.5rem 0 3.5rem;
+  }
+
+  .scenes {
+    height: auto;
+  }
+
+  .scene {
+    margin-bottom: 1.8rem;
+  }
+
+  .scene:last-child {
+    margin-bottom: 0;
+  }
+
+  .scene h1 {
+    font-size: clamp(1.6rem, 7vw, 2.4rem);
+  }
+
+  .scene p {
+    font-size: 0.9rem;
+    margin: 0.5rem 0 0.8rem;
+  }
+
+  .scene .btns {
+    gap: 0.5rem;
+  }
+
+  .scene .btns .btn {
+    padding: 0.55rem 1.2rem;
+    font-size: 0.88rem;
+  }
+
+  /* Ticker compact */
+  .tick {
+    font-size: 0.82rem;
+    bottom: calc(0.75rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  .tk strong {
+    font-size: 0.65rem;
+    padding: 0.1rem 0.4rem;
+  }
+
+  /* Featured article compact */
+  .feat {
+    padding: 1rem;
+    gap: 0.8rem;
+    margin-bottom: 1rem;
+    border-radius: 14px;
+  }
+
+  .feat h3 {
+    font-size: 1.2rem;
+  }
+
+  /* Portals grid stacking */
+  .x2 {
+    grid-template-columns: 1fr !important;
+    gap: 0.75rem !important;
+  }
+
+  .x2 > * {
+    padding: 1rem 0.85rem;
+  }
+
+  .x2 h3 {
+    font-size: 1.1rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .x2 p {
+    font-size: 0.88rem;
+  }
+
+  /* Video cards compact */
+  .v {
+    flex: 0 0 min(78vw, 320px);
+    padding: 1rem;
+    border-radius: 14px;
+    aspect-ratio: 16/10;
+  }
+
+  .v h3 {
+    font-size: 1.1rem;
+  }
+
+  .v p {
+    font-size: 0.82rem;
+  }
+
+  .play {
+    width: 40px;
+    height: 40px;
+    font-size: 1rem;
+  }
+
+  /* Cards compact */
+  .card {
+    padding: 1rem 0.85rem;
+    border-radius: 14px;
+  }
+
+  .card h3 {
+    font-size: 1.15rem;
+    margin-bottom: 0.5rem;
+  }
+
+  /* Contact section compact */
+  .contact {
+    padding: 2rem 0;
+  }
+
+  /* Footer compact */
+  footer {
+    padding: 1.2rem 0 calc(4.5rem + env(safe-area-inset-bottom, 0px));
+    font-size: 0.82rem;
+  }
+
+  footer .fc {
+    gap: 1rem;
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  footer .top {
+    gap: 0.75rem;
+    padding-bottom: 0.8rem;
+    margin-bottom: 0.8rem;
+  }
+
+  /* Sub-pages */
   .pbn {
-    padding: 5.2rem 0 1.6rem !important;
+    padding: 5rem 0 1.4rem !important;
   }
 
   .pbn h1 {
-    font-size: 1.85rem !important;
+    font-size: 1.7rem !important;
     line-height: 1.2 !important;
   }
 
   .pbn p {
-    font-size: 0.95rem !important;
+    font-size: 0.9rem !important;
   }
 
   .pbn-actions {
@@ -2178,6 +2340,52 @@ section.mb .sh, section.mb .sub, section.mb .pbn h1, section.mb .pbn p, section.
     font-size: 0.8rem;
     padding: 0.35rem 0.75rem;
     min-height: 36px;
+  }
+
+  /* About section vals */
+  .vals {
+    margin-top: 1rem;
+    gap: 0.75rem;
+  }
+
+  .vals h3 {
+    font-size: 1.1rem;
+  }
+
+  /* Rows compact */
+  .rows a, .lib a {
+    padding: 0.75rem 0;
+    gap: 0.25rem;
+  }
+
+  .rows h3, .lib h3 {
+    font-size: 1rem;
+  }
+
+  /* Search bar compact */
+  .sb {
+    margin-bottom: 1rem;
+  }
+
+  .sb input {
+    min-height: 44px;
+    padding: 0.5rem 0.8rem;
+    font-size: 0.95rem;
+  }
+
+  /* Article view */
+  .art {
+    padding: 5rem 0.85rem 2rem;
+  }
+
+  .art h1 {
+    font-size: clamp(1.4rem, 5vw, 2rem);
+  }
+
+  /* HH header row compact */
+  .hh {
+    gap: 0.4rem;
+    margin-bottom: 0.6rem;
   }
 }
 
@@ -2207,12 +2415,43 @@ section.mb .sh, section.mb .sub, section.mb .pbn h1, section.mb .pbn p, section.
   }
 
   .logo {
-    font-size: 1rem;
+    font-size: 0.95rem;
   }
 
   .ctl button {
     padding: 0.2rem 0.35rem;
-    font-size: 0.7rem;
+    font-size: 0.68rem;
+  }
+
+  .sec {
+    padding: 1.2rem 0;
+  }
+
+  .sh {
+    font-size: 1.2rem;
+  }
+
+  .scene h1 {
+    font-size: 1.4rem !important;
+  }
+
+  .scene .btns {
+    flex-direction: column !important;
+  }
+
+  .scene .btns .btn {
+    width: 100% !important;
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+  }
+
+  .feat {
+    padding: 0.85rem;
+    gap: 0.6rem;
+  }
+
+  .feat h3 {
+    font-size: 1.05rem;
   }
 
   .stats, .sg {
@@ -2222,15 +2461,21 @@ section.mb .sh, section.mb .sub, section.mb .pbn h1, section.mb .pbn p, section.
 
   footer .fc {
     grid-template-columns: 1fr !important;
-    gap: 1.2rem !important;
+    gap: 1rem !important;
   }
 
-  .scene .btns {
-    flex-direction: column !important;
+  .v {
+    flex: 0 0 85vw;
+    padding: 0.85rem;
   }
 
-  .scene .btns .btn {
-    width: 100% !important;
+  .contact {
+    padding: 1.5rem 0;
+  }
+
+  .btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
   }
 }
 
@@ -2241,7 +2486,7 @@ section.mb .sh, section.mb .sub, section.mb .pbn h1, section.mb .pbn p, section.
   }
 
   .sec {
-    padding: 4.5rem 0;
+    padding: 3rem 0;
   }
 
   .sh {
@@ -2471,30 +2716,23 @@ section.mb .sh, section.mb .sub, section.mb .pbn h1, section.mb .pbn p, section.
     color: #1a1a1a;
   }
 
-  /* Desktop Hero */
+  /* Desktop Hero — full mode: static layout, all scenes visible */
   .hero {
-    height: 400vh;
+    height: auto;
   }
 
   .stage {
-    position: sticky;
-    top: 0;
-    height: 100vh;
-    padding: 0;
-  }
-
-  .scenes {
-    height: 60vh;
+    padding: 6.5rem 0 3rem;
   }
 
   .scene h1 {
-    font-size: clamp(3rem, 7vw, 5.5rem);
+    font-size: clamp(2.5rem, 7vw, 5.5rem);
   }
 
   .scene p {
-    font-size: clamp(1.1rem, 2vw, 1.4rem);
+    font-size: clamp(1rem, 2vw, 1.4rem);
     max-width: 30em;
-    margin: 1.5rem 0 2rem;
+    margin: 1rem 0 1.4rem;
   }
 
   .scene .btns .btn {
@@ -2511,13 +2749,13 @@ section.mb .sh, section.mb .sub, section.mb .pbn h1, section.mb .pbn p, section.
 
   /* Desktop Grids */
   .sec {
-    padding: 6rem 0;
+    padding: 4rem 0;
   }
 
   .feat {
     grid-template-columns: 1.4fr 1fr;
-    gap: 3rem;
-    padding: clamp(2rem, 4vw, 3.5rem);
+    gap: 2rem;
+    padding: clamp(1.5rem, 4vw, 3rem);
   }
 
   .feat h3 {
@@ -2547,7 +2785,7 @@ section.mb .sh, section.mb .sub, section.mb .pbn h1, section.mb .pbn p, section.
   .vals {
     grid-template-columns: repeat(4, 1fr);
     gap: 2rem;
-    margin-top: 3.5rem;
+    margin-top: 2rem;
   }
 
   .cg {
@@ -2571,7 +2809,7 @@ section.mb .sh, section.mb .sub, section.mb .pbn h1, section.mb .pbn p, section.
   }
 
   .contact {
-    padding: 7rem 0;
+    padding: 4.5rem 0;
   }
 
   .st {
@@ -2611,19 +2849,91 @@ section.mb .sh, section.mb .sub, section.mb .pbn h1, section.mb .pbn p, section.
   }
 }
 
-/* 10. LITE / LOW-DATA MODE */
-/* Retains full cinematic hero scroll track, sun, and rings while disabling background glyphs and ticker animation */
+/* 10. LITE MODE — CINEMATIC SCROLLING HERO */
+/* In lite mode the hero becomes a tall scroll-driven cinematic experience */
+.lite .hero {
+  height: 250vh !important;
+}
+
+.lite .stage {
+  position: sticky !important;
+  top: 0 !important;
+  height: 100vh !important;
+  padding: 0 !important;
+  flex-direction: row !important;
+  align-items: center !important;
+}
+
+.lite .scenes {
+  height: 50vh !important;
+}
+
+.lite .scene {
+  position: absolute !important;
+  inset: 0 !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  transform: translateY(40px) !important;
+  transition: opacity 0.6s ease, transform 0.6s ease, visibility 0.6s !important;
+  pointer-events: none !important;
+  margin-bottom: 0 !important;
+}
+
+.lite .scene.on {
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: none !important;
+  pointer-events: auto !important;
+}
+
+/* Show sun & ring in lite mode cinematic hero */
+.lite .sun {
+  display: block !important;
+}
+
+.lite .ring {
+  display: block !important;
+}
+
+/* Disable heavy background glyphs to keep it lightweight */
 .lite .gy, .lite .mgx {
   display: none !important;
 }
 
-.lite .mt {
-  animation: none !important;
-}
-
+/* Ticker still scrolls in lite */
 .lite .rv {
   opacity: 1 !important;
   transform: none !important;
+}
+
+/* Lite mode on mobile: shorter scroll track */
+@media screen and (max-width: 640px) {
+  .lite .hero {
+    height: 200vh !important;
+  }
+
+  .lite .scenes {
+    height: 45vh !important;
+  }
+
+  .lite .scene h1 {
+    font-size: clamp(1.5rem, 7vw, 2.2rem) !important;
+  }
+
+  .lite .scene p {
+    font-size: 0.88rem !important;
+    margin: 0.4rem 0 0.7rem !important;
+  }
+}
+
+@media screen and (min-width: 900px) {
+  .lite .hero {
+    height: 300vh !important;
+  }
+
+  .lite .scenes {
+    height: 55vh !important;
+  }
 }
 
 /* 11. REDUCED MOTION */
@@ -2632,25 +2942,32 @@ section.mb .sh, section.mb .sub, section.mb .pbn h1, section.mb .pbn p, section.
     scroll-behavior: auto;
   }
 
-  .hero {
-    height: auto;
+  /* Force static hero even if lite mode is on */
+  .hero,
+  .lite .hero {
+    height: auto !important;
   }
 
-  .stage {
-    position: relative;
-    height: auto;
-    padding: 6rem 0 4rem;
+  .stage,
+  .lite .stage {
+    position: relative !important;
+    height: auto !important;
+    padding: 4rem 0 3rem !important;
   }
 
-  .scenes {
-    height: auto;
+  .scenes,
+  .lite .scenes {
+    height: auto !important;
   }
 
-  .scene {
-    position: static;
-    opacity: 1;
-    transform: none;
-    margin-bottom: 2rem;
+  .scene,
+  .lite .scene {
+    position: static !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: none !important;
+    margin-bottom: 2rem !important;
+    pointer-events: auto !important;
   }
 
   .rv {
@@ -2659,8 +2976,9 @@ section.mb .sh, section.mb .sub, section.mb .pbn h1, section.mb .pbn p, section.
     transition: none;
   }
 
-  .sun, .ring {
-    transform: translateX(-50%);
+  .sun, .ring,
+  .lite .sun, .lite .ring {
+    display: none !important;
   }
 
   .cine::before, .mgx, section.mb::after, .shp {

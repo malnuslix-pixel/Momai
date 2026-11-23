@@ -196,7 +196,7 @@ export default function NewsSection({ onNavClick, activeStoryId, onSelectStory }
         </div>
 
         {/* View More News CTA */}
-        <div style={{ textAlign: 'center', marginTop: '2.5rem' }}>
+        <div style={{ textAlign: 'center', marginTop: '1.5rem' }}>
           <Link
             href="/news"
             className="btn b1"

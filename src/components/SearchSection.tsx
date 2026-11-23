@@ -40,9 +40,9 @@ export default function SearchSection({ onNavClick }: SearchSectionProps) {
   };
 
   return (
-    <section className="sec" id="find" aria-labelledby="fh" style={{ padding: '3.5rem 0 2.5rem' }}>
+    <section className="sec" id="find" aria-labelledby="fh">
       <div className="w">
-        <h2 className="sh" id="fh" style={{ fontSize: 'clamp(1.8rem, 4vw, 2.6rem)' }}>
+        <h2 className="sh" id="fh">
           Find what you need
         </h2>
         <form onSubmit={handleSearch} className="sb" style={{ marginTop: '1rem' }}>

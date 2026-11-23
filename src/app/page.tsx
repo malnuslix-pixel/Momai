@@ -99,7 +99,7 @@ export default function HomePage() {
       <Header onNavClick={handleNavClick} activeNav="home" />
 
       {/* Main Application Container */}
-      <main style={{ minHeight: '80vh' }}>
+      <main style={{ minHeight: '70vh' }}>
         {/* If article view is active, render reader only */}
         {activeStoryId ? (
           <NewsSection
@@ -132,9 +132,9 @@ export default function HomePage() {
             {/* MAIN CORE HUBS & PORTALS DIRECT ACCESS */}
             <section className="sec alt" id="portals">
               <div className="w">
-                <div style={{ marginBottom: '1.8rem' }}>
+                <div style={{ marginBottom: '1.2rem' }}>
                   <span className="tag">Quick Access</span>
-                  <h2 className="sh" style={{ margin: '0.4rem 0 0.2rem' }}>Explore Mwalimu Family Hubs</h2>
+                  <h2 className="sh" style={{ margin: '0.3rem 0 0.2rem' }}>Explore Mwalimu Family Hubs</h2>
                   <p className="sub" style={{ margin: 0 }}>
                     Direct access to verified curriculum materials, official exam schedules, interactive calculators, and educator tools.
                   </p>
@@ -199,7 +199,7 @@ export default function HomePage() {
                 </div>
 
                 {/* Device Activity Quick Banner */}
-                <div className="card" style={{ marginTop: '2rem', background: '#f5faf5', borderColor: '#cfe5cf', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
+                <div className="card" style={{ marginTop: '1.2rem', background: '#f5faf5', borderColor: '#cfe5cf', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
                   <div>
                     <h3 style={{ margin: 0, color: '#1a4d1d' }}>📋 Saved Materials & Submissions</h3>
                     <p style={{ margin: '0.3rem 0 0', color: '#555', fontSize: '0.92rem' }}>

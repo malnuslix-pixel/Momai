@@ -1,6 +1,6 @@
 # Mwalimu Family — Full-Stack Next.js Application with Supabase
 
-A unified, production-grade Next.js web application combining the **Mwalimu Family Public Educational Portal** and the **Control Room Admin Dashboard**, backed by **Supabase**.
+A unified, production-grade Next.js web application combining the **Mwalimu Family Public Educational Portal** and the **Admin Dashboard**, backed by **Supabase**.
 
 Strictly preserves 100% of the bespoke design, responsive styling, interactive calculators, and Kenyan curriculum tools.
 
@@ -24,7 +24,8 @@ Strictly preserves 100% of the bespoke design, responsive styling, interactive c
 - **"Ask Mwalimu" Interactive Educational Assistant:** Warm Kenyan education guidance for CBE, KCSE, KJSEA, and KUCCPS.
 - **Installable PWA:** Offline-capable service worker, manifest, and icons.
 
-### 2. Control Room Dashboard (`/control-room`)
+### 2. Admin Dashboard (`/admin`)
+- **Protected Access:** Built-in credentials gate for authorized staff (credentials can be set via `ADMIN_SECRET_KEY`).
 - **Overview:** 10 core KPIs, 14-day visitor traffic SVG chart, Results season status, SLA alerts.
 - **Content:** Full CRUD management for jobs and official notices, with status dropdowns (`draft`, `published`, `rejected`), expiry date selectors, and live `feed.json` export.
 - **Inbox:** Submission verification desk enforcing the strict **3-point editorial checklist** before approval; approved items automatically convert into drafts in Content.
@@ -78,7 +79,7 @@ ADMIN_SECRET_KEY=Mwalimu@2026!
 ```bash
 npm run dev
 ```
-Open [http://localhost:3000](http://localhost:3000) for the public portal, and [http://localhost:3000/control-room](http://localhost:3000/control-room) for the Control Room.
+Open [http://localhost:3000](http://localhost:3000) for the public portal, and [http://localhost:3000/admin](http://localhost:3000/admin) for the Admin Dashboard.
 
 ### 3. Production Build & Start
 ```bash

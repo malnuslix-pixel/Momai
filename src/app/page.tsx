@@ -128,11 +128,6 @@ export default function HomePage() {
           <p style={{ color: '#555', lineHeight: 1.6 }}>
             The system is undergoing scheduled editorial and technical maintenance. We will be right back shortly.
           </p>
-          <p style={{ marginTop: '1.5rem' }}>
-            <Link href="/admin" style={{ color: '#2c5f2d', fontWeight: 600 }}>
-              Access Admin →
-            </Link>
-          </p>
         </div>
       </div>
     );

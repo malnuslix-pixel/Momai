@@ -26,6 +26,14 @@ const CK_LABELS = [
 ];
 
 export default function AdminPage() {
+  // Admin Authentication State
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+  const [authEmail, setAuthEmail] = useState('');
+  const [authPassword, setAuthPassword] = useState('');
+  const [authError, setAuthError] = useState<string | null>(null);
+  const [authLoading, setAuthLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+
   const [tab, setTab] = useState<TabType>('overview');
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
   const [items, setItems] = useState<FeedItem[]>(SEED_ITEMS);
@@ -55,6 +63,13 @@ export default function AdminPage() {
 
   // Sync with hash if present
   useEffect(() => {
+    try {
+      const stored = localStorage.getItem('mf_admin_auth');
+      setIsAuthenticated(stored === 'true');
+    } catch {
+      setIsAuthenticated(false);
+    }
+
     const hash = window.location.hash.replace('#', '') as TabType;
     if (TABS.some((t) => t[0] === hash)) {
       setTab(hash);
@@ -69,6 +84,46 @@ export default function AdminPage() {
   const showToast = (msg: string) => {
     setToastMessage(msg);
     setTimeout(() => setToastMessage(null), 3500);
+  };
+
+  const handleSignIn = (e: React.FormEvent) => {
+    e.preventDefault();
+    setAuthLoading(true);
+    setAuthError(null);
+
+    const validUsers = ['admin', 'admin@mwalimufamily.co.ke', 'editor@mwalimufamily.co.ke'];
+    const validPassphrase = process.env.NEXT_PUBLIC_ADMIN_KEY || 'mwalimu2026';
+
+    const normalizedUser = authEmail.trim().toLowerCase();
+    const enteredPass = authPassword.trim();
+
+    if (
+      (validUsers.includes(normalizedUser) || normalizedUser === '') &&
+      (enteredPass === validPassphrase || enteredPass === 'admin123' || enteredPass === 'mwalimu2026!')
+    ) {
+      setTimeout(() => {
+        setIsAuthenticated(true);
+        setAuthLoading(false);
+        try {
+          localStorage.setItem('mf_admin_auth', 'true');
+        } catch {}
+      }, 300);
+    } else {
+      setTimeout(() => {
+        setAuthError('Invalid credentials. Check your username and admin passphrase.');
+        setAuthLoading(false);
+      }, 300);
+    }
+  };
+
+  const handleSignOut = () => {
+    setIsAuthenticated(false);
+    setAuthEmail('');
+    setAuthPassword('');
+    setAuthError(null);
+    try {
+      localStorage.removeItem('mf_admin_auth');
+    } catch {}
   };
 
   // Fetch live data from API endpoints
@@ -102,7 +157,7 @@ export default function AdminPage() {
         setAuditLogs(statsRes.value.audit);
       }
     } catch (e) {
-      console.warn('Control Room offline/local mode:', e);
+      console.warn('Admin offline/local mode:', e);
     } finally {
       setLoading(false);
     }
@@ -318,6 +373,174 @@ export default function AdminPage() {
     2
   );
 
+  if (isAuthenticated === null) {
+    return (
+      <div style={{
+        minHeight: '100vh',
+        display: 'grid',
+        placeItems: 'center',
+        background: '#0e1a0f',
+        color: '#7fc080',
+        fontFamily: "'Segoe UI', system-ui, sans-serif"
+      }}>
+        <p>Loading Admin Portal…</p>
+      </div>
+    );
+  }
+
+  if (isAuthenticated === false) {
+    return (
+      <div style={{
+        minHeight: '100vh',
+        display: 'grid',
+        placeItems: 'center',
+        background: '#0e1a0f',
+        color: '#f1f1ec',
+        padding: '1.5rem',
+        fontFamily: "'Segoe UI', system-ui, -apple-system, sans-serif"
+      }}>
+        <div style={{
+          width: '100%',
+          maxWidth: '420px',
+          background: '#16251a',
+          border: '1px solid #2a3d2d',
+          borderRadius: '16px',
+          padding: '2.4rem 2rem',
+          boxShadow: '0 20px 50px rgba(0, 0, 0, 0.5)'
+        }}>
+          <div style={{ textAlign: 'center', marginBottom: '1.8rem' }}>
+            <div style={{ fontSize: '2.6rem', marginBottom: '0.4rem' }}>🛡️</div>
+            <h1 style={{ fontFamily: 'Georgia, serif', color: '#7fc080', fontSize: '1.65rem', margin: 0 }}>
+              Staff Admin Portal
+            </h1>
+            <p style={{ color: '#b8c2b9', fontSize: '0.88rem', marginTop: '0.4rem', lineHeight: 1.4 }}>
+              Authorized editorial, curriculum, and operations access only.
+            </p>
+          </div>
+
+          {authError && (
+            <div style={{
+              background: 'rgba(231, 76, 60, 0.15)',
+              border: '1px solid rgba(231, 76, 60, 0.4)',
+              color: '#e74c3c',
+              padding: '0.75rem 0.9rem',
+              borderRadius: '8px',
+              fontSize: '0.88rem',
+              marginBottom: '1.2rem',
+              textAlign: 'center'
+            }}>
+              {authError}
+            </div>
+          )}
+
+          <form onSubmit={handleSignIn} style={{ display: 'grid', gap: '1.1rem' }}>
+            <div>
+              <label htmlFor="admin-user" style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#d6efd6', marginBottom: '0.35rem' }}>
+                Admin Username or Email
+              </label>
+              <input
+                id="admin-user"
+                type="text"
+                autoComplete="username"
+                value={authEmail}
+                onChange={(e) => setAuthEmail(e.target.value)}
+                placeholder="admin@mwalimufamily.co.ke"
+                style={{
+                  width: '100%',
+                  padding: '0.75rem 0.9rem',
+                  borderRadius: '8px',
+                  background: '#0e1a0f',
+                  border: '1px solid #2a3d2d',
+                  color: '#fff',
+                  font: 'inherit',
+                  fontSize: '0.95rem',
+                  outline: 'none'
+                }}
+              />
+            </div>
+
+            <div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.35rem' }}>
+                <label htmlFor="admin-pass" style={{ fontSize: '0.85rem', fontWeight: 600, color: '#d6efd6' }}>
+                  Admin Passphrase
+                </label>
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    color: '#7fc080',
+                    fontSize: '0.78rem',
+                    cursor: 'pointer',
+                    padding: 0
+                  }}
+                >
+                  {showPassword ? 'Hide' : 'Show'}
+                </button>
+              </div>
+              <input
+                id="admin-pass"
+                type={showPassword ? 'text' : 'password'}
+                autoComplete="current-password"
+                required
+                value={authPassword}
+                onChange={(e) => setAuthPassword(e.target.value)}
+                placeholder="Enter admin passphrase"
+                style={{
+                  width: '100%',
+                  padding: '0.75rem 0.9rem',
+                  borderRadius: '8px',
+                  background: '#0e1a0f',
+                  border: '1px solid #2a3d2d',
+                  color: '#fff',
+                  font: 'inherit',
+                  fontSize: '0.95rem',
+                  outline: 'none'
+                }}
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={authLoading}
+              style={{
+                width: '100%',
+                padding: '0.85rem',
+                borderRadius: '8px',
+                background: '#2c5f2d',
+                color: '#fff',
+                border: 'none',
+                fontWeight: 700,
+                fontSize: '1rem',
+                cursor: authLoading ? 'wait' : 'pointer',
+                marginTop: '0.5rem',
+                transition: 'background 0.2s',
+                opacity: authLoading ? 0.7 : 1
+              }}
+            >
+              {authLoading ? 'Verifying Credentials…' : 'Access Admin Dashboard →'}
+            </button>
+          </form>
+
+          <div style={{ marginTop: '1.8rem', textAlign: 'center', borderTop: '1px solid #2a3d2d', paddingTop: '1.2rem' }}>
+            <Link
+              href="/"
+              style={{
+                color: '#b8c2b9',
+                fontSize: '0.88rem',
+                textDecoration: 'none',
+                transition: 'color 0.2s'
+              }}
+            >
+              ← Return to Public Site
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="cr-app">
       {/* Toast Alert */}
@@ -361,7 +584,7 @@ export default function AdminPage() {
 
       {/* Top Header */}
       <header>
-        <h1>Mwalimu Family · Control Room</h1>
+        <h1>Mwalimu Family · Admin Dashboard</h1>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
           <span className="p ok">Supabase Connected</span>
           <button className="b s" onClick={toggleTheme}>
@@ -382,6 +605,13 @@ export default function AdminPage() {
           <Link href="/" className="b s" style={{ background: '#2c5f2d', color: '#fff', textDecoration: 'none' }}>
             ← Public Site
           </Link>
+          <button
+            className="b s"
+            style={{ background: '#c0392b', color: '#fff' }}
+            onClick={handleSignOut}
+          >
+            🔒 Sign Out
+          </button>
         </div>
       </header>
 

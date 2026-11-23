@@ -19,7 +19,7 @@ const PLANS = [
       'Ask Mwalimu assistant (5 questions/day)',
       'Daily revision quizzes',
     ],
-    cta: 'Current Plan',
+    cta: 'Get Started Free',
     disabled: true,
   },
   {
@@ -127,9 +127,47 @@ export default function PricingPage() {
         textAlign: 'center',
       }}>
         <div style={{ maxWidth: '850px', margin: '0 auto' }}>
-          <Link href="/" style={{ color: '#dbead9', textDecoration: 'none', fontSize: '0.9rem', fontWeight: 600 }}>
-            ← Back to Mwalimu Family
-          </Link>
+          <div style={{ display: 'flex', justifyContent: 'center', gap: '0.6rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
+            <button
+              type="button"
+              onClick={() => typeof window !== 'undefined' && window.history.length > 1 ? window.history.back() : window.location.assign('/')}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.35rem',
+                padding: '0.4rem 0.9rem',
+                minHeight: '38px',
+                background: 'rgba(255, 255, 255, 0.16)',
+                border: '1px solid rgba(255, 255, 255, 0.3)',
+                borderRadius: '999px',
+                color: '#fff',
+                fontSize: '0.85rem',
+                fontWeight: 600,
+                cursor: 'pointer'
+              }}
+            >
+              ← Back
+            </button>
+            <Link
+              href="/"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.35rem',
+                padding: '0.4rem 0.9rem',
+                minHeight: '38px',
+                background: 'rgba(255, 255, 255, 0.16)',
+                border: '1px solid rgba(255, 255, 255, 0.3)',
+                borderRadius: '999px',
+                color: '#fff',
+                fontSize: '0.85rem',
+                fontWeight: 600,
+                textDecoration: 'none'
+              }}
+            >
+              🏠 Back to Home
+            </Link>
+          </div>
           <h1 style={{
             fontFamily: 'Fraunces, Georgia, serif',
             fontSize: 'clamp(2rem, 4vw, 2.75rem)',

@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
+
+export const dynamic = 'force-dynamic';
 import { getAdminClient } from '@/lib/supabase';
 import { buildTutorSystemPrompt, getFallbackResponse, generatePracticeQuestion } from '@/lib/tutor-engine';
 

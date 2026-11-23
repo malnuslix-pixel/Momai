@@ -117,7 +117,7 @@ export default function Header({ onNavClick, activeNav = 'home' }: HeaderProps) 
           <ul id="menu" className={menuOpen ? 'open' : ''}>
             <li>
               <Link
-                href="/#news"
+                href="/news"
                 className={activeNav === 'news' ? 'active' : ''}
                 onClick={closeMenu}
               >

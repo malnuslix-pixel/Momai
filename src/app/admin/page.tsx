@@ -86,33 +86,43 @@ export default function AdminPage() {
     setTimeout(() => setToastMessage(null), 3500);
   };
 
-  const handleSignIn = (e: React.FormEvent) => {
+  const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
     setAuthLoading(true);
     setAuthError(null);
 
-    const validUsers = ['admin', 'admin@mwalimufamily.co.ke', 'editor@mwalimufamily.co.ke'];
-    const validPassphrase = process.env.NEXT_PUBLIC_ADMIN_KEY || 'mwalimu2026';
-
+    const validSecretKey = process.env.NEXT_PUBLIC_ADMIN_SECRET_KEY || 'Mwalimu@2025';
     const normalizedUser = authEmail.trim().toLowerCase();
     const enteredPass = authPassword.trim();
 
-    if (
-      (validUsers.includes(normalizedUser) || normalizedUser === '') &&
-      (enteredPass === validPassphrase || enteredPass === 'admin123' || enteredPass === 'mwalimu2026!')
-    ) {
-      setTimeout(() => {
-        setIsAuthenticated(true);
-        setAuthLoading(false);
-        try {
-          localStorage.setItem('mf_admin_auth', 'true');
-        } catch {}
-      }, 300);
+    // Check directly or via API endpoint
+    let isSuccess = (enteredPass === 'Mwalimu@2025' || enteredPass === validSecretKey);
+
+    if (!isSuccess) {
+      try {
+        const res = await fetch('/api/admin/auth', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ key: enteredPass, user: normalizedUser }),
+        });
+        const data = await res.json();
+        if (data.ok) {
+          isSuccess = true;
+        }
+      } catch {}
+    }
+
+    if (isSuccess) {
+      setIsAuthenticated(true);
+      setAuthLoading(false);
+      try {
+        localStorage.setItem('mf_admin_auth', 'true');
+        sessionStorage.setItem('mf_admin_auth', 'true');
+      } catch {}
+      loadData();
     } else {
-      setTimeout(() => {
-        setAuthError('Invalid credentials. Check your username and admin passphrase.');
-        setAuthLoading(false);
-      }, 300);
+      setAuthError('Invalid credentials or secret key. Access denied.');
+      setAuthLoading(false);
     }
   };
 
@@ -462,7 +472,7 @@ export default function AdminPage() {
             <div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.35rem' }}>
                 <label htmlFor="admin-pass" style={{ fontSize: '0.85rem', fontWeight: 600, color: '#d6efd6' }}>
-                  Admin Passphrase
+                  Admin Secret Key
                 </label>
                 <button
                   type="button"
@@ -476,7 +486,7 @@ export default function AdminPage() {
                     padding: 0
                   }}
                 >
-                  {showPassword ? 'Hide' : 'Show'}
+                  {showPassword ? 'Hide Key' : 'Show Key'}
                 </button>
               </div>
               <input
@@ -486,7 +496,7 @@ export default function AdminPage() {
                 required
                 value={authPassword}
                 onChange={(e) => setAuthPassword(e.target.value)}
-                placeholder="Enter admin passphrase"
+                placeholder="Enter admin secret key"
                 style={{
                   width: '100%',
                   padding: '0.75rem 0.9rem',
@@ -519,7 +529,7 @@ export default function AdminPage() {
                 opacity: authLoading ? 0.7 : 1
               }}
             >
-              {authLoading ? 'Verifying Credentials…' : 'Access Admin Dashboard →'}
+              {authLoading ? 'Verifying Credentials…' : 'Unlock Admin Dashboard →'}
             </button>
           </form>
 

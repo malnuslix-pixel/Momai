@@ -1,5 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import '@/styles/globals.css';
+import '@/styles/mwalimu-site.css';
+import ServiceWorkerManager from '@/components/ServiceWorkerManager';
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://mwalimufamily.co.ke'),
@@ -74,7 +76,10 @@ export default function RootLayout({
         />
         <link rel="dns-prefetch" href="https://wa.me" />
       </head>
-      <body>{children}</body>
+      <body>
+        <ServiceWorkerManager />
+        {children}
+      </body>
     </html>
   );
 }

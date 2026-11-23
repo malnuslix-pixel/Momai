@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
+
+export const dynamic = 'force-dynamic';
 import { supabase, getAdminClient, SEED_SUBMISSIONS } from '@/lib/supabase';
 import { Submission, SubmissionType } from '@/lib/types';
 

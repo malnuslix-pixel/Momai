@@ -16,11 +16,15 @@ const nextConfig = {
   async headers() {
     return [
       {
-        source: '/_next/static/:path*',
+        source: '/sw.js',
         headers: [
           {
             key: 'Cache-Control',
-            value: 'public, max-age=31536000, immutable',
+            value: 'no-cache, no-store, must-revalidate',
+          },
+          {
+            key: 'Service-Worker-Allowed',
+            value: '/',
           },
         ],
       },

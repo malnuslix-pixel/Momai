@@ -119,9 +119,38 @@ export default function TutorPage() {
         flexWrap: 'wrap',
         gap: '0.6rem',
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
-          <Link href="/" style={{ color: '#fff', textDecoration: 'none', fontSize: '1.25rem' }}>
-            ←
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', flexWrap: 'wrap' }}>
+          <button
+            type="button"
+            onClick={() => typeof window !== 'undefined' && window.history.length > 1 ? window.history.back() : window.location.assign('/')}
+            style={{
+              background: 'rgba(255,255,255,0.18)',
+              border: '1px solid rgba(255,255,255,0.3)',
+              borderRadius: '999px',
+              color: '#fff',
+              fontSize: '0.82rem',
+              fontWeight: 600,
+              padding: '0.35rem 0.75rem',
+              cursor: 'pointer'
+            }}
+            aria-label="Go back"
+          >
+            ← Back
+          </button>
+          <Link
+            href="/"
+            style={{
+              background: 'rgba(255,255,255,0.18)',
+              border: '1px solid rgba(255,255,255,0.3)',
+              borderRadius: '999px',
+              color: '#fff',
+              fontSize: '0.82rem',
+              fontWeight: 600,
+              padding: '0.35rem 0.75rem',
+              textDecoration: 'none'
+            }}
+          >
+            🏠 Home
           </Link>
           <div>
             <h1 style={{

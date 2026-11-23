@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
+import Link from 'next/link';
 
 interface HeroProps {
   onNavClick: (hash: string) => void;
@@ -45,26 +46,12 @@ export default function Hero({ onNavClick }: HeroProps) {
               <h1>Kenya’s school news, made clear.</h1>
               <p>What exam timelines, policies and placements mean for your family, explained in plain words.</p>
               <div className="btns">
-                <a
-                  href="#news"
-                  className="btn b1"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    onNavClick('#news');
-                  }}
-                >
-                  Read the latest
-                </a>
-                <a
-                  href="#library"
-                  className="btn b2"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    onNavClick('#library');
-                  }}
-                >
-                  Browse learning materials
-                </a>
+                <Link href="/learn" className="btn b1">
+                  📚 Browse Library
+                </Link>
+                <Link href="/exams" className="btn b2">
+                  📝 View Exams Hub
+                </Link>
               </div>
             </div>
 
@@ -73,26 +60,12 @@ export default function Hero({ onNavClick }: HeroProps) {
               <h1>Classroom-ready resources.</h1>
               <p>Schemes of work, lesson plans and records for every grade, built for Kenyan teachers.</p>
               <div className="btns">
-                <a
-                  href="#library"
-                  className="btn b1"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    onNavClick('#library');
-                  }}
-                >
-                  Open the library
-                </a>
-                <a
-                  href="#news"
-                  className="btn b2"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    onNavClick('#news');
-                  }}
-                >
-                  Read education news
-                </a>
+                <Link href="/teach" className="btn b1">
+                  👩🏾‍🏫 Teacher Preparation
+                </Link>
+                <Link href="/tools" className="btn b2">
+                  🧮 Classroom Tools
+                </Link>
               </div>
             </div>
 
@@ -101,26 +74,12 @@ export default function Hero({ onNavClick }: HeroProps) {
               <h1>Practical skills for school and work.</h1>
               <p>Short courses in study, money, digital and career skills, with Kenyan examples.</p>
               <div className="btns">
-                <a
-                  href="#courses"
-                  className="btn b1"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    onNavClick('#courses');
-                  }}
-                >
-                  Explore courses
-                </a>
-                <a
-                  href="#tools"
-                  className="btn b2"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    onNavClick('#tools');
-                  }}
-                >
-                  Open study tools
-                </a>
+                <Link href="/courses" className="btn b1">
+                  🎓 Browse Courses
+                </Link>
+                <Link href="/tutor" className="btn b2">
+                  🤖 Ask Mwalimu AI Tutor
+                </Link>
               </div>
             </div>
           </div>

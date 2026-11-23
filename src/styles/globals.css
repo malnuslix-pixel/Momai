@@ -46,3 +46,31 @@ body {
     min-height: 44px;
   }
 }
+
+/* ==============================================================================
+   HIGH-SPEED PERFORMANCE & ZERO-FOUC OPTIMIZATIONS
+   ============================================================================== */
+
+/* Defer rendering of heavy below-the-fold sections until user scrolls near them */
+#portals, #videos, #about, #contact {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 600px;
+}
+
+/* Ensure smooth image and SVG rendering */
+img, svg, video {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Prevent layout shift (CLS = 0) on headings and cards */
+h1, h2, h3, .sh, .disp {
+  text-rendering: optimizeLegibility;
+  font-display: swap;
+}
+
+/* GPU acceleration on animated elements */
+.scene, .pbn-btn-back, .pbn-btn-home, .btn {
+  will-change: transform;
+}

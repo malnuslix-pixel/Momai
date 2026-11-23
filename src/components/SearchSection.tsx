@@ -1,12 +1,14 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 interface SearchSectionProps {
-  onNavClick: (hash: string) => void;
+  onNavClick?: (hash: string) => void;
 }
 
 export default function SearchSection({ onNavClick }: SearchSectionProps) {
+  const router = useRouter();
   const [query, setQuery] = useState('');
 
   const handleSearch = (e: React.FormEvent) => {
@@ -15,23 +17,25 @@ export default function SearchSection({ onNavClick }: SearchSectionProps) {
     if (!q) return;
 
     if (q.includes('job') || q.includes('teach') || q.includes('vacan')) {
-      onNavClick('#jobs');
+      router.push('/jobs');
     } else if (q.includes('tool') || q.includes('calc') || q.includes('cluster') || q.includes('kcse')) {
-      onNavClick('#tools');
+      router.push('/tools');
     } else if (q.includes('notice') || q.includes('checklist') || q.includes('countdown')) {
-      onNavClick('#notices');
-    } else if (q.includes('course') || q.includes('skill') || q.includes('game') || q.includes('quiz')) {
-      onNavClick('#courses');
+      router.push('/notices');
+    } else if (q.includes('course') || q.includes('skill')) {
+      router.push('/courses');
+    } else if (q.includes('game') || q.includes('quiz')) {
+      router.push('/games');
     } else if (q.includes('exam') || q.includes('kpsea') || q.includes('kjsea')) {
-      onNavClick('#exams');
+      router.push('/exams');
     } else if (q.includes('tutor') || q.includes('math')) {
-      onNavClick('#tutoring');
+      router.push('/tutoring');
     } else if (q.includes('advert') || q.includes('promote')) {
-      onNavClick('#advertise');
+      router.push('/advertise');
     } else if (q.includes('parent') || q.includes('calendar')) {
-      onNavClick('#parents');
+      router.push('/parents');
     } else {
-      onNavClick('#library');
+      router.push('/learn');
     }
   };
 

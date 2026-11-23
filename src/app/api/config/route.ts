@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
+
+export const dynamic = 'force-dynamic';
 import { supabase, getAdminClient, SEED_CONFIG, SEED_CHECKS } from '@/lib/supabase';
 
 export async function GET() {

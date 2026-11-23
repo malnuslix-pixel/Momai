@@ -67,7 +67,37 @@ export default function PrivacyPage() {
       `}</style>
 
       <main className="privacy-main">
-        <p><Link href="/">← Back to Mwalimu Family</Link></p>
+        <div style={{ display: 'flex', gap: '0.6rem', marginBottom: '1.5rem', flexWrap: 'wrap' }}>
+          <button
+            type="button"
+            onClick={() => typeof window !== 'undefined' && window.history.length > 1 ? window.history.back() : window.location.assign('/')}
+            style={{
+              padding: '0.4rem 0.9rem',
+              borderRadius: '999px',
+              border: '1px solid var(--ln)',
+              background: 'none',
+              color: 'var(--tx)',
+              cursor: 'pointer',
+              fontSize: '0.88rem'
+            }}
+          >
+            ← Back
+          </button>
+          <Link
+            href="/"
+            style={{
+              padding: '0.4rem 0.9rem',
+              borderRadius: '999px',
+              border: '1px solid var(--ln)',
+              background: 'none',
+              color: 'var(--tx)',
+              textDecoration: 'none',
+              fontSize: '0.88rem'
+            }}
+          >
+            🏠 Back to Home
+          </Link>
+        </div>
         <h1>Privacy notice</h1>
         <p>Last updated: 21 November 2026</p>
 

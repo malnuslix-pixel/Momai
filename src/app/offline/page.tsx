@@ -208,10 +208,10 @@ export default function OfflinePage() {
                 textDecoration: 'none',
               }}
             >
-              🏡 Home &amp; Saved Materials
+              🏠 Back to Home
             </Link>
             <Link
-              href="/#tools"
+              href="/tools"
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
@@ -226,7 +226,7 @@ export default function OfflinePage() {
                 textDecoration: 'none',
               }}
             >
-              🛠️ In-Browser Tools
+              🧮 Classroom Tools
             </Link>
           </div>
         </div>
@@ -421,7 +421,7 @@ export default function OfflinePage() {
                 📐 CBC Pathway Calculator
               </div>
               <div style={{ fontSize: '0.82rem', color: '#666' }}>
-                Check STEM, Social Sciences &amp; Arts cluster suitability
+                Check STEM, Social Sciences & Arts cluster suitability
               </div>
             </Link>
 
@@ -458,7 +458,7 @@ export default function OfflinePage() {
               }}
             >
               <div style={{ fontWeight: 700, color: '#2c5f2d', marginBottom: '0.2rem' }}>
-                📝 Rubric &amp; Report Generator
+                📝 Rubric & Report Generator
               </div>
               <div style={{ fontSize: '0.82rem', color: '#666' }}>
                 Build classroom assessment rubrics and report comments

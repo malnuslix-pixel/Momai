@@ -3,6 +3,8 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
+    "clean": "node -e \"try{const fs=require('fs');if(fs.existsSync('.next'))fs.rmSync('.next',{recursive:true,force:true});}catch(e){}\"",
+    "predev": "node -e \"try{const fs=require('fs');if(fs.existsSync('.next'))fs.rmSync('.next',{recursive:true,force:true});}catch(e){}\"",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",

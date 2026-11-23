@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
+
+export const dynamic = 'force-dynamic';
 import { supabase, getAdminClient, SEED_ITEMS } from '@/lib/supabase';
 import { FeedItem } from '@/lib/types';
 

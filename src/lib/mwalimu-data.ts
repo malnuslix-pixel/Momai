@@ -44,7 +44,7 @@ export const ARTICLES: Record<string, Article> = {
       ['Why do the three exams have different dates?', 'They are separate assessments at different levels, each marked and processed on its own timeline.']
     ],
     r: ['s2', 's4', 's5'],
-    x: ['#notices', 'KJSEA countdown and Grade 10 checklist']
+    x: ['/notices', 'KJSEA countdown and Grade 10 checklist']
   },
   s2: {
     id: 's2',
@@ -65,7 +65,7 @@ export const ARTICLES: Record<string, Article> = {
       ['What should we do while waiting?', 'Keep revision light and steady, agree who checks official channels, and gather documents the school may ask for.']
     ],
     r: ['s1', 's4', 's5'],
-    x: ['#notices', 'KJSEA countdown and Grade 10 checklist']
+    x: ['/notices', 'KJSEA countdown and Grade 10 checklist']
   },
   s4: {
     id: 's4',
@@ -91,7 +91,7 @@ export const ARTICLES: Record<string, Article> = {
       ['What should I do if I already shared details?', 'Contact your school and the authorities promptly, and avoid replying further.']
     ],
     r: ['s1', 's2', 's5'],
-    x: ['#parents', 'Open the Parents’ hub']
+    x: ['/parents', 'Open the Parents’ hub']
   },
   s5: {
     id: 's5',
@@ -117,7 +117,7 @@ export const ARTICLES: Record<string, Article> = {
       ['Where are results released?', 'Through official Ministry of Education and KNEC channels only. See the exams hub for safety tips.']
     ],
     r: ['s1', 's4'],
-    x: ['#exams', 'Open the Exams hub']
+    x: ['/exams', 'Open the Exams hub']
   }
 };
 
@@ -911,6 +911,7 @@ export interface FormSubmissionRecord {
   type: string;
   title: string;
   date: string;
+  data?: Record<string, any>;
 }
 
 export async function submitOnlineForm(
@@ -938,7 +939,8 @@ export async function submitOnlineForm(
       ref,
       type: typeName,
       title: title || typeName,
-      date: new Date().toISOString().slice(0, 10)
+      date: new Date().toISOString().slice(0, 10),
+      data: Object.fromEntries(fields)
     });
     localStorage.setItem('mfsub', JSON.stringify(list.slice(0, 50)));
   } catch {}
@@ -970,27 +972,27 @@ export const ASK_MWALIMU_KB = [
   {
     keys: ['result', 'kjsea', 'kcse', 'kpsea', 'release', 'timeline', 'date'],
     reply: 'KJSEA results are expected in December 2026. KCSE and KPSEA are targeted for January 2027. These are targets, so watch official Ministry of Education and KNEC channels.',
-    link: ['#exams', 'Open the Exams hub']
+    link: ['/exams', 'Open the Exams hub']
   },
   {
     keys: ['fake', 'scam', 'pay', 'early', 'suspicious', 'money'],
     reply: 'Never pay to see results early. Only official Ministry of Education and KNEC channels release results.',
-    link: ['#/s4', 'Read how to spot fake messages']
+    link: ['/help', 'Read how to spot fake messages and stay safe']
   },
   {
     keys: ['scheme', 'template', 'lesson plan', 'record', 'download', 'word', 'doc'],
-    reply: 'Our library has free, editable Word templates for every grade, subject and term from PP1 to Grade 12.',
-    link: ['#library', 'Open the library']
+    reply: 'Our library has free, editable Word templates for every grade, subject and term from PP1 to Form 4.',
+    link: ['/learn', 'Open the library']
   },
   {
     keys: ['grade 10', 'pathway', 'stem', 'placement', 'senior', 'social sciences'],
     reply: 'Grade 10 senior school pathways are STEM, Social Sciences, and Arts and Sports. Confirm placement details with the Ministry or your school.',
-    link: ['#parents', 'Open the Parents’ hub']
+    link: ['/parents', 'Open the Parents’ hub']
   },
   {
     keys: ['kuccps', 'cluster', 'university', 'college', 'points'],
     reply: 'You can estimate cluster points in Tools. KUCCPS sets the exact cut-offs, so confirm on the official KUCCPS site.',
-    link: ['#tools', 'Open Tools']
+    link: ['/tools', 'Open Tools']
   },
   {
     keys: ['tutor', 'maths', 'practice', 'quiz', 'learn', 'ai'],
@@ -1000,7 +1002,7 @@ export const ASK_MWALIMU_KB = [
   {
     keys: ['job', 'teach', 'vacancy', 'post', 'apply'],
     reply: 'Education vacancies are listed in Education Jobs. Genuine employers never charge application fees.',
-    link: ['#jobs', 'Open Education Jobs']
+    link: ['/jobs', 'Open Education Jobs']
   }
 ];
 
@@ -1021,6 +1023,6 @@ export function getAskMwalimuReply(query: string) {
 
   return {
     reply: 'Mwalimu Family offers free Kenyan curriculum schemes, exam timelines, and revision tools. What specific grade or subject can I help you with?',
-    link: ['#library', 'Explore the Library']
+    link: ['/learn', 'Explore the Library']
   };
 }

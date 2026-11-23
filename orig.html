@@ -1,0 +1,914 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="KenyaΓÇÖs education news, revision notes, exam timelines and parent guides from the Mwalimu Family News Desk.">
+<meta property="og:title" content="Mwalimu Family ΓÇö News and Education">
+<meta property="og:description" content="Education news, learning materials and exam guides for Kenyan families.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#2c5f2d"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><meta name="mobile-web-app-capable" content="yes"><script>window.MF_API="";window.MF_FEED="feed.json";</script><title>Mwalimu Family ΓÇö News and Education</title>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500&family=Fraunces:opsz,wght@9..144,600;9..144,800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#faf8f5;--card:#fff;--tx:#1a1a1a;--mu:#555;--ln:#e0ddd6;--hd:#1a3d1b;--g:#2c5f2d;--gl:#4a8c4b;--gd:#1a3d1b;--ac:#f4a261;--p:0;color-scheme:light;padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1a0f;--card:#16251a;--tx:#f1f1ec;--mu:#b8c2b9;--ln:#2a3d2d;--hd:#d6efd6;--gl:#7fc080;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0e1a0f;--card:#16251a;--tx:#f1f1ec;--mu:#b8c2b9;--ln:#2a3d2d;--hd:#d6efd6;--gl:#7fc080;color-scheme:dark}
+html{scroll-behavior:smooth}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;line-height:1.7;color:var(--tx);background:var(--bg);font-size:var(--fs,18px)}
+h1,h2,h3,.disp{font-family:'Fraunces',Georgia,serif;line-height:1.1;letter-spacing:-.02em;color:var(--hd)}
+p{color:var(--mu)}
+a{color:inherit;text-decoration:none}
+[hidden]{display:none!important}
+a:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid var(--ac);outline-offset:3px}
+.w{max-width:1160px;margin:0 auto;padding:0 2rem}
+section[id]{scroll-margin-top:72px}
+.bar{position:fixed;top:0;left:0;height:4px;width:0;background:var(--ac);z-index:300}
+header{position:fixed;top:0;left:0;right:0;z-index:200;padding-top:env(safe-area-inset-top,0px);transition:background .3s,box-shadow .3s}
+header.sol{background:#2c5f2d;box-shadow:0 2px 12px rgba(0,0,0,.25)}
+.nav{max-width:1160px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:.9rem 2rem;gap:1rem}
+.logo{font-weight:700;font-size:1.4rem;color:#fff;display:flex;gap:.5rem;align-items:center}
+nav ul{list-style:none;display:flex;gap:.25rem;flex-wrap:wrap}
+nav a{display:block;color:#fff;font-weight:500;font-size:.95rem;padding:.5rem .9rem;border-radius:8px;transition:background .3s}
+nav a:hover{background:rgba(255,255,255,.2)}
+nav a.active{background:var(--ac);color:#1a1a1a;font-weight:600}
+.tg{display:none;background:none;border:2px solid #fff;color:#fff;padding:.4rem .8rem;border-radius:6px;cursor:pointer;font-size:1rem}
+.hero{height:400vh;background:#1a3d1b}
+.stage{position:sticky;top:0;height:100vh;overflow:hidden;background:linear-gradient(160deg,#1a3d1b,#2c5f2d 70%,#4a8c4b);color:#fff;display:flex;align-items:center}
+.sun{position:absolute;left:50%;bottom:-38vmin;width:78vmin;height:78vmin;border-radius:50%;background:rgba(244,162,97,.3);transform:translate(-50%,calc(var(--p)*-46vmin)) scale(calc(1 + var(--p)*.5))}
+.ring{position:absolute;left:50%;bottom:-52vmin;width:104vmin;height:104vmin;border-radius:50%;border:2px solid rgba(244,162,97,.35);transform:translate(-50%,calc(var(--p)*-24vmin))}
+.scenes{position:relative;width:100%;height:60vh}
+.scene{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;opacity:0;transform:translateY(40px);transition:opacity .7s,transform .7s;pointer-events:none}
+.scene.on{opacity:1;transform:none;pointer-events:auto}
+.scene h1{font-size:clamp(3rem,10vw,8.5rem);color:#fff;font-weight:800}
+.scene p{color:rgba(255,255,255,.9);font-size:clamp(1.1rem,2vw,1.4rem);max-width:30em;margin:1.5rem 0 2rem}
+.btns{display:flex;gap:.75rem;flex-wrap:wrap}
+.btn{display:inline-block;padding:.8rem 2rem;border-radius:50px;font-weight:600;border:2px solid transparent;transition:transform .3s,background .3s;cursor:pointer;font-size:1rem}
+.b1{background:var(--ac);color:#1a1a1a}
+.b1:hover{transform:translateY(-2px)}
+.b2{border-color:#fff;color:#fff}
+.b2:hover{background:rgba(255,255,255,.15)}
+.tick{position:absolute;left:0;right:0;bottom:calc(1.5rem + env(safe-area-inset-bottom,0px));font-size:.95rem;color:rgba(255,255,255,.9)}
+.tick a{text-decoration:underline;text-underline-offset:4px}
+.sec{padding:7rem 0}
+.sh{font-size:clamp(2.2rem,5vw,4rem);font-weight:800}
+.sub{font-size:1.15rem;margin:1rem 0 2rem;max-width:34em}
+.chips{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:2.5rem}
+.chip{padding:.55rem 1.3rem;border:2px solid var(--gl);background:transparent;color:var(--gl);border-radius:50px;font:600 1rem inherit;font-family:inherit;cursor:pointer;transition:all .3s}
+.chip:hover{background:rgba(74,140,75,.15)}
+.chip.on{background:var(--g);border-color:var(--g);color:#fff}
+.feat{background:#1a3d1b;color:#fff;border-radius:24px;padding:clamp(1.8rem,4vw,3.5rem);display:grid;grid-template-columns:1.4fr 1fr;gap:3rem;margin-bottom:2rem}
+.feat h3{color:#fff;font-size:clamp(1.7rem,3.5vw,2.8rem);font-weight:800}
+.feat p{color:rgba(255,255,255,.88)}
+.meta{font-weight:600;color:var(--ac);margin-bottom:1rem;font-size:.95rem}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
+.stats b{display:block;font-family:'Fraunces',serif;font-size:clamp(1.8rem,3vw,2.6rem);color:var(--ac);line-height:1.1}
+.stats span{font-size:.9rem;color:rgba(255,255,255,.85)}
+.rows a{display:grid;grid-template-columns:130px 130px 1fr auto;gap:1.5rem;align-items:center;padding:1.4rem 0;border-top:1px solid var(--ln);transition:padding .3s}
+.rows a:last-child{border-bottom:1px solid var(--ln)}
+.rows a:hover{padding-left:1rem}
+.rows h3{font-size:1.35rem}
+.tag{font-size:.85rem;font-weight:600;background:rgba(74,140,75,.15);color:var(--hd);border-radius:50px;padding:.15rem .8rem;justify-self:start}
+.empty{padding:2rem 0;font-size:1.05rem}
+.alt{background:rgba(74,140,75,.08)}
+.edu{display:grid;grid-template-columns:5fr 7fr;gap:5rem}
+.edu-l{position:sticky;top:110px;align-self:start}
+.st{display:grid;grid-template-columns:90px 1fr;border-top:2px solid var(--ln);padding:3rem 0;min-height:34vh;align-items:start}
+.st i{font:800 3.4rem 'Fraunces',serif;color:var(--gl);font-style:normal;line-height:1}
+.st h3{font-size:2rem;margin-bottom:.4rem}
+.note{border-left:5px solid var(--ac);background:var(--card);padding:1.4rem 1.6rem;border-radius:0 12px 12px 0;margin-top:2rem}
+.note p{color:var(--tx);font-size:1rem;margin-bottom:.6rem}
+.lib a{display:grid;grid-template-columns:90px 1fr 150px auto;gap:1.5rem;align-items:center;padding:1.3rem 0;border-top:1px solid var(--ln)}
+.lib a:last-child{border-bottom:1px solid var(--ln)}
+.lib h3{font-size:1.25rem}
+.dl{font-weight:700;color:var(--gl);white-space:nowrap}
+.lib a:hover .dl{text-decoration:underline}
+.vs{scroll-padding-left:2rem;display:flex;gap:1.5rem;overflow-x:auto;scroll-snap-type:x mandatory;padding:0 2rem 1.5rem;scrollbar-width:thin}
+.v{flex:0 0 min(78vw,460px);scroll-snap-align:start;aspect-ratio:16/10;border-radius:20px;background:#1a3d1b;color:#fff;padding:1.8rem;display:flex;flex-direction:column;justify-content:space-between;transition:background .3s}
+.v:hover{background:#2c5f2d}
+.v h3{color:#fff;font-size:1.7rem}
+.v p{color:rgba(255,255,255,.88);font-size:.95rem}
+.play{width:56px;height:56px;border-radius:50%;background:var(--ac);display:grid;place-items:center;color:#1a1a1a;font-size:1.3rem}
+.vals{display:grid;grid-template-columns:repeat(4,1fr);gap:2rem;margin-top:3.5rem}
+.vals div{border-top:3px solid var(--ac);padding-top:1rem}
+.vals h3{font-size:1.4rem;margin-bottom:.4rem}
+.contact{background:#1a3d1b;color:#fff;padding:7rem 0}
+.contact h2,.contact p{color:#fff}
+.contact p{opacity:.9}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:4rem}
+.fm{background:var(--bg);border-radius:20px;padding:2rem;display:grid;gap:1rem}
+.fm label{font-weight:600;color:var(--tx)}
+.fm input[type=email],.fm input[type=text]{width:100%;min-height:48px;padding:.7rem 1rem;font:inherit;border:2px solid var(--ln);border-radius:12px;background:var(--card);color:var(--tx);margin-top:.3rem}
+.fm .ck{display:flex;gap:.6rem;font-weight:400;font-size:.9rem;align-items:flex-start}
+.soc{display:flex;gap:.7rem;flex-wrap:wrap;margin-top:1.5rem}
+.soc a{padding:.65rem 1.3rem;border:2px solid rgba(255,255,255,.3);border-radius:50px;font-weight:500;transition:background .3s}
+.soc a:hover{background:rgba(255,255,255,.15)}
+.soc .wa{background:#25D366;border-color:#25D366;color:#0b2b14;font-weight:700}
+footer{background:#111;color:#aaa;padding:2rem 0;font-size:.9rem}
+footer .bot{display:flex;justify-content:space-between;flex-wrap:wrap;gap:1rem}
+.ico{display:inline-flex;width:44px;height:44px;border-radius:50%;transition:transform .2s}
+.ico svg{width:44px;height:44px;display:block}
+.ico:hover{transform:translateY(-3px)}
+.icons{display:flex;gap:.8rem;flex-wrap:wrap;align-items:center}
+footer .top{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem 2rem;padding-bottom:1.5rem;margin-bottom:1.5rem;border-bottom:1px solid #333}
+footer .top p{color:#ddd;font-weight:600}
+footer p{color:#aaa}
+footer a:hover{color:var(--ac)}
+.rv{opacity:0;transform:translateY(36px);transition:opacity .8s,transform .8s cubic-bezier(.2,.8,.2,1)}
+.rv.in{opacity:1;transform:none}
+@media(max-width:900px){
+.tg{display:block}nav{width:100%}nav ul{display:none;flex-direction:column;padding:.5rem 0}nav ul.open{display:flex}
+header.open{background:#2c5f2d}
+.feat,.edu,.two{grid-template-columns:1fr;gap:2rem}
+.edu-l{position:static}
+.rows a,.lib a{grid-template-columns:1fr;gap:.4rem}
+.vals{grid-template-columns:1fr 1fr}
+.sec,.contact{padding:4.5rem 0}
+.st{grid-template-columns:64px 1fr;min-height:0;padding:2rem 0}
+}
+@media(prefers-reduced-motion:reduce){
+html{scroll-behavior:auto}
+.hero{height:auto}.stage{position:relative;height:auto;padding:8rem 0 5rem}
+.scenes{height:auto}.scene{position:static;opacity:1;transform:none;margin-bottom:3rem}
+.rv{opacity:1;transform:none;transition:none}.sun,.ring{transform:translateX(-50%)}
+}
+
+.sb{display:grid;grid-template-columns:1fr;gap:.6rem;margin-bottom:2rem}
+.sb input,.sel{width:100%;min-height:48px;padding:.6rem 1rem;font:inherit;font-size:1rem;border:2px solid var(--ln);border-radius:12px;background:var(--card);color:var(--tx)}
+.fl{display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:1.5rem}.fl .sel{width:auto;min-width:180px}
+.lab{font-size:.8rem;font-weight:700;border-radius:50px;padding:.1rem .7rem;background:var(--ac);color:#1a1a1a;margin-right:.5rem}
+.vw header{background:#2c5f2d}
+.art{max-width:760px;margin:0 auto;padding:7rem 2rem 4rem}.art h1{font-size:clamp(2rem,5vw,3.2rem);margin:.8rem 0}.art p{color:var(--tx);margin-bottom:1.1rem}
+.by{font-size:.95rem;color:var(--mu)}.src{border-top:1px solid var(--ln);margin-top:2rem;padding-top:1rem;font-size:.95rem}.src a{color:var(--gl);text-decoration:underline}
+.wab{background:#25D366;color:#0b2b14;font-weight:700;margin:.5rem .5rem .5rem 0}
+.eg{display:grid;grid-template-columns:repeat(2,1fr);gap:1.5rem;margin-top:2rem}
+.card{background:var(--card);border:1px solid var(--ln);border-radius:20px;padding:1.6rem}.card h3{font-size:1.5rem;margin-bottom:.8rem}
+.cd b{font:800 3rem 'Fraunces',serif;color:var(--gl)}
+.ckl label{display:flex;gap:.6rem;align-items:flex-start;color:var(--tx);font-size:1rem;margin-bottom:.6rem}
+.qo{display:block;width:100%;text-align:left;margin:.4rem 0;padding:.6rem 1rem;border:2px solid var(--ln);border-radius:12px;background:var(--card);color:var(--tx);font:inherit;font-size:1rem;cursor:pointer}
+.qo.ok{border-color:#2c8a3d;background:rgba(44,138,61,.18)}.qo.no{border-color:#c0392b;background:rgba(192,57,43,.15)}
+@media(max-width:900px){.eg{grid-template-columns:1fr}}
+
+.cine{position:relative;overflow:hidden;color:#fff;background:#0b1f0d}
+.cine::before{content:"";position:absolute;inset:-20%;background:radial-gradient(40% 35% at 20% 25%,rgba(244,162,97,.35),transparent 70%),radial-gradient(45% 40% at 80% 70%,rgba(74,140,75,.55),transparent 70%),linear-gradient(120deg,#0b1f0d,#1a3d1b,#0b1f0d);background-size:200% 200%;animation:aur 18s ease-in-out infinite alternate}
+.cine.c2::before{background:radial-gradient(40% 35% at 75% 20%,rgba(244,162,97,.3),transparent 70%),radial-gradient(45% 40% at 15% 75%,rgba(90,160,200,.35),transparent 70%),linear-gradient(120deg,#0c1a1f,#13303a,#0c1a1f)}
+.cine::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(320px circle at var(--mx,50%) var(--my,30%),rgba(255,255,255,.12),transparent 70%)}
+.cine>.w{position:relative;z-index:2}
+.cine h2,.cine h3,.cine p,.cine label{color:#fff}.cine p{opacity:.9}
+.gl{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);border-radius:20px;padding:1.5rem;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);transition:transform .3s,background .3s}
+.gl:hover{transform:translateY(-4px);background:rgba(255,255,255,.14)}
+.gl h3{font-size:1.4rem;margin-bottom:.6rem}
+.gy{position:absolute;inset:0;z-index:1;pointer-events:none}.gy i{position:absolute;font:normal 700 2rem 'Fraunces',serif;color:rgba(255,255,255,.14);animation:flt linear infinite}
+@keyframes aur{to{background-position:100% 100%;transform:scale(1.08) rotate(2deg)}}
+@keyframes flt{from{transform:translateY(105vh) rotate(0)}to{transform:translateY(-20vh) rotate(360deg)}}
+.cg{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;margin-bottom:2.5rem}
+.cine .chip{color:#fff;border-color:rgba(255,255,255,.5)}.cine .chip.on{background:var(--ac);border-color:var(--ac);color:#1a1a1a}
+.cine .sel,.cine .gl input[type=text],.cine .gl input[type=number]{width:100%;min-height:44px;padding:.5rem .9rem;margin:.25rem 0 .7rem;font:inherit;font-size:1rem;border:2px solid rgba(255,255,255,.25);border-radius:12px;background:rgba(0,0,0,.3);color:#fff}
+.cine .sel option{color:#000}
+.gb{display:inline-block;padding:.6rem 1.3rem;border-radius:50px;border:0;background:var(--ac);color:#1a1a1a;font:700 .95rem inherit;font-family:inherit;cursor:pointer;margin:.3rem .4rem .3rem 0}.gb.o{background:transparent;border:2px solid #fff;color:#fff}
+.tw{overflow-x:auto;margin-top:1rem}.tw table{border-collapse:collapse;width:100%;font-size:.85rem}.tw td,.tw th{border:1px solid rgba(255,255,255,.3);padding:.35rem .5rem;text-align:center}
+.clk{display:flex;gap:.5rem;margin:.6rem 0 1.2rem}.clk div{flex:1;text-align:center;background:rgba(0,0,0,.35);border-radius:12px;padding:.5rem 0}.clk b{display:block;font:800 1.8rem 'Fraunces',serif;color:var(--ac)}.clk small{font-size:.7rem;opacity:.8}
+.rg{display:flex;align-items:center;gap:1rem;margin-bottom:1rem}.rg svg{width:76px;height:76px;transform:rotate(-90deg)}.rg circle{fill:none;stroke-width:8}
+.pb{height:8px;border-radius:8px;background:rgba(255,255,255,.2);overflow:hidden;margin-bottom:1rem}.pb i{display:block;height:100%;width:0;background:var(--ac);transition:width .5s}
+.cine .qo{background:rgba(255,255,255,.08);color:#fff;border-color:rgba(255,255,255,.3);transition:transform .2s}.cine .qo:hover:not(:disabled){transform:translateX(6px)}
+.cine .ckl label{color:#fff}
+@media(max-width:900px){.cg{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){.cine::before{animation:none}.gy{display:none}}
+
+.mg{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:1.2rem;margin:1.5rem 0}
+.mc{background:var(--card);border:1px solid var(--ln);border-radius:18px;overflow:hidden;display:flex;flex-direction:column;transition:transform .25s,box-shadow .25s}.mc:hover{transform:translateY(-4px);box-shadow:0 10px 26px rgba(0,0,0,.18)}
+.cv{height:110px;display:flex;align-items:flex-end;justify-content:space-between;padding:.8rem 1rem;color:#fff;position:relative}.cv span{font-size:2.6rem;line-height:1}.cv small{font-weight:700;background:rgba(0,0,0,.3);border-radius:50px;padding:.1rem .7rem}
+.mb{padding:1rem;display:flex;flex-direction:column;gap:.2rem;flex:1}.mb h3{font-size:1.15rem}.mb p{font-size:.88rem}
+.mc .gb{padding:.45rem 1rem;font-size:.85rem}.mc .gb.o{border-color:var(--gl);color:var(--gl)}
+.mc a.gb.o{text-decoration:none}
+#find .chip{font-size:.9rem;padding:.35rem 1rem}
+.ng{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;margin:1.5rem 0}.ng .cv{height:140px}.ng h3{font-size:1.2rem}
+.pr{display:grid;gap:.4rem}.pr select{min-height:40px}
+@media(max-width:900px){.ng{grid-template-columns:1fr}}
+.tk{display:flex;align-items:center;gap:.8rem}.tk strong{flex:none}.mq{overflow:hidden;flex:1;-webkit-mask-image:linear-gradient(90deg,transparent,#000 4%,#000 96%,transparent);mask-image:linear-gradient(90deg,transparent,#000 4%,#000 96%,transparent)}.mt{display:inline-flex;gap:2.5rem;padding-right:2.5rem;white-space:nowrap;animation:mqs 24s linear infinite}.mt span{opacity:.6}.mq:hover .mt,.mq:focus-within .mt{animation-play-state:paused}@keyframes mqs{to{transform:translateX(-50%)}}@media(prefers-reduced-motion:reduce){.mt{animation:none}.mt a[aria-hidden],.mt span{display:none}.mq{overflow:auto}}
+
+main{min-height:72vh}
+main>section:not([hidden]){animation:pgin .55s cubic-bezier(.2,.8,.2,1)}
+@keyframes pgin{from{opacity:0;transform:translateY(14px)}}
+.pbn{position:relative;z-index:2;padding:9rem 0 3.5rem;background:radial-gradient(60% 120% at 85% 0,rgba(244,162,97,.28),transparent 60%),linear-gradient(160deg,#16341a,#2c5f2d)}
+.cine .pbn{background:none}.pgs{padding-top:0!important}.pgs>.w{margin-top:3rem}.pgs .vs{margin-top:3rem}
+.pbn h1{font-size:clamp(2.4rem,6vw,4.6rem);color:#fff;font-weight:800}
+.pbn p{color:rgba(255,255,255,.88);max-width:36em;font-size:1.2rem;margin-top:1rem}
+.bc{font-size:.9rem;color:rgba(255,255,255,.75);margin-bottom:1rem}.bc a{text-decoration:underline;text-underline-offset:3px}.bc span{opacity:.6;margin:0 .3rem}
+nav a.cta{border:2px solid rgba(255,255,255,.65);border-radius:50px;margin-left:.4rem}nav a.cta:hover{background:var(--ac);border-color:var(--ac);color:#1a1a1a}
+header.sol,.vw header{backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.xc.mx{display:none}.xg.open .xc.mx{display:flex}
+.xg{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:1.4rem;margin-top:2rem}
+.xc{display:flex;flex-direction:column;gap:.5rem;background:var(--card);border:1px solid var(--ln);border-radius:24px;padding:2rem;transition:transform .3s,box-shadow .3s,border-color .3s}
+.xc:hover{transform:translateY(-6px);box-shadow:0 18px 40px rgba(0,0,0,.16);border-color:var(--gl)}
+.xc i{font-style:normal;font-size:2rem;width:64px;height:64px;display:grid;place-items:center;border-radius:18px;background:rgba(74,140,75,.14);margin-bottom:.6rem}
+.xc h3{font-size:1.6rem}.xc p{font-size:1rem;flex:1}.xc .dl{margin-top:.6rem}
+.fc{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:2rem;padding-bottom:1.8rem;margin-bottom:1.5rem;border-bottom:1px solid #333}
+.fc h4{color:#fff;margin-bottom:.6rem;font:600 1rem 'Segoe UI',sans-serif}.fc a{display:block;padding:.2rem 0}
+@media(max-width:900px){.fc{grid-template-columns:1fr 1fr}.pbn{padding:7.5rem 0 2.5rem}}
+@media(prefers-reduced-motion:reduce){main>section:not([hidden]){animation:none}}
+
+.hh{display:flex;justify-content:space-between;align-items:flex-end;gap:1rem;flex-wrap:wrap;margin-bottom:1.5rem}.hh h2{font-size:clamp(1.8rem,4vw,2.6rem)}.hh a{font-weight:700;color:var(--gl)}.hh a:hover{text-decoration:underline}
+.sg{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem;text-align:center}.sg div{border-top:3px solid var(--ac);padding-top:1rem}.sg b{display:block;font:800 clamp(2rem,4vw,3.2rem) 'Fraunces',serif;color:var(--gl);line-height:1.1}.sg span{font-size:.95rem;color:var(--mu)}
+.ft2{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center}
+.mt2{color:#fff;width:100%;border-collapse:collapse;font-size:.85rem;background:rgba(255,255,255,.08);border-radius:16px;overflow:hidden}.mt2 td,.mt2 th{border:1px solid rgba(255,255,255,.2);padding:.5rem;text-align:center}.mt2 th{background:rgba(244,162,97,.35)}
+.band{background:#16341a;color:#fff;text-align:center;padding:5rem 0}.band h2,.band p{color:#fff}.band p{max-width:34em;margin:1rem auto 1.5rem}
+@media(max-width:900px){.sg{grid-template-columns:1fr 1fr}.ft2{grid-template-columns:1fr;gap:2rem}}
+
+.nl{display:grid;grid-template-columns:1.3fr 1fr;gap:1.4rem;margin-bottom:2rem}.nr{display:grid;gap:1rem;align-content:start}
+.rc{display:grid;gap:.4rem;background:var(--card);border:1px solid var(--ln);border-radius:18px;padding:1.3rem;transition:transform .25s,border-color .25s}.rc:hover{transform:translateX(6px);border-color:var(--gl)}.rc h3{font-size:1.2rem}.rc time{font-size:.85rem;color:var(--mu)}
+.pl{display:flex;gap:.5rem;flex-wrap:wrap;margin:1rem 0 1.5rem}.pl span{padding:.3rem .9rem;border-radius:50px;background:rgba(74,140,75,.14);font-weight:600;font-size:.9rem;color:var(--hd)}
+.cta2{display:flex;gap:.8rem;flex-wrap:wrap;align-items:center;margin-top:1rem}.cta2 small{color:var(--mu)}
+.tc3{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;margin-bottom:2rem}
+.gl ul{list-style:none;margin:.5rem 0 1rem}.gl li{padding:.35rem 0;border-bottom:1px solid rgba(255,255,255,.15);color:#fff}
+.fab{position:fixed;right:1rem;bottom:calc(1rem + env(safe-area-inset-bottom,0px));z-index:150;background:var(--ac);color:#1a1a1a;font-weight:700;padding:.8rem 1.4rem;border-radius:50px;box-shadow:0 8px 24px rgba(0,0,0,.3);transition:transform .2s}.fab:hover{transform:translateY(-3px)}
+@media(max-width:900px){.nl,.tc3{grid-template-columns:1fr}}
+.x2{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.2rem;margin:1.5rem 0 3rem}.x2>*{background:var(--card);border:1px solid var(--ln);border-radius:16px;padding:1.3rem;display:block}.x2 h3{font-size:1.25rem;margin-bottom:.4rem}.x2 p{font-size:.95rem}a.x2c:hover{border-color:var(--gl)}.warn{border-left:5px solid var(--ac);background:var(--card);padding:1.2rem 1.4rem;border-radius:0 12px 12px 0;margin:1rem 0 2.5rem}.ctl{display:flex;gap:.3rem}.ctl button{background:none;border:1px solid rgba(255,255,255,.6);color:#fff;border-radius:6px;padding:.3rem .6rem;cursor:pointer;font:inherit;font-size:.8rem}
+.mq:hover .mt,.mq:focus-within .mt{animation-play-state:paused}
+.lite .hero{height:auto}.lite .stage{position:relative;height:auto;padding:8rem 0 5rem}.lite .scenes{height:auto}.lite .scene{display:none}.lite .scene:first-child{display:flex;position:static;opacity:1;transform:none;margin-bottom:2rem}.lite .stage{padding-bottom:6rem}.lite .rv{opacity:1;transform:none}.lite .sun,.lite .ring,.lite .gy{display:none}.lite .mt{animation:none}
+@media print{header,.bar,.fab,.tick,footer,.ctl,.btn,.gb{display:none!important}body{font-size:12pt;background:#fff;color:#000}p,h1,h2,h3{color:#000}}
+.mgx{position:absolute;inset:-4%;z-index:0;pointer-events:none;animation:kb 48s ease-in-out infinite alternate}.mgx svg{width:100%;height:100%;display:block}
+@keyframes kb{from{transform:scale(1.02) translate(-1%,.5%)}to{transform:scale(1.14) translate(1.5%,-1%)}}@keyframes lsw{from{transform:translateX(-25%)}to{transform:translateX(25%)}}
+section.mb{position:relative;overflow:hidden;isolation:isolate;color:#fff}section.mb>*:not(.mgx){position:relative;z-index:2}
+section.mb.board{background:radial-gradient(120% 90% at 30% 20%,#2f5a3d 0%,#1d3c2a 45%,#0b1a12 100%)}
+section.mb.bp{background:linear-gradient(rgba(255,255,255,.07) 1px,transparent 1px) 0 0/44px 44px,linear-gradient(90deg,rgba(255,255,255,.07) 1px,transparent 1px) 0 0/44px 44px,radial-gradient(120% 90% at 70% 10%,#1f4d8f 0%,#12305f 50%,#07142b 100%)}
+section.mb::before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");mix-blend-mode:overlay;opacity:.45;box-shadow:inset 0 0 180px 50px rgba(0,0,0,.7)}
+section.mb::after{content:"";position:absolute;inset:-30%;z-index:1;pointer-events:none;background:linear-gradient(105deg,transparent 40%,rgba(255,244,214,.11) 50%,transparent 60%);animation:lsw 14s ease-in-out infinite alternate}
+section.mb .sh,section.mb .sub,section.mb .pbn h1,section.mb .pbn p,section.mb .bc,section.mb .bc a{color:#fff;text-shadow:0 2px 18px rgba(0,0,0,.6)}
+section.mb .x2>*{box-shadow:0 22px 50px rgba(0,0,0,.5)}section.mb .x2 p,section.mb .x2 .fe{text-shadow:none}
+#home .mgx,#home .gy,#home .eq,#home .shp{display:none!important}.lite .mgx{display:none}.lite section.mb::after{animation:none}
+@media(prefers-reduced-motion:reduce){.mgx,section.mb::after{animation:none}}
+.dd{position:relative}.dd>a::after{content:" Γû╛";font-size:.75em}.dd>ul{display:none;position:absolute;top:100%;left:0;background:#2c5f2d;border-radius:10px;padding:.4rem;min-width:190px;flex-direction:column;box-shadow:0 12px 30px rgba(0,0,0,.35);z-index:5}.dd:hover>ul,.dd:focus-within>ul{display:flex}.dd:has(ul a.active)>a{background:var(--ac);color:#1a1a1a}
+@media(max-width:900px){.dd>ul{display:flex;position:static;background:none;box-shadow:none;padding:0 0 0 1rem}}
+.jn{padding-left:1.2rem}.jn li{margin:.35rem 0}.jn a{color:var(--gl);font-weight:600}.nx a.chip{display:inline-block}section.mb .nx h3,section.mb .nx a{color:#fff;border-color:#fff}
+.eq,.shp{transition:opacity .9s}.shp{transform-box:fill-box;transform-origin:center;animation:spn 40s linear infinite}@keyframes spn{to{transform:rotate(360deg)}}.lite .shp{animation:none}#hcount .gy{display:none}@media(prefers-reduced-motion:reduce){.shp{animation:none}}
+.tsec{position:relative;overflow:hidden;isolation:isolate;color:#fff;background:radial-gradient(110% 90% at 20% 10%,#3f7d44 0%,#24512a 45%,#0c1d0e 100%)}.tsec::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;box-shadow:inset 0 0 170px 45px rgba(0,0,0,.65)}.tsec::after{content:"";position:absolute;inset:-30%;z-index:0;pointer-events:none;background:linear-gradient(105deg,transparent 40%,rgba(255,244,214,.1) 50%,transparent 60%);animation:lsw 14s ease-in-out infinite alternate}.tsec>.w{position:relative;z-index:1}
+.tsec .sh,.tsec .sub{color:#fff;text-shadow:0 2px 18px rgba(0,0,0,.6)}.tsec .x2>*{box-shadow:0 22px 50px rgba(0,0,0,.5)}.tf{margin-bottom:2rem}.tf i{font:800 2.4rem Fraunces,serif;color:var(--ac);font-style:normal;display:block;line-height:1}.tf a:hover{transform:translateY(-4px)}.tf a{transition:transform .3s}.qk{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1rem}.lite .tsec::after,.tsec .x2{animation:none}@media(prefers-reduced-motion:reduce){.tsec::after{animation:none}}
+.kf{margin:.5rem 0 0 1.2rem;color:var(--tx)}.kf li{margin:.3rem 0}.fq details{border-top:1px solid var(--ln);padding:.4rem 0}.fq summary{cursor:pointer;font-weight:600;color:var(--hd)}.ex3{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.5rem;margin:2rem 0}.ex3>div{background:var(--card);border:1px solid var(--ln);border-radius:16px;padding:1.5rem}.ex3 dl{margin-top:.8rem}.ex3 dt{font-weight:700;font-size:.85rem;color:var(--gl);margin-top:.7rem}.ex3 dd{color:var(--tx)}@media print{header,footer,.bar,.tg,.ctl,.btn,.gb,.cta2,.chips,.fl{display:none!important}body{background:#fff;color:#000}.sec{padding:1rem 0!important}}.wk{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:1rem}.gloss dt{font-weight:700;color:var(--hd);margin-top:1rem}.gloss dd{color:var(--tx)}.fc{min-height:110px;display:flex;align-items:center;justify-content:center;text-align:center;border:2px dashed var(--gl);border-radius:12px;padding:1rem;margin:.6rem 0;cursor:pointer;font-weight:600;color:var(--tx)}.rt{overflow-x:auto}.rt table{border-collapse:collapse;width:100%;font-size:.9rem}.rt td,.rt th{border:1px solid var(--ln);padding:.4rem .6rem;color:var(--tx)}section.alt{border-top:6px solid transparent;border-image:repeating-linear-gradient(90deg,#1a1a1a 0 28px,#bb0000 28px 56px,#fff 56px 62px,#2c5f2d 62px 90px) 1}.cv{background-blend-mode:overlay}.mfw{position:fixed;right:1rem;bottom:calc(1rem + env(safe-area-inset-bottom,0px));z-index:250;display:flex;flex-direction:column;align-items:flex-end;gap:.6rem}.mfw .fb{display:flex;align-items:center;gap:.5rem;border:0;border-radius:50px;padding:.7rem 1.1rem;font:600 .95rem inherit;font-family:inherit;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.3);text-decoration:none}.mfw .wa{background:#25D366;color:#0b2b14}.mfw .ai{background:var(--g);color:#fff}.mfp{width:min(360px,calc(100vw - 2rem));height:min(440px,70vh);background:var(--card);color:var(--tx);border:1px solid var(--ln);border-radius:16px;box-shadow:0 8px 30px rgba(0,0,0,.35);display:flex;flex-direction:column;overflow:hidden}.mfp header{position:static;background:var(--g);color:#fff;padding:.7rem 1rem;display:flex;justify-content:space-between;align-items:center;font-weight:700}.mfp header button{background:none;border:0;color:#fff;font-size:1.3rem;cursor:pointer}.mfl{flex:1;overflow-y:auto;padding:.8rem;display:flex;flex-direction:column;gap:.5rem;font-size:.95rem;line-height:1.5}.mfl div{padding:.5rem .8rem;border-radius:12px;max-width:90%}.mfl .b{background:rgba(74,140,75,.15);align-self:flex-start}.mfl .u{background:var(--g);color:#fff;align-self:flex-end}.mfl a{color:var(--gl);font-weight:600;text-decoration:underline}.mfq{display:flex;gap:.4rem;flex-wrap:wrap;padding:0 .8rem .5rem}.mfq button{font:inherit;font-size:.8rem;border:1px solid var(--gl);background:none;color:var(--gl);border-radius:50px;padding:.2rem .7rem;cursor:pointer}.mff{display:flex;gap:.4rem;padding:.6rem;border-top:1px solid var(--ln)}.mff input{flex:1;padding:.5rem .7rem;border:1px solid var(--ln);border-radius:8px;background:var(--bg);color:var(--tx);font:inherit}.mff button{border:0;background:var(--ac);color:#1a1a1a;font-weight:700;border-radius:8px;padding:0 .9rem;cursor:pointer}@media print{.mfw{display:none!important}}.bkb{display:inline-flex;align-items:center;gap:.4rem;background:none;border:2px solid var(--gl);color:var(--gl);border-radius:50px;padding:.4rem 1rem;font:600 .95rem inherit;font-family:inherit;cursor:pointer;margin-bottom:1rem;transition:background .3s}.bkb:hover{background:rgba(74,140,75,.15)}.cine .bkb,.board .bkb{color:#fff;border-color:#fff}.bkw{position:relative;z-index:2}.bt{position:fixed;left:1rem;bottom:calc(1rem + env(safe-area-inset-bottom,0px));z-index:250;width:48px;height:48px;border-radius:50%;border:0;background:var(--g);color:#fff;font-size:1.4rem;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.3)}.bt:hover{background:var(--gl)}@media print{.bkb,.bt{display:none!important}}.mmg{display:grid;grid-template-columns:repeat(4,1fr);gap:.6rem;max-width:420px;margin:1rem 0}.mmc{aspect-ratio:1;border-radius:12px;border:2px solid var(--gl);background:var(--card);color:var(--tx);font:600 .85rem inherit;font-family:inherit;cursor:pointer;padding:.2rem}.mmc.up{background:var(--g);color:#fff}.mmc.ok{opacity:.5}.qo{display:block;width:100%;text-align:left;margin:.4rem 0}.qo.ok{background:rgba(74,140,75,.35)!important}.qo.no{background:rgba(200,60,60,.3)!important}.gp{margin-top:1rem}</style>
+</head>
+<body>
+<div class="bar" aria-hidden="true"></div>
+<header>
+<div class="nav">
+<a href="#home" class="logo" aria-label="Mwalimu Family home"><span aria-hidden="true">≡ƒÅí</span> Mwalimu Family</a>
+<button class="tg" aria-expanded="false" aria-controls="menu">Γÿ░ Menu</button>
+<nav aria-label="Main"><ul id="menu"><li><a href="#news">News</a></li><li class="dd"><a href="#library">Learn</a><ul><li><a href="#library">Library</a></li><li><a href="#tutoring">Tutoring</a></li><li><a href="#tools">Tools</a></li><li><a href="#videos">Videos</a></li></ul></li><li><a href="#courses">Courses</a></li><li><a href="#games">Games</a></li><li class="dd"><a href="#teaching">Teach</a><ul><li><a href="#teaching">Teaching</a></li><li><a href="#jobs">Jobs</a></li></ul></li><li class="dd"><a href="#parents">Families</a><ul><li><a href="#parents">Parents</a></li><li><a href="#exams">Exams</a></li><li><a href="#help">Help and glossary</a></li><li><a href="#notices">Notices</a></li></ul></li><li><a href="#advertise">Advertise</a></li><li><a href="#about">About</a></li><li><a href="#contact" class="cta">Contact</a></li></ul></nav>
+<div class="ctl"><button id="lt" title="Low-data mode: no heavy animation">Lite</button><button id="fa" aria-label="Change text size">A+</button><button id="sl">Kiswahili</button></div>
+</div>
+</header>
+<div id="view" hidden></div>
+<main>
+<section class="hero" id="home" aria-label="Introduction">
+<div class="stage">
+<div class="sun" aria-hidden="true"></div><div class="ring" aria-hidden="true"></div>
+<div class="w" style="position:relative;width:100%">
+<div class="scenes">
+<div class="scene on"><h1>KenyaΓÇÖs school news, made clear.</h1><p>What exam timelines, policies and placements mean for your family, explained in plain words.</p><div class="btns"><a href="#news" class="btn b1">Read the latest</a><a href="#library" class="btn b2">Browse learning materials</a></div></div>
+<div class="scene"><h1>Classroom-ready resources.</h1><p>Schemes of work, lesson plans and records for every grade, built for Kenyan teachers.</p><div class="btns"><a href="#library" class="btn b1">Open the library</a><a href="#news" class="btn b2">Read education news</a></div></div>
+<div class="scene"><h1>Practical skills for school and work.</h1><p>Short courses in study, money, digital and career skills, with Kenyan examples.</p><div class="btns"><a href="#courses" class="btn b1">Explore courses</a><a href="#videos" class="btn b2">Watch videos</a></div></div>
+</div>
+</div>
+<div class="tick"><div class="w tk"><strong>Latest:</strong><div class="mq"><div class="mt"><a href="#/s1">2026 KJSEA results expected in December, KCSE targeted for January 2027</a><span aria-hidden="true">ΓÇó</span><a href="#/s4">How to spot fake KJSEA and KCSE results messages</a><span aria-hidden="true">ΓÇó</span><a href="#/s5">KPSEA, KJSEA and KCSE explained</a><span aria-hidden="true">ΓÇó</span><a tabindex="-1" aria-hidden="true" href="#/s1">2026 KJSEA results expected in December, KCSE targeted for January 2027</a><span aria-hidden="true">ΓÇó</span><a tabindex="-1" aria-hidden="true" href="#/s4">How to spot fake KJSEA and KCSE results messages</a><span aria-hidden="true">ΓÇó</span><a tabindex="-1" aria-hidden="true" href="#/s5">KPSEA, KJSEA and KCSE explained</a><span aria-hidden="true">ΓÇó</span><a tabindex="-1" aria-hidden="true" href="#/s1">2026 KJSEA results expected in December, KCSE targeted for January 2027</a><span aria-hidden="true">ΓÇó</span><a tabindex="-1" aria-hidden="true" href="#/s4">How to spot fake KJSEA and KCSE results messages</a><span aria-hidden="true">ΓÇó</span><a tabindex="-1" aria-hidden="true" href="#/s5">KPSEA, KJSEA and KCSE explained</a><span aria-hidden="true">ΓÇó</span><a tabindex="-1" aria-hidden="true" href="#/s1">2026 KJSEA results expected in December, KCSE targeted for January 2027</a><span aria-hidden="true">ΓÇó</span><a tabindex="-1" aria-hidden="true" href="#/s4">How to spot fake KJSEA and KCSE results messages</a><span aria-hidden="true">ΓÇó</span><a tabindex="-1" aria-hidden="true" href="#/s5">KPSEA, KJSEA and KCSE explained</a><span aria-hidden="true">ΓÇó</span></div></div></div></div>
+</div>
+</section>
+
+<section class="sec" id="haud" aria-labelledby="hau" style="padding:3rem 0"><div class="w"><h2 class="sh" id="hau" style="font-size:clamp(1.8rem,4vw,2.6rem)">I am aΓÇª</h2><p class="sub" style="margin-bottom:1rem">Choose your role to find the most relevant resources.</p><div class="x2"><div><h3>≡ƒæ⌐≡ƒÅ╛ΓÇì≡ƒÅ½ Teacher</h3><ol class="jn"><li><a href="#library">Download templates</a></li><li><a href="#teaching">Plan your term</a></li><li><a href="#jobs">Find or post jobs</a></li></ol></div><div><h3>≡ƒæ¿≡ƒÅ╛ΓÇì≡ƒæ⌐≡ƒÅ╛ΓÇì≡ƒæº≡ƒÅ╛ Parent</h3><ol class="jn"><li><a href="#news">Read the news</a></li><li><a href="#notices">Check notices</a></li><li><a href="#parents">Plan Grade 10 and beyond</a></li><li><a href="#tutoring">Find a tutor</a></li></ol></div><div><h3>≡ƒÄÆ Learner</h3><ol class="jn"><li><a href="#tutoring">Practise maths</a></li><li><a href="#tools">Use the calculators</a></li><li><a href="#library">Revise with notes</a></li><li><a href="#courses">Build new skills</a></li></ol></div></div><h2 class="sh" id="hiw" style="font-size:clamp(1.8rem,4vw,2.6rem);margin-top:3rem">I want toΓÇª</h2><p class="sub" style="margin-bottom:1rem">Go directly to a service.</p><div class="x2" style="margin:0"><a class="x2c" href="#tutoring"><h3>≡ƒôÉ Tutoring and practice</h3><p>Find a tutor, practise maths, or apply to tutor.</p></a><a class="x2c" href="#courses"><h3>≡ƒÄô Courses and skills</h3><p>Self-paced guides in digital, study, money and career skills.</p></a><a class="x2c" href="#games"><h3>≡ƒÄ« Games and quizzes</h3><p>Subject quizzes and learning games with saved scores.</p></a><a class="x2c" href="#jobs"><h3>≡ƒÆ╝ Education jobs</h3><p>Browse vacancies or post one for review.</p></a><a class="x2c" href="#advertise"><h3>≡ƒôú Advertise with us</h3><p>Promote your school, product or event to Kenyan families.</p></a></div></div></section>
+<section class="sec" id="find" aria-labelledby="fh" style="padding:3.5rem 0 2.5rem"><div class="w">
+<h2 class="sh" id="fh" style="font-size:clamp(1.8rem,4vw,2.6rem)">Find what you need</h2>
+<div class="sb" style="margin-top:1rem"><input id="gq" type="search" placeholder="Search schemes, notes, exams and news. Try ΓÇ£Grade 7 MathematicsΓÇ¥" aria-label="Search the site"></div>
+
+</div></section>
+<section class="sec" id="hweek" aria-labelledby="hwh" style="padding:3rem 0"><div class="w"><div class="hh"><h2 class="sh" id="hwh" style="font-size:clamp(1.5rem,3vw,2rem)">New this week</h2><a href="#news">All news ΓåÆ</a></div><div class="wk" id="wk"></div></div></section>
+<section class="sec alt" id="hnews" aria-labelledby="hnw" style="padding:5rem 0"><div class="w"><div class="hh"><h2 class="sh" id="hnw">Latest news</h2><a href="#news">Read all news ΓåÆ</a></div><div class="nl" id="hn"></div><a class="btn b1" href="#news">Read all news</a></div></section>
+<section class="sec" id="hnew" aria-labelledby="hnh" style="padding:5rem 0"><div class="w"><div class="hh"><h2 class="sh" id="hnh">Free teaching and learning library</h2><a href="#library">Open the library ΓåÆ</a></div><div class="chips" id="hc" role="group" aria-label="Preview by type"></div><div class="mg" id="nw"></div><div class="cta2"><a class="btn b1" href="#library">Open the full library</a><a class="btn b2" href="#/grade/Grade%207" style="border-color:var(--gl);color:var(--gl)">Browse Grade 7</a></div></div></section>
+<section class="sec tsec" id="htools" aria-labelledby="hth" style="padding:6rem 0"><div class="w">
+<h2 class="sh" id="hth">Term planning for teachers</h2><p class="sub">Schemes of work, lesson plans, assessments and report comments in one place. Free and editable.</p>
+<div class="x2 tf"><a class="x2c" href="#teaching"><i>1</i><h3>Scheme of work</h3><p>Formatted for your grade, subject and term.</p></a><a class="x2c" href="#library"><i>2</i><h3>Lesson plans and notes</h3><p>Ready-to-fill templates for every grade.</p></a><a class="x2c" href="#teaching"><i>3</i><h3>Exams and rubrics</h3><p>Papers with marking schemes and competency rubrics.</p></a><a class="x2c" href="#tools"><i>4</i><h3>Records and comments</h3><p>Record of work and report-form comments.</p></a></div>
+<div class="fm" style="max-width:760px"><h3>Quick start: your scheme of work</h3><div class="qk"><div><label for="hg">Grade</label><select class="sel" id="hg"></select></div><div><label for="hs">Subject</label><select class="sel" id="hs"></select></div><div><label for="ht">Term</label><select class="sel" id="ht"><option>Term 1</option><option>Term 2</option><option>Term 3</option></select></div></div><button class="btn b1" id="hdl">Download scheme (.doc)</button></div>
+<div class="cta2" style="margin-top:2rem"><a class="btn b1" href="#teaching">Open teaching materials</a><button class="btn b2" id="qd">Blank scheme (.doc)</button><a class="btn b2" href="#jobs">Teaching jobs</a></div>
+</div></section>
+<section class="sec" id="htl" aria-labelledby="htlh" style="padding:2.5rem 0"><div class="w"><div class="hh"><h2 class="sh" id="htlh" style="font-size:clamp(1.5rem,3vw,2rem)">Quick tools</h2><a href="#tools">All tools ΓåÆ</a></div><div class="chips" style="margin:0"><a class="chip" href="#tools">≡ƒº« KCSE grade calculator</a><a class="chip" href="#tools">≡ƒô¥ Report comments</a><a class="chip" href="#tools">≡ƒº¡ Pathway starter</a></div></div></section>
+<section class="sec cine c2" id="hcount" aria-labelledby="hch" style="padding:5rem 0"><div class="gy" aria-hidden="true"></div><div class="w"><div class="hh"><h2 class="sh" id="hch" style="color:#fff">Notice board</h2><a href="#notices" style="color:var(--ac)">Open the notice board ΓåÆ</a></div><div class="eg" style="margin-top:0"><div class="gl"><h3>KJSEA results countdown</h3><p>Expected in December 2026, as announced by the Ministry of Education.</p><div class="clk" data-t="2026,11,1"></div></div><div class="gl"><h3>Grade 10 checklist</h3><ul id="gpv"></ul><div class="pb"><i style="width:0"></i></div></div></div><div class="cta2"><a class="btn b1" href="#notices">Open the notice board</a><small style="color:#fff">Notices ┬╖ checklist ┬╖ countdowns</small></div></div></section>
+<section class="sec" id="hstats" aria-label="At a glance" style="padding:3.5rem 0"><div class="w"><div class="sg"><div><b class="num" id="nt" data-to="0">0</b><span>free editable templates</span></div><div><b>18</b><span>levels, PP1 to Form 4</span></div><div><b>8</b><span>free skills courses</span></div><div><b>15</b><span>glossary terms explained</span></div></div></div></section>
+<section class="sec alt" id="hvid" aria-labelledby="hvh" style="padding:5rem 0"><div class="w"><div class="hh"><h2 class="sh" id="hvh">Watch and learn</h2><a href="#videos">All videos ΓåÆ</a></div></div><div class="vs"><a href="https://youtube.com/@mwalimufamily" class="v"><span class="play" aria-hidden="true">Γû╢</span><div><h3>Mini Lessons</h3><p>Short educational videos on a range of topics.</p></div></a><a href="https://youtube.com/@mwalimufamily" class="v"><span class="play" aria-hidden="true">Γû╢</span><div><h3>Family Vlogs</h3><p>Day-in-the-life videos and outings.</p></div></a><a href="https://youtube.com/@mwalimufamily" class="v"><span class="play" aria-hidden="true">Γû╢</span><div><h3>Celebrations</h3><p>Birthdays, holidays and milestones.</p></div></a></div><div class="w"><div class="cta2"><a class="btn b1" href="https://youtube.com/@mwalimufamily" target="_blank" rel="noopener">Subscribe on YouTube</a></div></div></section>
+<section class="sec" id="habout" aria-labelledby="hah2" style="padding:5rem 0"><div class="w ft2"><div><h2 class="sh" id="hah2" style="font-size:clamp(1.8rem,4vw,2.6rem)">Who we serve</h2><p class="sub">Mwalimu Family publishes education news, teaching resources and learning tools for Kenyan teachers, parents and learners.</p><a class="btn b1" href="#about">Meet Mwalimu Family</a></div><div class="vals" style="grid-template-columns:1fr 1fr;margin:0"><div><h3>Accuracy</h3><p>News is checked against official sources.</p></div><div><h3>Accessibility</h3><p>Free resources, a low-data mode and Kiswahili support.</p></div><div><h3>Practicality</h3><p>Tools and templates built for real classrooms.</p></div><div><h3>Accountability</h3><p>Sources are linked and corrections are published.</p></div></div></div></section>
+<section class="band" id="hcta" aria-labelledby="hah"><div class="w"><h2 class="sh" id="hah">Get updates</h2><p>Receive education news and new teaching resources by WhatsApp or email.</p><div class="btns" style="justify-content:center"><a class="btn b1" href="https://wa.me/254715363944?text=Please%20add%20me%20to%20Mwalimu%20Family%20updates" target="_blank" rel="noopener" style="background:#25D366;color:#0b2b14">Get updates on WhatsApp</a><a class="btn b2" href="#contact">Subscribe by email</a><a class="btn b2" href="#library">Download teaching materials</a></div></div></section>
+
+<section class="sec" id="news" aria-labelledby="nh">
+<div class="w">
+<h2 class="sh rv" id="nh">Latest news</h2>
+<p class="sub rv">WhatΓÇÖs happening in education and across Kenya. Browse by category.</p>
+<div class="sb"><input id="nq" type="search" placeholder="Search news" aria-label="Search news"></div>
+<div class="chips rv" data-filter="#rows" role="group" aria-label="News categories">
+<button class="chip on" data-v="all">All</button><button class="chip" data-v="Education">Education</button><button class="chip" data-v="Explainer">Explainer</button>
+</div>
+<article class="feat rv">
+<div>
+<p class="meta">Education news ┬╖ 20 November 2026 ┬╖ National examinations</p>
+<h3>2026 KJSEA results expected in December as KCSE results targeted for January 2027</h3>
+<p style="margin:1.2rem 0 1.5rem">Education CS Julius Ogamba has announced the expected release timelines for the 2026 national examinations. KJSEA results are expected in December, while KCSE and KPSEA results are targeted for January 2027.</p>
+<a href="#/s1" class="btn b1">Read the full story</a>
+</div>
+<div class="stats">
+<div><b class="num" data-to="1048355">0</b><span>KCSE candidates</span></div>
+<div><b class="num" data-to="10693">0</b><span>examination centres</span></div>
+<div><b class="num" data-to="13484">0</b><span>KJSEA examiners</span></div>
+<div><b class="num" data-to="24">0</b><span>KJSEA marking centres</span></div>
+</div>
+</article>
+<div class="rows rv" id="rows">
+<a href="#/s2" data-k="Education"><time>20 Nov 2026</time><span class="tag">Education</span><h3>What parents and learners should know about the KJSEA and KCSE timelines</h3><span class="dl">Read</span></a>
+<a href="#/s4" data-k="Explainer"><time>21 Nov 2026</time><span class="tag">Explainer</span><h3>How to spot fake KJSEA and KCSE results messages</h3><span class="dl">Read</span></a>
+<a href="#/s5" data-k="Explainer"><time>21 Nov 2026</time><span class="tag">Explainer</span><h3>KPSEA, KJSEA and KCSE explained: how KenyaΓÇÖs national assessments fit together</h3><span class="dl">Read</span></a> <p class="empty" hidden>No stories in this category yet. Follow @mwalimufamily for updates.</p>
+</div>
+</div>
+</section>
+
+<section class="sec alt" id="library" aria-labelledby="lh"><div class="w">
+<h2 class="sh rv" id="lh">Learning and teaching library</h2>
+<p class="sub rv">Editable, ready-to-fill teaching materials for every grade, subject and term. Pick a grade page or filter below, then download free as Word.</p>
+<div class="warn"><h3 style="color:var(--hd)">How to use a template</h3><ol class="jn"><li>Pick your grade, subject and term.</li><li>Download the Word file.</li><li>Fill in strands, outcomes and dates from the KICD curriculum design.</li><li>Save a copy for each class.</li></ol></div><div class="fl"><input class="sel" id="lq" type="search" placeholder="Search library" aria-label="Search library" style="width:auto;min-width:220px"><select class="sel" id="fg" aria-label="Grade"></select><select class="sel" id="fs" aria-label="Subject"></select><select class="sel" id="ft" aria-label="Term"><option value="">All terms</option><option>Term 1</option><option>Term 2</option><option>Term 3</option></select></div>
+<div class="chips" id="fy" role="group" aria-label="Resource type"></div>
+<p class="sub" id="fc" style="margin:0"></p>
+<div class="mg" id="lg"></div><button class="btn b1" id="mo">Show more</button>
+<h3 style="font-size:1.6rem;margin-top:2.5rem">My saved materials</h3><div class="mg" id="sv"></div>
+</div></section>
+
+<section class="sec cine" id="teaching" aria-labelledby="th"><div class="gy" aria-hidden="true"></div><div class="w">
+<h2 class="sh" id="th">Teaching materials</h2>
+<p class="sub">Free, original templates and tools for Kenyan teachers: schemes of work, lesson notes, exams and records. Everything downloads as an editable Word file.</p>
+<div class="chips" data-tt role="group" aria-label="Material type"><button class="chip on" data-v="all">All</button><button class="chip" data-v="Exams">Exams</button><button class="chip" data-v="Schemes">Schemes of work</button><button class="chip" data-v="Lesson notes">Lesson notes</button><button class="chip" data-v="Records">Records</button></div>
+<div class="cg" id="tg"></div>
+<div class="eg" style="margin-top:0">
+<div class="gl"><h3>Timetable generator</h3><label for="tc">Classes (comma separated)</label><input type="text" id="tc" value="Grade 7, Grade 8, Grade 9"><label for="ts">Subjects</label><input type="text" id="ts" value="Mathematics, English, Kiswahili, Integrated Science, Social Studies, Agriculture, Creative Arts, Pre-Technical"><label for="tp">Lessons per day</label><select class="sel" id="tp"><option>7</option><option selected>8</option><option>9</option></select><button class="gb" id="tb">Generate</button><button class="gb o" id="td" hidden>Download .doc</button><button class="gb o" id="tpr" hidden>Print</button><div class="tw" id="to"></div></div>
+<div class="gl"><h3>Scheme of work generator</h3><label for="sg">Grade</label><select class="sel" id="sg"><option>PP1</option><option>PP2</option><option>Grade 1</option><option>Grade 2</option><option>Grade 3</option><option>Grade 4</option><option>Grade 5</option><option>Grade 6</option><option selected>Grade 7</option><option>Grade 8</option><option>Grade 9</option><option>Grade 10</option><option>Grade 11</option><option>Grade 12</option></select><label for="sb">Subject</label><input type="text" id="sb" value="Mathematics"><label for="st2">Term</label><select class="sel" id="st2"><option>Term 1</option><option>Term 2</option><option>Term 3</option></select><label for="sw2">Weeks</label><input type="number" id="sw2" value="13" min="1" max="15"><button class="gb" id="sbt">Download scheme (.doc)</button><p style="font-size:.9rem">Fill the strands and outcomes from the KICD curriculum design for your grade.</p></div>
+</div></div></section>
+<section class="sec" id="tools" aria-labelledby="oh"><div class="w">
+<h2 class="sh rv" id="oh">Tools that save time</h2><div class="warn"><h3 style="color:var(--hd)">How these tools work</h3><ul class="kf"><li>Everything runs in your browser. Names and marks are not uploaded.</li><li>Calculator results are estimates. Confirm with KNEC, KUCCPS or your school. Formulas last reviewed 21 November 2026.</li><li>Downloads are editable Word files.</li><li>Review generated comments and plans before using them.</li></ul></div><div class="sb"><input id="tsq" type="search" placeholder="Search tools, e.g. rubric or fees" aria-label="Search tools"></div><div class="chips" id="tcs" role="group" aria-label="Tool categories"></div><p class="sub" id="tcn" style="margin:0 0 1rem"></p>
+<div class="cg">
+<div class="card"><h3>KCSE grade calculator</h3><div class="pr" id="kc"></div><button class="gb" id="kb">Calculate</button><p id="ko" style="font-weight:700"></p></div>
+<div class="card"><h3>Report-form comments</h3><label for="cn">Learner name</label><input class="sel" id="cn" type="text" value="Amina"><label for="cs">A strength</label><input class="sel" id="cs" type="text" value="problem solving"><label for="cv">Performance</label><select class="sel" id="cv"><option>Exceeds expectation</option><option selected>Meets expectation</option><option>Approaches expectation</option><option>Below expectation</option></select><button class="gb" id="cb">Generate</button><button class="gb o" id="cc" hidden>Copy</button><p id="co"></p></div>
+<div class="card"><h3>KUCCPS cluster points</h3><label for="k1">Points in your 4 cluster subjects (4 to 48)</label><input class="sel" id="k1" type="number" min="4" max="48" value="36"><label for="k2">Total points in 7 subjects (max 84)</label><input class="sel" id="k2" type="number" min="7" max="84" value="60"><button class="gb" id="k3">Calculate</button><p id="k4" style="font-weight:700"></p><p style="font-size:.85rem">Estimate only. KUCCPS sets the exact cluster and programme cut-offs.</p></div>
+<div class="card"><h3>Bulk report comments</h3><label for="bn">One learner per line: Name, strength</label><textarea class="sel" id="bn" rows="4">Amina, problem solving
+Juma, reading</textarea><label for="bv">Performance</label><select class="sel" id="bv"></select><button class="gb" id="bb">Generate all</button><button class="gb o" id="bc" hidden>Copy</button><p id="bo" style="white-space:pre-wrap"></p><p style="font-size:.85rem">Runs in your browser. Names are never uploaded.</p></div>
+<div class="card"><h3>Word counter</h3><label for="wc1">Paste your text (essay, insha or notes)</label><textarea class="sel" id="wc1" rows="4"></textarea><p id="wc2" style="font-weight:700"></p></div>
+<div class="card"><h3>Attendance calculator</h3><label for="at1">Days present</label><input class="sel" id="at1" type="number" min="0" value="0"><label for="at2">Days absent</label><input class="sel" id="at2" type="number" min="0" value="0"><button class="gb" id="at3">Calculate</button><p id="at4" style="font-weight:700"></p></div>
+<div class="card"><h3>KJSEA points total</h3><label for="kp1">Points per learning area, 1 to 8, comma separated</label><input class="sel" id="kp1" type="text" value="6, 7, 5, 6, 7, 8, 5, 6, 7"><button class="gb" id="kp2">Calculate</button><p id="kp3" style="font-weight:700"></p><p style="font-size:.85rem">Planning estimate only. Official totals come from KNEC.</p></div>
+<div class="card"><h3>Group maker</h3><label for="gm1">One name per line</label><textarea class="sel" id="gm1" rows="4">Amina
+Juma
+Neema
+Otieno
+Wanjiru
+Kamau</textarea><label for="gm2">Group size</label><input class="sel" id="gm2" type="number" min="2" max="12" value="3"><button class="gb" id="gm3">Make groups</button><p id="gm4" style="white-space:pre-wrap"></p><p style="font-size:.85rem">Runs in your browser. Names are never uploaded.</p></div>
+<div class="card"><h3>Lesson plan builder</h3><label for="lpg">Grade</label><input class="sel" id="lpg" type="text" value="Grade 7"><label for="lps">Subject</label><input class="sel" id="lps" type="text" value="Mathematics"><label for="lpt">Topic or strand</label><input class="sel" id="lpt" type="text" placeholder="e.g. Fractions"><label for="lpo">Specific learning outcome</label><textarea class="sel" id="lpo" rows="2" placeholder="By the end of the lesson, the learner should be able toΓÇª"></textarea><label for="lpd">Lesson length</label><select class="sel" id="lpd"><option>30</option><option selected>40</option><option>60</option><option>80</option></select><button class="gb" id="lpb">Build plan</button><button class="gb o" id="lpx" hidden>Download .doc</button><div class="rt" id="lpo2"></div></div>
+<div class="card"><h3>Rubric builder</h3><label for="rbt">Task or assessment</label><input class="sel" id="rbt" type="text" value="Group presentation"><label for="rbc">Criteria (comma separated)</label><input class="sel" id="rbc" type="text" value="Content knowledge, Communication, Teamwork"><button class="gb" id="rbb">Build rubric</button><button class="gb o" id="rbx" hidden>Download .doc</button><p style="font-size:.85rem">Uses four levels: exceeds, meets, approaches and below expectation. Edit the descriptors to match your strand.</p><div class="rt" id="rbo"></div></div>
+<div class="card"><h3>School fees planner</h3><label for="f1">Term fees (KES)</label><input class="sel" id="f1" type="number" min="0" value="0"><label for="f2">Uniform and books (KES)</label><input class="sel" id="f2" type="number" min="0" value="0"><label for="f3">Transport and meals (KES)</label><input class="sel" id="f3" type="number" min="0" value="0"><label for="f4">Other costs (KES)</label><input class="sel" id="f4" type="number" min="0" value="0"><label for="f5">Weeks until payment is due</label><input class="sel" id="f5" type="number" min="1" value="12"><button class="gb" id="f6">Calculate</button><p id="f7" style="font-weight:700"></p></div>
+<div class="card"><h3>Score to performance level</h3><label for="sc1">Score</label><input class="sel" id="sc1" type="number" min="0" value="65"><label for="sc2">Out of</label><input class="sel" id="sc2" type="number" min="1" value="100"><button class="gb" id="sc3">Convert</button><p id="sc4" style="font-weight:700"></p><p style="font-size:.85rem">Use for practice and school assessments. KNEC reports performance levels rather than marks, and the bands here are the percentage ranges widely published for KJSEA. Confirm with KNEC.</p></div>
+<div class="card"><h3>Focus timer</h3><select class="sel" id="ft1" aria-label="Session length"><option value="25,5">25 minutes study, 5 break</option><option value="40,10">40 minutes study, 10 break</option><option value="50,10">50 minutes study, 10 break</option></select><p id="ft2" style="font:800 2rem Fraunces,serif;margin:.6rem 0" aria-live="off">25:00</p><p id="ft3"></p><button class="gb" id="ft4">Start</button><button class="gb o" id="ft5">Reset</button></div>
+<div class="card"><h3>Revision timetable maker</h3><label for="rd">Exam date (optional)</label><input class="sel" id="rd" type="date"><label for="rs">Subjects (comma separated)</label><input class="sel" id="rs" type="text" value="Mathematics, English, Kiswahili, Science"><label for="rn">Study slots per day</label><select class="sel" id="rn"><option>1</option><option selected>2</option><option>3</option><option>4</option></select><button class="gb" id="rg">Build plan</button><button class="gb o" id="rdl" hidden>Download .doc</button><p id="rm" style="font-weight:700"></p><div class="rt" id="ro"></div></div>
+<div class="card"><h3>Class marks and ranking</h3><label for="mt">One learner per line: Name, mark, mark, ΓÇª</label><textarea class="sel" id="mt" rows="5">Amina, 72, 65, 80
+Juma, 58, 70, 61
+Neema, 81, 77, 90</textarea><button class="gb" id="mg">Calculate</button><button class="gb o" id="mdl" hidden>Download .doc</button><p style="font-size:.85rem">Runs in your browser. Names are never uploaded.</p><div class="rt" id="mo2"></div></div>
+<div class="card"><h3>Flashcards</h3><select class="sel" id="fcs" aria-label="Deck"><option value="m">Maths formulas</option><option value="s">Science terms</option><option value="k">Kiswahili words</option></select><div class="fc" id="fcc" tabindex="0" role="button" aria-label="Flip card"></div><button class="gb o" id="fcn">Next card</button><p style="font-size:.85rem">Tap the card to flip it.</p></div>
+<div class="card" id="pw"><h3>Pathway conversation starter</h3><div id="pb"></div></div>
+</div></div></section>
+
+<section class="sec cine c2 mb board" id="notices" aria-labelledby="nth"><div class="gy" aria-hidden="true"></div><div class="w">
+<h2 class="sh" id="nth">Notice board</h2><p class="sub">Education notices, deadlines and community announcements. Always confirm exact details with the issuing office.</p>
+<div class="warn"><h3 style="color:var(--hd)">Before you act on a notice</h3><ul class="kf"><li>Check who issued it and the date.</li><li>Confirm through the official office or website.</li><li>Never pay to receive a service that should be free.</li><li>Ask the school if you are unsure.</li></ul></div><div class="chips" role="group" aria-label="Notice categories"><button class="chip on" data-v="all">All</button><button class="chip" data-v="Exams">Exams</button><button class="chip" data-v="Safety">Safety</button><button class="chip" data-v="Community">Community</button></div>
+<div class="x2" id="nl"><div data-k="Exams"><span class="tag">Exams ┬╖ 20 Nov 2026</span><h3 style="margin-top:.5rem">Results release windows</h3><p>Ministry of Education: KJSEA results expected in December 2026. KCSE and KPSEA targeted for January 2027. <a class="dl" href="#/s1">Read the story</a></p></div><div data-k="Safety"><span class="tag">Safety ┬╖ 21 Nov 2026</span><h3 style="margin-top:.5rem">Results scam alert</h3><p>Never pay to see results early. Use official channels only. <a class="dl" href="#/s4">Read the explainer</a></p></div><div data-k="Community"><span class="tag">Community</span><h3 style="margin-top:.5rem">Schools and organisations</h3><p>Have a notice for families or teachers? Submit it below for review.</p></div></div>
+<div class="fm" data-fm="note" style="max-width:640px;margin-bottom:2.5rem"></div>
+<div class="eg" style="margin-top:0">
+<div class="gl"><h3>Live results countdown</h3><p>KJSEA results expected in December 2026:</p><div class="clk" data-t="2026,11,1"></div><p>KCSE and KPSEA targeted for January 2027:</p><div class="clk" data-t="2027,0,1"></div></div>
+<div class="gl ckl"><h3>Grade 10 placement checklist</h3><div class="rg"><svg viewBox="0 0 80 80" aria-hidden="true"><circle cx="40" cy="40" r="34" stroke="rgba(255,255,255,.2)"/><circle id="rc" cx="40" cy="40" r="34" stroke="#f4a261" stroke-linecap="round" stroke-dasharray="213.6" stroke-dashoffset="213.6" style="transition:stroke-dashoffset .6s"/></svg><div><b id="rp" style="font:800 1.6rem Fraunces,serif">0%</b><br><button class="gb o" id="sw" style="margin:0">Kiswahili</button></div></div><div id="cl"></div><p id="cm" style="font-weight:700"></p><button class="gb o" onclick="print()">Print checklist</button></div>
+</div></div></section>
+
+<section class="sec" id="exams" aria-labelledby="exh"><div class="w">
+<h2 class="sh" id="exh">Exams hub: KPSEA, KJSEA and KCSE</h2>
+<p class="sub">A plain-language guide to KenyaΓÇÖs national assessments and how to follow results safely. Always confirm dates with the Ministry of Education and KNEC.</p>
+<div class="ex3">
+<div><h3>KPSEA</h3><dl><dt>Level</dt><dd>End of Grade 6 (primary)</dd><dt>2026 status</dt><dd>Results targeted for January 2027</dd><dt>Next step</dt><dd>Moves learners on to Junior School, Grade 7</dd></dl></div>
+<div><h3>KJSEA</h3><dl><dt>Level</dt><dd>End of Grade 9 (Junior School)</dd><dt>2026 status</dt><dd>Results expected in December 2026. Marking involves 13,484 examiners at 24 centres</dd><dt>Next step</dt><dd>Informs Grade 10 and pathway placement</dd></dl></div>
+<div><h3>KCSE</h3><dl><dt>Level</dt><dd>End of secondary school</dd><dt>2026 status</dt><dd>Results targeted for January 2027. 1,048,355 candidates at 10,693 centres</dd><dt>Next step</dt><dd>University, college and TVET placement through KUCCPS</dd></dl></div>
+</div>
+<h3>While you wait for results</h3>
+<ol class="jn"><li>Plan around a window, not a single day. Dates are targets.</li><li>Agree who in the family will check official channels.</li><li>Gather documents the school or KUCCPS may ask for.</li><li>Keep revision light and steady, and rest well.</li></ol>
+<div class="warn"><h3 style="color:var(--hd)">Check results safely</h3><p style="color:var(--tx)">Use only official Ministry of Education and KNEC channels. Never pay to see results early. Never share your childΓÇÖs index number with unknown numbers or links. <a class="dl" href="#/s4">How to spot fake messages ΓåÆ</a></p></div>
+<div class="x2"><a class="x2c" href="https://www.knec.ac.ke" target="_blank" rel="noopener"><h3>KNEC</h3><p>Official examination and results information.</p></a><a class="x2c" href="https://www.education.go.ke" target="_blank" rel="noopener"><h3>Ministry of Education</h3><p>Announcements and circulars.</p></a><a class="x2c" href="#/s1"><h3>Latest timeline story</h3><p>What the Education CS announced on 20 November 2026.</p></a><a class="x2c" href="#/s5"><h3>Explainer</h3><p>How KPSEA, KJSEA and KCSE fit together.</p></a></div>
+<h3 style="margin-top:2rem">Common questions</h3><div class="fq"><details><summary>What if results are delayed?</summary><p>Release dates are targets. Wait for official updates from the Ministry of Education and KNEC.</p></details><details><summary>Which exam does my child sit?</summary><p>KPSEA at the end of Grade 6, KJSEA at the end of Grade 9 and KCSE at the end of secondary school.</p></details><details><summary>I received a message offering early results. What should I do?</summary><p>Do not reply or pay. Read our explainer on spotting fake messages and report it.</p></details></div><div class="gl" style="margin-top:2rem"><h3>Results countdown</h3><p>KJSEA, expected December 2026:</p><div class="clk" data-t="2026,11,1"></div><p>KCSE and KPSEA, targeted January 2027:</p><div class="clk" data-t="2027,0,1"></div></div>
+</div></section>
+<section class="sec alt" id="courses" aria-labelledby="crh"><div class="w">
+<h2 class="sh" id="crh">Courses and skills</h2>
+<p class="sub">Free, self-paced skill guides for learners, parents and teachers. Open a course to read each lesson and tick it off as you go. Progress is saved on this device. These are learning guides and do not award certificates.</p>
+<div class="sb"><input id="csq" type="search" placeholder="Search courses, e.g. CV or typing" aria-label="Search courses"></div>
+<div class="chips" id="ccs" role="group" aria-label="Course categories"></div>
+<p class="sub" id="cp" style="margin:0 0 1rem"></p>
+<div class="ex3" id="cl2"></div>
+<div class="warn"><h3 style="color:var(--hd)">Request a course</h3><p style="color:var(--tx)">Tell us which course you need and we will review the request. <a class="dl" href="https://wa.me/254715363944?text=I%20would%20like%20a%20course%20on%E2%80%A6" target="_blank" rel="noopener">Suggest a course on WhatsApp ΓåÆ</a></p></div>
+</div></section>
+<section class="sec" id="games" aria-labelledby="gmh"><div class="w">
+<h2 class="sh" id="gmh">Games and quizzes</h2>
+<p class="sub">Mwalimu FamilyΓÇÖs subject quizzes and learning games. Scores and best results are saved on this device only.</p>
+<div class="chips" id="gtabs" role="group" aria-label="Choose an activity"><button class="chip on" data-p="gq">Subject quizzes</button><button class="chip" data-p="gm">Memory match</button><button class="chip" data-p="gs">Speed maths</button><button class="chip" data-p="gw">Word scramble</button></div>
+<div id="gq" class="gp"><label for="qzs">Subject</label><select class="sel" id="qzs" style="max-width:260px"></select><button class="gb" id="qzb">Start quiz</button><div id="qza" aria-live="polite"></div></div>
+<div id="gm" class="gp" hidden><p>Match each Kiswahili word with its English meaning.</p><p id="mmi" style="font-weight:700"></p><div class="mmg" id="mmg"></div><button class="gb o" id="mmr">New game</button></div>
+<div id="gs" class="gp" hidden><label for="spo">Operation</label><select class="sel" id="spo" style="max-width:160px"><option>+</option><option>ΓêÆ</option><option>├ù</option></select><button class="gb" id="sps">Start 60 seconds</button><p id="spt" style="font-weight:700"></p><p id="spq" style="font:800 2rem Fraunces,serif"></p><input class="sel" id="spa" type="number" style="max-width:200px" aria-label="Your answer" disabled><button class="gb o" id="spk" disabled>Submit</button><p id="spr" style="font-weight:700"></p></div>
+<div id="gw" class="gp" hidden><p>Unscramble the word. Use the hint.</p><p id="wsq" style="font:800 2rem Fraunces,serif;letter-spacing:.2em"></p><p id="wsh"></p><input class="sel" id="wsa" type="text" style="max-width:240px" aria-label="Your answer" autocomplete="off"><button class="gb" id="wsk">Check</button><button class="gb o" id="wsn">Skip</button><p id="wsr" style="font-weight:700"></p></div>
+<div class="warn" style="margin-top:2rem"><h3 style="color:var(--hd)">My best scores</h3><p id="gsc" style="color:var(--tx)"></p></div>
+</div></section>
+<section class="sec" id="help" aria-labelledby="hlh"><div class="w">
+<h2 class="sh" id="hlh">Help and glossary</h2><p class="sub">Answers to common questions and plain-language meanings of education terms. Confirm details with official sources.</p>
+<button class="gb o" onclick="print()">Print this page</button>
+<h3 style="margin-top:2rem">Frequently asked questions</h3><div class="fq">
+<details><summary>Where do I check KJSEA, KPSEA or KCSE results?</summary><p>Only through official Ministry of Education and KNEC channels. Never pay to see results early.</p></details>
+<details><summary>How is Grade 10 placement decided?</summary><p>Placement follows Ministry of Education guidance. Check the ParentsΓÇÖ hub and your school for the current process.</p></details>
+<details><summary>How do I apply for a HELB loan?</summary><p>Apply on the official HELB site, helb.co.ke, and never pay agents to apply for you.</p></details>
+<details><summary>How do I apply for university or college?</summary><p>Placement is coordinated by KUCCPS. Use our cluster-points estimate in Tools, then confirm on the KUCCPS site.</p></details>
+<details><summary>Are the templates free?</summary><p>Yes. Every template is free and downloads as an editable Word file with no sign-up.</p></details>
+<details><summary>How do I report a mistake or a suspicious message?</summary><p>Message us on WhatsApp or use the contact form. Report scams to the authorities.</p></details>
+</div>
+<h3 style="margin-top:2.5rem">Glossary</h3><div class="sb"><input id="gls" type="search" placeholder="Search terms, e.g. CBE" aria-label="Search glossary"></div><dl class="gloss" id="gl"></dl>
+</div></section>
+<section class="sec" id="parents" aria-labelledby="ph"><div class="w">
+<h2 class="sh" id="ph">ParentsΓÇÖ hub</h2><p class="sub">Plain-language guides for Kenyan families. Always confirm details with the official sources linked below.</p>
+<h3>Grade 10 pathways</h3><div class="ex3"><div><h3>STEM</h3><dl><dt>Suits learners who</dt><dd>enjoy experiments, building, mathematics and problem solving.</dd><dt>Areas of study</dt><dd>Pure Sciences, Applied Sciences and Technical Studies.</dd><dt>Possible next steps</dt><dd>Engineering, health sciences, computing, agriculture and technical trades.</dd><dt>Ask the school</dt><dd>Which STEM subjects, laboratories and equipment do you offer?</dd></dl></div><div><h3>Social Sciences</h3><dl><dt>Suits learners who</dt><dd>enjoy reading, writing, debate and understanding people and society.</dd><dt>Areas of study</dt><dd>Languages and Literature, Humanities and Business Studies.</dd><dt>Possible next steps</dt><dd>Law, teaching, journalism, business and public service.</dd><dt>Ask the school</dt><dd>Which language and humanities subjects are offered, and in which combinations?</dd></dl></div><div><h3>Arts and Sports</h3><dl><dt>Suits learners who</dt><dd>have strong creative or athletic talents.</dd><dt>Areas of study</dt><dd>Sports Science, Performing Arts and Visual Arts.</dd><dt>Possible next steps</dt><dd>Sports and fitness, music, theatre, design and media.</dd><dt>Ask the school</dt><dd>What facilities, coaches and talent programmes do you have?</dd></dl></div></div><h3 style="margin-top:2rem">Questions to ask at a parent-teacher meeting</h3><ol class="jn"><li>How is my child progressing against the expected competencies?</li><li>Which subjects or strands need more support at home?</li><li>How are projects and classroom assessments recorded?</li><li>What can we practise together at home each week?</li><li>Which pathway do my childΓÇÖs strengths suggest, and what evidence supports it?</li><li>How can we reach you between meetings?</li></ol>
+<p>Subject combinations vary by school. Follow the MinistryΓÇÖs placement guidance and try our <a class="dl" href="#tools">pathway conversation starter</a>.</p>
+<h3 style="margin-top:2.5rem">Guides and official links</h3><div class="x2"><a class="x2c" href="https://www.kuccps.net" target="_blank" rel="noopener"><h3>University and college placement</h3><p>KUCCPS: courses, clusters and application. Try the <span class="dl">cluster calculator</span> in Tools.</p></a><a class="x2c" href="https://www.helb.co.ke" target="_blank" rel="noopener"><h3>HELB loans</h3><p>Apply and check loan status on the official HELB site.</p></a><a class="x2c" href="https://www.education.go.ke" target="_blank" rel="noopener"><h3>Ministry of Education</h3><p>Circulars, term calendar, capitation and NEMIS/UPI information.</p></a><a class="x2c" href="https://www.knec.ac.ke" target="_blank" rel="noopener"><h3>KNEC</h3><p>Official examination and results information.</p></a></div>
+<div class="warn"><h3>Results scam alert</h3><p style="color:var(--tx)">Only official Ministry of Education and KNEC channels release results. Never pay anyone to ΓÇ£see results earlyΓÇ¥ and never share your childΓÇÖs details with unknown numbers. <a class="dl" href="#/s4">Read the explainer ΓåÆ</a></p></div>
+<h3>My school calendar</h3><p>Enter term dates from the Ministry calendar or your school circular, then download a calendar file for your phone.</p><div id="cal"></div><button class="gb" id="cdl">Download calendar (.ics)</button>
+</div></section>
+<section class="sec mb bp" id="jobs" aria-labelledby="jbh"><div class="w"><h2 class="sh" id="jbh">Education jobs</h2><p class="sub">Vacancies from schools and education organisations. Genuine employers never charge application fees. Every listing is reviewed before it appears.</p>
+<div class="fl"><input class="sel" id="jq" type="search" placeholder="Search jobs" aria-label="Search jobs" style="width:auto;min-width:220px"><select class="sel" id="jc" aria-label="Category"><option value="">All categories</option><option>Teaching</option><option>School management</option><option>Support staff</option><option>Tutoring</option></select></div>
+<div class="x2" id="jl"></div><div class="x2"><div><h3>Tips for applicants</h3><ul class="kf"><li>Read the advert fully and note the deadline.</li><li>Tailor your CV to the role.</li><li>Prepare certified copies of certificates.</li><li>Apply only through the contact given in the advert.</li></ul></div><div><h3>Spot a fake job</h3><ul class="kf"><li>It asks for an application or training fee.</li><li>It uses a personal email or unknown number.</li><li>It promises very high pay for little work.</li><li>It pressures you to decide quickly.</li></ul></div><div><h3>Tips for employers</h3><ul class="kf"><li>State the role, location and deadline.</li><li>List qualifications and how to apply.</li><li>Never charge applicants.</li><li>Give an official contact.</li></ul></div></div><div class="fm" data-fm="job" style="max-width:640px"></div></div></section>
+<section class="sec mb bp" id="advertise" aria-labelledby="adh"><div class="w"><h2 class="sh" id="adh">Advertise and promote</h2><p class="sub">Reach teachers, parents and learners across Kenya. Rates are shared on request.</p>
+<div class="x2"><div><h3>Sponsored notice</h3><p>A labelled notice on the notice board.</p></div><div><h3>Featured job listing</h3><p>Pin a vacancy at the top of the jobs page.</p></div><div><h3>Newsletter and WhatsApp</h3><p>A mention in our updates to subscribers.</p></div><div><h3>Homepage banner</h3><p>A promotion spot on the home page.</p></div><div><h3>Event promotion</h3><p>Workshops, open days, school fairs and launches.</p></div></div>
+<h3 style="margin-top:2rem">How advertising works</h3><ol class="jn"><li>Send an enquiry with what you want to promote.</li><li>We review it for accuracy, safety and fit.</li><li>We share rates and a proof for approval.</li><li>Your promotion goes live with a Sponsored label and an end date.</li></ol><h3 style="margin-top:1.5rem">What to send us</h3><ul class="kf"><li>Organisation name and contact person</li><li>What you are promoting and the dates</li><li>Short text and any approved image</li><li>A verifiable link or phone number</li></ul><div class="warn"><h3 style="color:var(--hd)">Advertising standards</h3><p style="color:var(--tx)">Every promotion is labelled ΓÇ£SponsoredΓÇ¥, must be truthful and relevant to education and families, and must not target children. We may decline or remove any promotion.</p></div>
+<div class="fm" data-fm="ad" style="max-width:640px"></div></div></section>
+<section class="sec mb board" id="tutoring" aria-labelledby="tuh"><div class="w"><h2 class="sh" id="tuh">Tutoring and practice</h2><p class="sub">Practise maths, test yourself, find a tutor, or offer your skills as one.</p>
+<div class="x2"><div><h3>Maths practice</h3><label>Operation</label><select class="sel" id="mpo"><option>+</option><option>ΓêÆ</option><option>├ù</option><option>├╖</option></select><label>Level</label><select class="sel" id="mpl"><option value="1">1 Easy</option><option value="2">2 Medium</option><option value="3">3 Hard</option></select><button class="gb" id="mpb">New set</button><div id="mpq"></div><button class="gb o" id="mpc" hidden>Check answers</button><p id="mpr" style="font-weight:700"></p></div><div class="fm" data-fm="find"></div><div class="fm" data-fm="tut"></div></div>
+<div class="eg" style="margin-top:0"><div class="gl" id="qz" style="grid-column:1/-1"><h3>Quick quiz</h3><select class="sel" id="qs" aria-label="Quiz subject"><option value="m">Mathematics</option><option value="s">Science</option><option value="k">Kiswahili</option></select><div class="pb"><i id="qp"></i></div><div id="qb"></div></div></div></div></section>
+<section class="sec" id="activity" aria-labelledby="avh"><div class="w"><h2 class="sh" id="avh">My activity</h2><p class="sub">What you have sent, saved and completed on this device.</p><div class="x2"><div><h3>My submissions</h3><div id="as"></div></div><div><h3>Saved materials</h3><p id="am"></p><a class="dl" href="#library">Open the library</a></div><div><h3>Grade 10 checklist</h3><p id="ac"></p><a class="dl" href="#notices">Open the checklist</a></div></div><div class="warn"><h3 style="color:var(--hd)">How submissions work</h3><ol class="jn"><li>You send a form. WhatsApp opens with your reference number.</li><li>Our team reviews it for accuracy, safety and fit.</li><li>Approved items are published with an end date.</li><li>Featured and sponsored items are always labelled.</li></ol></div></div></section>
+<section class="sec" id="videos" aria-labelledby="vh" style="padding-left:0;padding-right:0">
+<div class="w"><h2 class="sh rv" id="vh">Family videos</h2><p class="sub rv">Watch our lessons and family videos. Subscribe on YouTube and turn on notifications for new uploads.</p></div>
+<div class="vs" tabindex="0" aria-label="Video categories">
+<a href="https://youtube.com/@mwalimufamily" class="v"><span class="play" aria-hidden="true">Γû╢</span><div><h3>Family Vlogs</h3><p>Day-in-the-life videos and outings.</p></div></a>
+<a href="https://youtube.com/@mwalimufamily" class="v"><span class="play" aria-hidden="true">Γû╢</span><div><h3>Mini Lessons</h3><p>Short educational videos on a range of topics.</p></div></a>
+<a href="https://youtube.com/@mwalimufamily" class="v"><span class="play" aria-hidden="true">Γû╢</span><div><h3>Celebrations</h3><p>Birthdays, holidays and milestones.</p></div></a>
+</div>
+</section>
+
+<section class="sec alt" id="about" aria-labelledby="ah">
+<div class="w">
+<h2 class="sh rv" id="ah">About Mwalimu Family</h2>
+<p class="sub rv" style="max-width:36em;font-size:1.25rem">ΓÇ£MwalimuΓÇ¥ means <em>teacher</em> in Swahili. We publish education news, teaching resources and learning tools for Kenyan teachers, parents and learners.</p>
+<div class="vals" style="margin-bottom:2.5rem">
+<div class="rv"><h3>Accuracy</h3><p>News is checked against official sources.</p></div>
+<div class="rv"><h3>Accessibility</h3><p>Free resources, a low-data mode and Kiswahili support.</p></div>
+<div class="rv"><h3>Practicality</h3><p>Tools and templates built for real classrooms.</p></div>
+<div class="rv"><h3>Accountability</h3><p>Sources are linked and corrections are published.</p></div>
+</div>
+</div>
+<div class="vals"><div class="rv"><h3>≡ƒù₧∩╕Å News Desk</h3><p>We check stories against official sources such as the Ministry of Education and KNEC.</p></div><div class="rv"><h3>Γ£ì∩╕Å Curriculum writers</h3><p>Templates are built from the published KICD curriculum designs.</p></div><div class="rv"><h3>≡ƒæ⌐≡ƒÅ╛ΓÇì≡ƒÅ½ Teacher feedback</h3><p>Teachers can tell us when a template needs fixing. Reviewed templates will be marked.</p></div><div class="rv"><h3>≡ƒöÄ How we work</h3><p>News, analysis and opinion are labelled. Stories link to sources and show a corrections note.</p></div></div>
+</div>
+</section>
+
+<section class="contact" id="contact" aria-labelledby="ch">
+<div class="w two">
+<div>
+<h2 class="sh" id="ch" style="color:#fff">Stay in touch</h2>
+<p style="font-size:1.15rem;margin-top:1rem"><a class="btn b1" href="https://wa.me/254715363944?text=Please%20add%20me%20to%20Mwalimu%20Family%20updates" target="_blank" rel="noopener" style="background:#25D366;color:#0b2b14;margin-bottom:1rem">Get updates on WhatsApp</a><br>Get new stories and learning materials by email. Find our social channels in the footer.</p>
+</div>
+<div class="fm">
+<div><label for="nm">Your name</label><input id="nm" type="text" autocomplete="name"></div>
+<div><label for="em">Email</label><input id="em" type="email" autocomplete="email"></div>
+<input id="mfhp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px">
+<label class="ck"><input id="mfck" type="checkbox"> I agree to receive emails and to the <a href="privacy.html" style="text-decoration:underline">privacy notice</a>.</label>
+<button id="mfsb" class="btn b1" style="min-height:52px">Subscribe</button>
+<p id="mfss" role="status" aria-live="polite" style="font-size:.95rem;margin-top:.5rem"></p>
+</div>
+</div>
+</section>
+</main>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="ig" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#FEDA75"/><stop offset=".35" stop-color="#FA7E1E"/><stop offset=".65" stop-color="#D62976"/><stop offset="1" stop-color="#4F5BD5"/></linearGradient></defs></svg>
+<footer><div class="w">
+<div class="top"><p>Follow @mwalimufamily on all platforms</p>
+<div class="icons">
+<a class="ico" href="https://facebook.com/mwalimufamily" target="_blank" rel="noopener" aria-label="Facebook"><svg viewBox="0 0 44 44" aria-hidden="true"><circle cx="22" cy="22" r="22" fill="#1877F2"/><path d="M24.2 35V24.4h3.5l.6-4.2h-4.1v-2.6c0-1.2.4-2 2.1-2h2.2v-3.7c-.4-.1-1.700-.2-3.200-.2-3.200 0-5.300 1.900-5.300 5.400v3.100h-3.600v4.200h3.600V35z" fill="#fff"/></svg></a>
+<a class="ico" href="https://instagram.com/mwalimufamily" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 44 44" aria-hidden="true"><circle cx="22" cy="22" r="22" fill="url(#ig)"/><rect x="12.500" y="12.500" width="19" height="19" rx="5.500" fill="none" stroke="#fff" stroke-width="2.200"/><circle cx="22" cy="22" r="4.500" fill="none" stroke="#fff" stroke-width="2.200"/><circle cx="27.800" cy="16.200" r="1.400" fill="#fff"/></svg></a>
+<a class="ico" href="https://x.com/mwalimufamily" target="_blank" rel="noopener" aria-label="X (Twitter)"><svg viewBox="0 0 44 44" aria-hidden="true"><circle cx="22" cy="22" r="21" fill="#000" stroke="#fff" stroke-opacity=".45" stroke-width="2"/><path d="M14 13.500l16 17" stroke="#fff" stroke-width="3" stroke-linecap="round"/><path d="M30 13.500L14 30.500" stroke="#fff" stroke-width="1.600" stroke-linecap="round"/></svg></a>
+<a class="ico" href="https://youtube.com/@mwalimufamily" target="_blank" rel="noopener" aria-label="YouTube"><svg viewBox="0 0 44 44" aria-hidden="true"><circle cx="22" cy="22" r="22" fill="#fff"/><rect x="8" y="12.500" width="28" height="19" rx="6" fill="#FF0000"/><path d="M19 17.500l8 5-8 5z" fill="#fff"/></svg></a>
+<a class="ico" href="https://tiktok.com/@mwalimufamily" target="_blank" rel="noopener" aria-label="TikTok"><svg viewBox="0 0 44 44" aria-hidden="true"><circle cx="22" cy="22" r="21" fill="#000" stroke="#fff" stroke-opacity=".45" stroke-width="2"/><g fill="none" stroke-width="3" stroke-linecap="round"><path d="M22.200 11v14.500a4 4 0 1 1-4-4M22.200 11c.4 3 2.400 5 5.600 5.300" stroke="#25F4EE" transform="translate(-1.200 -1)"/><path d="M22.200 11v14.500a4 4 0 1 1-4-4M22.200 11c.4 3 2.400 5 5.600 5.300" stroke="#FE2C55" transform="translate(1.200 1)"/><path d="M22.200 11v14.500a4 4 0 1 1-4-4M22.200 11c.4 3 2.400 5 5.600 5.300" stroke="#fff"/></g></svg></a>
+<a class="ico" href="https://wa.me/254715363944" target="_blank" rel="noopener" aria-label="WhatsApp"><svg viewBox="0 0 44 44" aria-hidden="true"><circle cx="22" cy="22" r="22" fill="#25D366"/><path d="M22 11a11 11 0 0 0-9.400 16.700L11 33l5.500-1.500A11 11 0 1 0 22 11z" fill="none" stroke="#fff" stroke-width="2.200" stroke-linejoin="round"/><path d="M18.300 17.500c.5 3.800 4 7.200 8 8.400l1.600-1.700-2.600-1.500-1.200.9c-1.300-.5-2.700-1.900-3.200-3.200l.9-1.200-1.500-2.600z" fill="#fff"/></svg></a>
+</div></div>
+<div class="fc"><div><h4>Mwalimu Family</h4><p>News and learning resources for Kenyan families and teachers.</p></div><div><h4>Explore</h4><a href="#news">News</a><a href="#library">Library</a><a href="#teaching">Teaching</a><a href="#tools">Tools</a><a href="#tutoring">Tutoring</a><a href="#jobs">Jobs</a><a href="#advertise">Advertise</a></div><div><h4>Learn</h4><a href="#exams">Exams hub</a><a href="#games">Games and quizzes</a><a href="#courses">Courses and skills</a><a href="#help">Help and glossary</a><a href="#notices">Notice board</a><a href="#/grade/Grade%207">Grade 7</a><a href="#/grade/Grade%209">Grade 9</a><a href="#/grade/Grade%2010">Grade 10</a></div><div><h4>Company</h4><a href="#activity">My activity</a><a href="#videos">Videos</a><a href="#about">About</a><a href="#contact">Contact</a></div></div>
+<div class="bot"><p>┬⌐ 2026 Mwalimu Family. @mwalimufamily on all platforms.</p><p><a href="#">Privacy</a> &nbsp; <a href="#">Terms</a> &nbsp; <a href="#contact">Contact</a></p></div>
+</div></footer>
+<script>
+(function(){
+var $=function(s,c){return Array.prototype.slice.call((c||document).querySelectorAll(s))};
+var bar=$('.bar')[0],hero=$('.hero')[0],sc=$('.scene'),hd=$('header')[0],links=$('nav a'),secs=$('main section[id]');
+var rm=matchMedia('(prefers-reduced-motion:reduce)').matches;
+function onS(){
+var y=scrollY,h=document.documentElement.scrollHeight-innerHeight;
+bar.style.width=(h>0?y/h*100:0)+'%';
+hd.classList.toggle('sol',y>40);
+if(!rm){var r=hero.getBoundingClientRect(),p=Math.min(1,Math.max(0,-r.top/(r.height-innerHeight)));
+hero.style.setProperty('--p',p.toFixed(3));
+var i=Math.min(2,Math.floor(p*3));sc.forEach(function(s,k){s.classList.toggle('on',k===i)})}
+}
+addEventListener('scroll',onS,{passive:true});onS();
+var tg=$('.tg')[0],menu=$('#menu')[0];
+tg.addEventListener('click',function(){var o=menu.classList.toggle('open');hd.classList.toggle('open',o);tg.setAttribute('aria-expanded',o)});
+links.forEach(function(l){l.addEventListener('click',function(){menu.classList.remove('open');hd.classList.remove('open');tg.setAttribute('aria-expanded','false')})});
+function count(el){var to=+el.dataset.to,t0=null;if(rm){el.textContent=to.toLocaleString('en-US');return}
+function f(t){t0=t0||t;var k=Math.min(1,(t-t0)/1600);el.textContent=Math.round(to*(1-Math.pow(1-k,3))).toLocaleString('en-US');if(k<1)requestAnimationFrame(f)}requestAnimationFrame(f)}
+if('IntersectionObserver' in window){
+var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');if(e.target.classList.contains('num'))count(e.target);io.unobserve(e.target)}})},{threshold:.15});
+$('.rv,.num').forEach(function(el){io.observe(el)})}else{$('.rv').forEach(function(el){el.classList.add('in')});$('.num').forEach(count)}
+$('[data-filter]').forEach(function(g){
+var box=$(g.dataset.filter)[0],items=$('[data-k]',box),one=g.hasAttribute('data-one'),em=$('.empty',box)[0];
+$('.chip',g).forEach(function(b){b.addEventListener('click',function(){
+$('.chip',g).forEach(function(x){x.classList.remove('on');x.setAttribute('aria-pressed','false')});
+b.classList.add('on');b.setAttribute('aria-pressed','true');
+var v=b.dataset.v,n=0;
+items.forEach(function(it){var k=it.dataset.k,show=one?k===v:(v==='all'||k===v||k==='all');it.hidden=!show;if(show)n++});
+if(em)em.hidden=n>0})})});
+})();
+
+(function(){
+var $=function(s,c){return Array.prototype.slice.call((c||document).querySelectorAll(s))};
+var A={
+s1:{t:'2026 KJSEA results expected in December as KCSE results targeted for January 2027',l:'News',d:'20 November 2026',c:['Education CS Julius Ogamba has announced the expected release timelines for the 2026 national examinations. KJSEA results are expected in December, while KCSE and KPSEA results are targeted for January 2027.','The KCSE had 1,048,355 candidates across 10,693 examination centres. KJSEA marking involves 13,484 examiners working at 24 marking centres.','Parents are advised to wait for official announcements before acting on social media rumours about release dates.'],r:['s2']},
+s2:{t:'What parents and learners should know about the KJSEA and KCSE timelines',l:'Analysis',d:'20 November 2026',c:['Release dates are targets, not guarantees. Families should plan around a window, not a single day.','While you wait: keep revision light and steady, agree who in the family will check official channels, and gather any documents the school may ask for.','Check results only through official Ministry of Education and KNEC channels, and be wary of messages asking you to pay to see results.'],r:['s1']},
+s4:{t:'How to spot fake KJSEA and KCSE results messages',l:'Explainer',d:'21 November 2026',c:['Every results season, fake messages circulate on social media and WhatsApp offering early results for a fee.','Red flags: a request for money, an unofficial number or link, pressure to act fast, or a request for your childΓÇÖs index number and personal details.','Use only official Ministry of Education and KNEC channels, and report suspicious messages to the authorities.'],r:['s1','s2']}};
+A.s2.r=['s1','s4'];A.s1.r=['s2','s4'];A.s1.x=A.s2.x=['#notices','KJSEA countdown and Grade 10 checklist'];A.s4.x=['#parents','Open the ParentsΓÇÖ hub'];
+A.s5={t:'KPSEA, KJSEA and KCSE explained: how KenyaΓÇÖs national assessments fit together',l:'Explainer',d:'21 November 2026',c:['Kenya has three national assessments that families hear about most. KPSEA comes at the end of Grade 6, KJSEA at the end of Grade 9 in Junior School, and KCSE at the end of secondary school.','Each one answers a different question. KPSEA marks the move from primary to Junior School, KJSEA informs placement into Grade 10 and the senior school pathways, and KCSE feeds university, college and TVET placement through KUCCPS.'],k:['KPSEA: end of Grade 6','KJSEA: end of Grade 9, Junior School','KCSE: end of secondary school','Results for 2026: KJSEA expected December, KPSEA and KCSE targeted January 2027'],m:['Know which assessment your child is preparing for, and ask the school how it will be used for placement.','Follow the Ministry of Education and KNEC for official dates and procedures.'],q:[['Which exam does my Grade 9 learner sit?','KJSEA, at the end of Junior School.'],['Where are results released?','Through official Ministry of Education and KNEC channels only. See the exams hub for safety tips.']],r:['s1','s4']};
+A.s1.k=['Announced by Education CS Julius Ogamba on 20 November 2026','KJSEA results expected in December 2026','KCSE and KPSEA results targeted for January 2027','1,048,355 KCSE candidates at 10,693 examination centres','13,484 KJSEA examiners at 24 marking centres'];
+A.s1.m=['Plan around the December window for KJSEA and the January window for KCSE and KPSEA, and treat all dates as targets.','Wait for official announcements before acting on social media rumours.'];
+A.s1.q=[['Will results be released on a fixed day?','The dates announced are targets, not guarantees. Watch official channels for confirmation.'],['Where should I check results?','Only through official Ministry of Education and KNEC channels. Never pay to see results early.'],['Why do the three exams have different dates?','They are separate assessments at different levels, each marked and processed on its own timeline.']];
+A.s2.k=['Release dates are targets, not guarantees','Plan around a window, not a single day','Use official channels only'];
+A.s2.q=[['What should we do while waiting?','Keep revision light and steady, agree who checks official channels, and gather documents the school may ask for.']];
+A.s4.k=['Red flag: any request for money','Red flag: unofficial number or link','Red flag: pressure to act fast','Red flag: asks for your childΓÇÖs index number or personal details'];
+A.s4.m=['If a message offers early results, do not reply or pay. Report it to the authorities and warn other families.'];
+A.s4.q=[['Can anyone release results early for a fee?','No. Only official Ministry of Education and KNEC channels release results.'],['What should I do if I already shared details?','Contact your school and the authorities promptly, and avoid replying further.']];
+A.s1.r=['s2','s4','s5'];A.s2.r=['s1','s4','s5'];A.s4.r=['s1','s2','s5'];A.s5.x=['#exams','Open the Exams hub'];
+var SRC='<p class="src"><strong>Sources:</strong> <a href="https://www.education.go.ke" target="_blank" rel="noopener">Ministry of Education</a>, <a href="https://www.knec.ac.ke" target="_blank" rel="noopener">KNEC</a>. <strong>Corrections:</strong> none to date.</p>';
+var V=$('#view')[0],M=$('main')[0],T0=document.title;
+function ld(a){var o=document.getElementById('ldj');if(o)o.remove();if(!a)return;var e=document.createElement('script');e.type='application/ld+json';e.id='ldj';e.textContent=JSON.stringify({'@context':'https://schema.org','@type':'NewsArticle',headline:a.t,datePublished:a.d,author:{'@type':'Organization',name:'Mwalimu Family News Desk'}});document.head.appendChild(e)}
+var PG=['games','courses','help','exams','news','library','parents','teaching','tools','notices','tutoring','jobs','advertise','activity','videos','about','contact'],LK=$('nav a');
+function act(id){LK.forEach(function(l){l.classList.toggle('active',l.getAttribute('href')==='#'+id)})}
+function route(){var h=location.hash,a=A[h.slice(2)];if(h.indexOf('#/grade/')===0){gp(decodeURIComponent(h.slice(8)));return}
+if(a){var u=location.href,wa='https://wa.me/?text='+encodeURIComponent(a.t+' '+u);
+V.innerHTML='<article class="art"><a href="#news" class="dl">ΓåÉ All news</a><h1>'+a.t+'</h1><p class="by"><span class="lab">'+a.l+'</span>By Mwalimu Family News Desk ┬╖ Published '+a.d+' ┬╖ Last updated '+a.d+' ┬╖ '+Math.max(1,Math.round(a.c.join(' ').split(' ').length/200))+' min read</p>'+(a.k?'<div class="warn"><h3 style="color:var(--hd)">Key facts</h3><ul class="kf">'+a.k.map(function(x){return'<li>'+x+'</li>'}).join('')+'</ul></div>':'')+a.c.map(function(x){return'<p>'+x+'</p>'}).join('')+(a.m?'<h2 style="font-size:1.5rem;margin-top:2rem">What it means for you</h2>'+a.m.map(function(x){return'<p>'+x+'</p>'}).join(''):'')+(a.q?'<h2 style="font-size:1.5rem;margin-top:2rem">Frequently asked questions</h2><div class="fq">'+a.q.map(function(x){return'<details><summary>'+x[0]+'</summary><p>'+x[1]+'</p></details>'}).join('')+'</div>':'')+'<a class="btn wab" href="'+wa+'" target="_blank" rel="noopener">Share on WhatsApp</a>'+SRC+(a.x?'<p><a class="dl" href="'+a.x[0]+'">'+a.x[1]+' ΓåÆ</a></p>':'')+'<h2 style="font-size:1.6rem;margin-top:2rem">Related stories</h2>'+a.r.map(function(k){return'<p><a class="dl" href="#/'+k+'">'+A[k].t+'</a></p>'}).join('')+'</article>';
+V.hidden=false;M.hidden=true;document.body.classList.add('vw');document.title=a.t+' ΓÇö Mwalimu Family';ld(a);scrollTo({top:0,behavior:'instant'});act('');return}
+var id=h.replace('#',''),home=PG.indexOf(id)<0,vis=home?['home','find','haud','hstats','hweek','hnews','hnew','htools','htl','hcount','hvid','habout','hcta']:[id];
+$('main>section').forEach(function(x){x.hidden=vis.indexOf(x.id)<0});V.hidden=true;M.hidden=false;document.body.classList.toggle('vw',!home);
+var t=home?T0:($('h1,h2',document.getElementById(id))[0]||{}).textContent+' ΓÇö Mwalimu Family';document.title=t;ld();act(id);scrollTo({top:0,behavior:'instant'})}
+addEventListener('hashchange',route);route();
+var G=['PP1','PP2','Grade 1','Grade 2','Grade 3','Grade 4','Grade 5','Grade 6','Grade 7','Grade 8','Grade 9','Grade 10','Grade 11','Grade 12','Form 1','Form 2','Form 3','Form 4'];
+var SB=[['Literacy','Mathematics','Kiswahili','English','Environmental Activities','Religious Education','Creative Activities'],['Mathematics','English','Kiswahili','Science and Technology','Social Studies','Agriculture and Nutrition','Religious Education','Creative Arts'],['Mathematics','English','Kiswahili','Integrated Science','Social Studies','Agriculture and Nutrition','Pre-Technical Studies','Creative Arts and Sports','Religious Education'],['English','Kiswahili','Core Mathematics','Community Service Learning','Physical Education','Biology','Chemistry','Physics','General Science','Essential Mathematics','Computer Studies','Agriculture','Home Science','Business Studies','Geography','History and Citizenship','Literature in English','Fasihi ya Kiswahili','Christian Religious Education','Islamic Religious Education','Fine Arts','Music and Dance','Theatre and Film','Sports and Recreation'],['Mathematics','English','Kiswahili','Biology','Chemistry','Physics','History','Geography','CRE','IRE','Business Studies','Computer Studies','Agriculture','Home Science','Literature in English']];
+function subs(g){var i=G.indexOf(g);return SB[i<5?0:i<8?1:i<11?2:i<14?3:4]}
+var TY=[['Scheme','scheme'],['Lesson plan','lesson'],['Notes','notes'],['Exam','exam'],['Record','record']],TE=['Term 1','Term 2','Term 3'],EM=[[/math|numer/i,'≡ƒöó'],[/english|literacy/i,'≡ƒôû'],[/kiswahili/i,'≡ƒùú∩╕Å'],[/science|biology|physics|chem/i,'≡ƒö¼'],[/social|history|geograph|citizen/i,'≡ƒîì'],[/agri/i,'≡ƒî▒'],[/relig|cre/i,'≡ƒòè∩╕Å'],[/art|creative/i,'≡ƒÄ¿'],[/tech|computer/i,'≡ƒ¢á∩╕Å'],[/business/i,'≡ƒÆ╝'],[/physical|sport/i,'ΓÜ╜']];
+function emo(x){for(var i=0;i<EM.length;i++)if(EM[i][0].test(x))return EM[i][1];return'≡ƒôÜ'}
+function hs(x){var h=0;for(var i=0;i<x.length;i++)h=(h*31+x.charCodeAt(i))%360;return h}
+var HD0='<p>School: ________ Teacher: ________ Grade: ____ Subject: ________ Term: ____ Year: ____</p>',HD=HD0;
+function lc(x){return/math|numer/i.test(x)?'use shillings, market prices, matatu fares and farm measurements as examples.':/english|literacy|kiswahili/i.test(x)?'use local stories, methali, nahau and community news as texts.':/science|biology|physics|chem/i.test(x)?'use the school garden, local water sources, weather and household items.':/social|history|geograph|citizen/i.test(x)?'use your county, local leaders and community history.':/agri|nutrition/i.test(x)?'use crops, livestock and foods grown in your area.':'link the topic to learnersΓÇÖ homes, markets and community projects.'}
+function mk(k,g,sj,t){if(g)HD='<p>School: ________ Teacher: ________ Grade: <b>'+g+'</b> Subject: <b>'+esc(sj)+'</b> Term: <b>'+t+'</b> Year: <b>2026</b></p><p><i>Local context idea: '+lc(sj)+'</i></p>';var r=D[k]();HD=HD0;return r}
+function sv(){try{return JSON.parse(localStorage.getItem('mfs')||'[]')}catch(e){return[]}}
+function cov(g,sj){var h=hs(sj);return'<div class="cv" style="background:repeating-linear-gradient(45deg,rgba(255,255,255,.09) 0 6px,transparent 6px 16px),linear-gradient(135deg,hsl('+h+' 55% 26%),hsl('+(h+40)+' 60% 40%))"><span>'+emo(sj)+'</span><small>'+g+'</small></div>'}
+function card(g,sj,t,ty){var id=[g,sj,t,ty].join('|'),on=sv().indexOf(id)>-1,wa='https://wa.me/?text='+encodeURIComponent(g+' '+sj+' '+t+' '+ty+' teaching material, free: '+location.href.split('#')[0]+'#library');
+return'<div class="mc">'+cov(g,sj)+'<div class="mb"><h3>'+esc(sj)+'</h3><p>'+t+' ┬╖ <b>'+ty+'</b> ┬╖ Word</p><div><button class="gb dl2" data-id="'+id+'">Download</button><button class="gb o sv2" data-id="'+id+'">'+(on?'Γÿà Saved':'Γÿå Save')+'</button><a class="gb o" href="'+wa+'" target="_blank" rel="noopener">Share</a></div></div></div>'}
+var F={g:'',s:'',t:'',y:'',q:'',n:24},lgd=$('#lg')[0];
+function items(){var o=[];G.forEach(function(g){if(F.g&&g!==F.g)return;subs(g).forEach(function(sj){if(F.s&&sj!==F.s)return;TE.forEach(function(t){if(F.t&&t!==F.t)return;TY.forEach(function(y){if(F.y&&y[0]!==F.y)return;if(F.q&&(g+' '+sj+' '+t+' '+y[0]).toLowerCase().indexOf(F.q)<0)return;o.push([g,sj,t,y[0]])})})})});return o}
+function rl(){var o=items();lgd.innerHTML=o.slice(0,F.n).map(function(x){return card.apply(0,x)}).join('');$('#fc')[0].textContent=o.length.toLocaleString('en-US')+' editable templates';$('#mo')[0].hidden=o.length<=F.n;rs()}
+function rs(){var a=sv();$('#sv')[0].innerHTML=a.length?a.map(function(i){return card.apply(0,i.split('|'))}).join(''):'<p class="empty">Tap Γÿå Save on any material and it will appear here (saved on this device).</p>'}
+function fs(){var l=F.g?subs(F.g):[].concat.apply([],SB).filter(function(x,i,a){return a.indexOf(x)===i});$('#fs')[0].innerHTML='<option value="">All subjects</option>'+l.map(function(x){return'<option>'+x+'</option>'}).join('')}
+$('#fg')[0].innerHTML='<option value="">All grades</option>'+G.map(function(g){return'<option value="'+g+'">'+g+(/^Form/.test(g)?' (8.4.4 legacy)':'')+'</option>'}).join('');fs();
+$('#fy')[0].innerHTML=['All'].concat(TY.map(function(t){return t[0]})).map(function(t,i){return'<button class="chip'+(i?'':' on')+'" data-v="'+(i?t:'')+'">'+t+'</button>'}).join('');
+$('#fg')[0].onchange=function(){F.g=this.value;F.s='';fs();F.n=24;rl()};$('#fs')[0].onchange=function(){F.s=this.value;F.n=24;rl()};$('#ft')[0].onchange=function(){F.t=this.value;F.n=24;rl()};
+$('#fy .chip').forEach(function(b){b.onclick=function(){$('#fy .chip').forEach(function(x){x.classList.toggle('on',x===b)});F.y=b.dataset.v;F.n=24;rl()}});
+$('#mo')[0].onclick=function(){F.n+=24;rl()};
+var gq=$('#gq')[0],news=$('#rows a');
+function an(){var m=0,cc=($('#news .chip.on')[0]||{dataset:{v:'all'}}).dataset.v;news.forEach(function(a){var ok=(cc==='all'||a.dataset.k===cc)&&(!F.q||a.textContent.toLowerCase().indexOf(F.q)>-1);a.hidden=!ok;if(ok)m++});$('.empty',$('#rows')[0])[0].hidden=m>0}
+[gq,$('#lq')[0],$('#nq')[0]].forEach(function(i){i.oninput=function(){F.q=i.value.trim().toLowerCase();[gq,$('#lq')[0],$('#nq')[0]].forEach(function(o){if(o!==i)o.value=i.value});F.n=24;rl();an()}});gq.onkeydown=function(e){if(e.key==='Enter')location.hash='#library'};
+$('#news .chip').forEach(function(b){b.addEventListener('click',an)});
+var CV=[['s1','≡ƒô░'],['s2','≡ƒÄô'],['s3','≡ƒù│∩╕Å']];
+function gp(g){if(!G)return;var sb=subs(g);if(G.indexOf(g)<0)return;V.innerHTML='<div class="art" style="max-width:1000px"><a href="#find" class="dl">ΓåÉ Home</a><h1>'+g+' teaching and learning materials</h1><p>Free editable schemes, lesson plans, notes, exams and records for every '+g+' subject.</p>'+(G.indexOf(g)>=11&&G.indexOf(g)<=13?'<p><em>Senior school: subjects are grouped into STEM, Social Sciences, and Arts and Sports pathways. Combinations vary by school, so confirm with the Ministry or your school.</em></p>':'')+'<select class="sel" id="gt" style="max-width:200px" aria-label="Term">'+TE.map(function(t){return'<option>'+t+'</option>'}).join('')+'</select><div class="mg" id="gg"></div><p><a class="dl" href="#library">Open the full library</a></p></div>';
+function r(){var t=$('#gt')[0].value;$('#gg')[0].innerHTML=sb.map(function(x){return'<div class="mc">'+cov(g,x)+'<div class="mb"><h3>'+x+'</h3><div>'+TY.map(function(y){return'<button class="gb o dl2" data-id="'+[g,x,t,y[0]].join('|')+'">'+y[0]+'</button>'}).join('')+'</div></div></div>'}).join('')}
+r();$('#gt')[0].onchange=r;V.hidden=false;M.hidden=true;act('library');document.body.classList.add('vw');document.title=g+' materials ΓÇö Mwalimu Family';scrollTo(0,0)}
+document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('.dl2,.sv2');if(!b)return;var p=b.dataset.id.split('|');
+if(b.classList.contains('dl2')){var k=TY.filter(function(y){return y[0]===p[3]})[0][1];save(p.join(' '),mk(k,p[0],p[1],p[2]))}
+else{var a=sv(),i=a.indexOf(b.dataset.id);i>-1?a.splice(i,1):a.push(b.dataset.id);try{localStorage.setItem('mfs',JSON.stringify(a))}catch(x){}b.textContent=i>-1?'Γÿå Save':'Γÿà Saved';rs()}});
+rl();
+function rn(t){var ty=t||'Exam',x=[['Grade 7','Mathematics'],['Grade 8','English'],['Grade 9','Integrated Science'],['Grade 10','Biology']];$('#nw')[0].innerHTML=x.map(function(y){return card(y[0],y[1],'Term 3',ty)}).join('')}
+$('#hc')[0].innerHTML=['All'].concat(TY.map(function(t){return t[0]})).map(function(t,i){return'<button class="chip'+(i?'':' on')+'" data-v="'+(i?t:'Exam')+'">'+t+'</button>'}).join('');
+$('#hc .chip').forEach(function(b){b.onclick=function(){$('#hc .chip').forEach(function(x){x.classList.toggle('on',x===b)});rn(b.dataset.v)}});rn();
+var n1=A.s1;$('#hn')[0].innerHTML='<a class="mc" href="#/s1"><div class="cv" style="height:190px;background:linear-gradient(135deg,hsl('+hs(n1.t)+' 50% 24%),hsl('+(hs(n1.t)+50)+' 55% 38%))"><span>≡ƒô░</span><small>'+n1.l+'</small></div><div class="mb"><h3 style="font-size:1.5rem">'+n1.t+'</h3><p>'+n1.c[0]+'</p><span class="dl">Read the story ΓåÆ</span></div></a><div class="nr">'+['s2','s4'].map(function(k){var a=A[k];return'<a class="rc" href="#/'+k+'"><span class="tag">'+a.l+'</span><h3>'+a.t+'</h3><time>'+a.d+'</time></a>'}).join('')+'</div>';
+$('#nt')[0].dataset.to=G.reduce(function(n,g){return n+subs(g).length*15},0);
+var hg=$('#hg')[0],hs=$('#hs')[0];hg.innerHTML=G.slice(0,14).map(function(g){return'<option>'+g+'</option>'}).join('');hg.value='Grade 7';function hso(){hs.innerHTML=subs(hg.value).map(function(x){return'<option>'+x+'</option>'}).join('')}hso();hg.onchange=hso;
+$('#hdl')[0].onclick=function(){save(hg.value+' '+hs.value+' '+$('#ht')[0].value+' scheme',mk('scheme',hg.value,hs.value,$('#ht')[0].value))};
+// KCSE calculator
+var KP=[['A',12],['A-',11],['B+',10],['B',9],['B-',8],['C+',7],['C',6],['C-',5],['D+',4],['D',3],['D-',2],['E',1]];
+$('#kc')[0].innerHTML=[1,2,3,4,5,6,7].map(function(i){return'<select class="sel" aria-label="Subject '+i+'">'+KP.map(function(k){return'<option value="'+k[1]+'">Subject '+i+': '+k[0]+'</option>'}).join('')+'</select>'}).join('');
+$('#kb')[0].onclick=function(){var t=0;$('#kc select').forEach(function(x){t+=+x.value});var T=[[81,'A'],[74,'A-'],[67,'B+'],[60,'B'],[53,'B-'],[46,'C+'],[39,'C'],[32,'C-'],[25,'D+'],[18,'D'],[11,'D-'],[1,'E']],g='E';for(var i=0;i<T.length;i++)if(t>=T[i][0]){g=T[i][1];break}$('#ko')[0].textContent='Total '+t+'/84 ┬╖ Mean grade '+g+' (check KNEC for the official result)'};
+// comments
+var CM={'Exceeds expectation':'{n} has had an outstanding term, showing real strength in {s}. Encourage {n} to take on extension tasks.','Meets expectation':'{n} has worked steadily this term and shows good {s}. With regular practice {n} can aim even higher.','Approaches expectation':'{n} is making progress and shows promise in {s}. More revision and practice will help {n} reach the expected level.','Below expectation':'{n} needs extra support to meet expectations this term, though {s} is a positive. We will work with the family on a plan for {n}.'},cmt='';
+$('#cb')[0].onclick=function(){cmt=CM[$('#cv')[0].value].replace(/\{n\}/g,$('#cn')[0].value||'The learner').replace(/\{s\}/g,$('#cs')[0].value||'effort');$('#co')[0].textContent=cmt;$('#cc')[0].hidden=false};
+$('#cc')[0].onclick=function(){try{navigator.clipboard.writeText(cmt);this.textContent='Copied Γ£ô'}catch(e){}};
+// pathway starter
+var PQ=[['Which sounds most fun?',['Building or experimenting','Debating, writing or helping people','Music, art or sport']],['In a group project you usuallyΓÇª',['Solve the technical problem','Organise people and ideas','Design or perform the final piece']],['Which subject do you look forward to?',['Science or Maths','History, Geography or Languages','Creative Arts or PE']],['A free afternoon, you wouldΓÇª',['Fix or invent something','Read news or volunteer','Practise a sport or instrument']]],PN=['STEM','Social Sciences','Arts and Sports'],pi=0,ps=[0,0,0],pb=$('#pb')[0];
+function rp(){if(pi>=PQ.length){var m=ps.indexOf(Math.max.apply(0,ps));pb.innerHTML='<p style="font:800 1.4rem Fraunces,serif">Leaning towards: '+PN[m]+'</p><p style="font-size:.9rem">This is only a conversation starter. Follow official Ministry guidance for placement.</p><button class="gb" id="pr2">Restart</button>';$('#pr2')[0].onclick=function(){pi=0;ps=[0,0,0];rp()};return}
+pb.innerHTML='<p style="font-weight:600">'+PQ[pi][0]+'</p>'+PQ[pi][1].map(function(o,i){return'<button class="qo" data-i="'+i+'">'+o+'</button>'}).join('');$('.qo',pb).forEach(function(b){b.onclick=function(){ps[+b.dataset.i]++;pi++;rp()}})}
+rp();
+// cinematic glyphs + spotlight
+var rm2=matchMedia('(prefers-reduced-motion:reduce)').matches;
+$('.cine').forEach(function(sec){var g=$('.gy',sec)[0];if(!rm2){'Γêæ ╧Ç Γ£Ä A+ ΓêÜ Γëá Γê₧ ≡ƒôÉ ≡ƒôû abc 7├ù8 HΓééO'.split(' ').forEach(function(x,i){var e=document.createElement('i');e.textContent=x;e.style.left=(i*8.5+3)+'%';e.style.animationDuration=(16+i*3)+'s';e.style.animationDelay='-'+(i*2.3)+'s';g.appendChild(e)});sec.addEventListener('pointermove',function(ev){var r=sec.getBoundingClientRect();sec.style.setProperty('--mx',(ev.clientX-r.left)+'px');sec.style.setProperty('--my',(ev.clientY-r.top)+'px')})}});
+// downloads
+function esc(x){return String(x).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function tb(h,rows,n){var o='<table border="1" cellpadding="6" style="border-collapse:collapse;width:100%"><tr>'+h.map(function(x){return'<th>'+x+'</th>'}).join('')+'</tr>';for(var i=0;i<rows;i++)o+='<tr>'+h.map(function(x,j){return'<td>'+(n&&j===0?i+1:'&nbsp;')+'</td>'}).join('')+'</tr>';return o+'</table>'}
+function save(name,body){var b=new Blob(['<html><head><meta charset="utf-8"></head><body style="font-family:Arial">'+body+'</body></html>'],{type:'application/msword'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=name+'.doc';document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(a.href)},2000)}
+var SH=['Week','Lesson','Strand','Sub-strand','Specific learning outcomes','Learning experiences','Key inquiry question(s)','Learning resources','Assessment','Reflection'];
+var D={scheme:function(){return'<h2>Scheme of work</h2>'+HD+tb(SH,13,1)},
+lesson:function(){return'<h2>Lesson plan</h2>'+HD+'<p>Date: ____ Time: ____ Roll: ____</p>'+['Strand / sub-strand','Specific learning outcomes','Key inquiry question(s)','Learning resources','Introduction (5 min)','Lesson development (30 min)','Conclusion (5 min)','Assessment','Extended activity','Reflection on the lesson'].map(function(x){return'<h4>'+x+'</h4><p>&nbsp;</p>'}).join('')},
+notes:function(){return'<h2>Lesson notes</h2>'+HD+['Topic','Learning outcomes','Key terms','Notes','Worked examples','Learner activities','Summary','Revision questions'].map(function(x){return'<h4>'+x+'</h4><p>&nbsp;</p>'}).join('')},
+exam:function(){return'<h2>End-term examination</h2>'+HD+'<p>Name: ________ Adm No: ____ Time: ____ Total marks: ____</p><h3>Section A (short answer)</h3>'+tb(['No.','Question','Marks'],6,1)+'<h3>Section B (structured)</h3>'+tb(['No.','Question','Marks'],4,1)+'<br><h2>Marking scheme</h2>'+tb(['No.','Expected answer','Marks'],10,1)},
+rubric:function(){return'<h2>Competency assessment rubric</h2>'+HD+tb(['Sub-strand / skill','Exceeds expectation (4)','Meets expectation (3)','Approaches expectation (2)','Below expectation (1)'],6)},
+tpad:function(){return'<h2>Appraisal evidence log</h2>'+HD+tb(['Performance area','Evidence','Target','Rating','Remarks'],8)},
+record:function(){return'<h2>Record of work covered</h2>'+HD+tb(['Week','Date','Strand / sub-strand','Work covered','Remarks'],13,1)}};
+var TM=[['Exams','End-term exam paper with marking scheme','exam','All grades'],['Exams','Competency assessment rubric','rubric','All grades'],['Schemes','Scheme of work template (editable)','scheme','PP1 to Grade 12'],['Lesson notes','Lesson plan template','lesson','All grades'],['Lesson notes','Lesson notes template','notes','All grades'],['Records','Record of work covered','record','All grades'],['Records','Appraisal evidence log (use TSCΓÇÖs official TPAD forms for submission)','tpad','Teachers']],tg=$('#tg')[0];
+tg.innerHTML=TM.map(function(m){return'<div class="gl" data-k="'+m[0]+'"><span class="tag">'+m[0]+'</span><h3 style="margin-top:.6rem">'+m[1]+'</h3><p>'+m[3]+' ┬╖ Word (.doc)</p><button class="gb" data-d="'+m[2]+'" data-n="'+m[1]+'">Download free</button></div>'}).join('');
+$('.gb',tg).forEach(function(b){b.onclick=function(){save(b.dataset.n,mk(b.dataset.d))}});
+$('[data-tt] .chip').forEach(function(b){b.addEventListener('click',function(){$('[data-tt] .chip').forEach(function(x){x.classList.toggle('on',x===b)});$('.gl',tg).forEach(function(c){c.hidden=!(b.dataset.v==='all'||c.dataset.k===b.dataset.v)})})});
+// timetable generator
+var TH='';
+function lst(id){return $('#'+id)[0].value.split(',').map(function(x){return x.trim()}).filter(Boolean)}
+$('#tb')[0].onclick=function(){var cs=lst('tc'),sb=lst('ts'),L=+$('#tp')[0].value,days=['Mon','Tue','Wed','Thu','Fri'],h='';
+if(!cs.length||!sb.length){return}
+var warn=cs.length>sb.length?'<p>Tip: add at least as many subjects as classes so no subject (teacher) is needed in two classes at once.</p>':'';
+cs.forEach(function(c,ci){h+='<h4>'+esc(c)+'</h4><table><tr><th></th>'+days.map(function(d){return'<th>'+d+'</th>'}).join('')+'</tr>';
+for(var p=0;p<L;p++){if(p===3)h+='<tr><th colspan="6">Break</th></tr>';if(p===6)h+='<tr><th colspan="6">Lunch</th></tr>';h+='<tr><th>'+(p+1)+'</th>'+days.map(function(d,di){return'<td>'+esc(sb[(di*L+p+ci)%sb.length])+'</td>'}).join('')+'</tr>'}h+='</table>'});
+$('#to')[0].innerHTML=warn+h;TH=h;$('#td')[0].hidden=$('#tpr')[0].hidden=false};
+$('#td')[0].onclick=function(){save('Class timetable',TH.replace(/<table>/g,'<table border="1" cellpadding="5" style="border-collapse:collapse">'))};
+$('#tpr')[0].onclick=function(){var w=open('','_blank');if(!w)return;w.document.write('<title>Timetable</title><style>body{font-family:sans-serif}table{border-collapse:collapse;width:100%;margin-bottom:1rem}td,th{border:1px solid #333;padding:6px;text-align:center}</style>'+TH);w.document.close();w.print()};
+$('#sbt')[0].onclick=function(){var w=Math.min(15,Math.max(1,+$('#sw2')[0].value||13));save($('#sg')[0].value+' '+$('#sb')[0].value+' scheme',
+'<h2>Scheme of work</h2><p>Grade: '+esc($('#sg')[0].value)+' ┬╖ Subject: '+esc($('#sb')[0].value)+' ┬╖ '+esc($('#st2')[0].value)+'</p><p>School: ________ Teacher: ________ Year: ____</p>'+tb(SH,w,1))};
+// live countdown
+var CK=$('.clk');CK.forEach(function(e){e.dataset.t=e.dataset.t.split(',')});
+function tick(){CK.forEach(function(e){var t=e.dataset.t.split(','),ms=new Date(+t[0],+t[1],1)-new Date();if(ms<=0){e.innerHTML='<div><b>Window open</b></div>';return}
+var v=[Math.floor(ms/864e5),Math.floor(ms/36e5)%24,Math.floor(ms/6e4)%60,Math.floor(ms/1e3)%60],n=['days','hrs','min','sec'];e.innerHTML=v.map(function(x,i){return'<div><b>'+x+'</b><small>'+n[i]+'</small></div>'}).join('')})}
+tick();setInterval(tick,1000);
+// checklist
+var CL={en:['Wait for official KJSEA results announcements','Talk with your child about interests and strengths','Read the MinistryΓÇÖs guidance on senior school pathways','Note the school selection steps and deadlines when announced','Keep your childΓÇÖs documents together'],sw:['Subiri matangazo rasmi ya matokeo ya KJSEA','Zungumza na mtoto wako kuhusu vipaji na mapendeleo yake','Soma mwongozo wa Wizara kuhusu mikondo ya shule ya sekondari ya juu','Andika hatua na tarehe za kuchagua shule zitakapotangazwa','Weka nyaraka za mtoto wako mahali pamoja']},lg='en',cl=$('#cl')[0];
+function st(i){try{return localStorage.getItem('g10'+i)==='1'}catch(e){return false}}
+function pg(){var n=$('input',cl).filter(function(c){return c.checked}).length,t=CL.en.length;$('#rp')[0].textContent=Math.round(n/t*100)+'%';$('#rc')[0].style.strokeDashoffset=213.6*(1-n/t);$('#cm')[0].textContent=n===t?(lg==='en'?'All done. Well prepared! ≡ƒÄë':'Umemaliza. Hongera! ≡ƒÄë'):''}
+function rc(){cl.innerHTML=CL[lg].map(function(x,i){return'<label><input type="checkbox" data-i="'+i+'"'+(st(i)?' checked':'')+'> '+x+'</label>'}).join('');$('input',cl).forEach(function(c){c.addEventListener('change',function(){try{localStorage.setItem('g10'+c.dataset.i,c.checked?'1':'0')}catch(e){}pg()})});pg()}
+$('#gpv')[0].innerHTML=CL.en.slice(0,3).map(function(x){return'<li>ΓÿÉ '+x+'</li>'}).join('');rc();$('#sw')[0].addEventListener('click',function(){lg=lg==='en'?'sw':'en';this.textContent=lg==='en'?'Kiswahili':'English';rc()});
+// quiz
+var QS={m:[['7 ├ù 8 = ?',['54','56','64'],1],['3/4 as a decimal?',['0.75','0.34','0.7'],0],['Perimeter of a square with side 5 cm?',['10 cm','20 cm','25 cm'],1],['What is 15% of 200?',['20','30','15'],1]],s:[['Which gas do plants take in for photosynthesis?',['Oxygen','Carbon dioxide','Nitrogen'],1],['Chemical formula of water?',['HΓééO','COΓéé','NaCl'],0],['Which organ pumps blood?',['Lungs','Liver','Heart'],2],['Boiling point of water at sea level?',['90 ┬░C','100 ┬░C','120 ┬░C'],1]],k:[['ΓÇ£MwalimuΓÇ¥ in English?',['Doctor','Teacher','Farmer'],1],['Wingi wa ΓÇ£kitabuΓÇ¥?',['vitabu','kitabus','mitabu'],0],['Kinyume cha ΓÇ£kubwaΓÇ¥?',['refu','ndogo','pana'],1],['ΓÇ£MajiΓÇ¥ in English?',['Fire','Water','Wind'],1]]},Q=QS.m,qi=0,sc=0,qb=$('#qb')[0],qp=$('#qp')[0],sk=0;
+$('#qs')[0].onchange=function(){Q=QS[this.value];qi=0;sc=0;sk=0;rq()};
+function rq(){qp.style.width=(qi/Q.length*100)+'%';if(qi>=Q.length){qb.innerHTML='<p style="font:800 1.6rem Fraunces,serif">Score: '+sc+' / '+Q.length+(sc===Q.length?' ≡ƒÅå':'')+'</p><button class="gb" id="rs">Try again</button>';$('#rs')[0].onclick=function(){qi=0;sc=0;sk=0;rq()};return}
+var x=Q[qi];qb.innerHTML='<p>'+(qi+1)+'/'+Q.length+(sk>1?' ┬╖ ≡ƒöÑ streak '+sk:'')+'</p><p style="font-size:1.2rem;font-weight:600">'+x[0]+'</p>'+x[1].map(function(o,i){return'<button class="qo" data-i="'+i+'">'+o+'</button>'}).join('');
+$('.qo',qb).forEach(function(b){b.onclick=function(){var i=+b.dataset.i;if(i===x[2]){sc++;sk++}else sk=0;b.classList.add(i===x[2]?'ok':'no');$('.qo',qb)[x[2]].classList.add('ok');$('.qo',qb).forEach(function(z){z.disabled=true});setTimeout(function(){qi++;rq()},1000)}})}
+rq();
+$('#qd')[0].onclick=function(){save('Scheme of work',mk('scheme'))};
+var fab=document.createElement('a');fab.className='fab';fab.href='#library';fab.textContent='Γ¼ç Teaching materials';fab.hidden=true;document.body.appendChild(fab);
+addEventListener('scroll',function(){fab.hidden=document.body.classList.contains('vw')||scrollY<$('.hero')[0].offsetHeight-innerHeight},{passive:true});
+
+(function(){
+QS.m.push(['Solve: 2x + 6 = 14. x = ?',['4','8','10'],0],['Area of a rectangle 8 cm by 5 cm?',['26 cm┬▓','40 cm┬▓','13 cm┬▓'],1],['Next prime after 7?',['9','11','13'],1],['1/2 + 1/4 = ?',['3/4','2/6','1/8'],0]);
+QS.s.push(['Water vapour turning into liquid is called?',['Evaporation','Condensation','Melting'],1],['Which is a mammal?',['Shark','Bat','Frog'],1],['Force that pulls objects to Earth?',['Friction','Gravity','Magnetism'],1],['SI unit of force?',['Joule','Newton','Watt'],1]);
+QS.k.push(['Kinyume cha ΓÇ£mrefuΓÇ¥?',['mfupi','mpana','mzito'],0],['ΓÇ£ShuleΓÇ¥ in English?',['School','Market','Church'],0],['Wingi wa ΓÇ£mtotoΓÇ¥?',['watoto','vitoto','mitoto'],0],['Siku ngapi katika wiki?',['Sita','Saba','Nane'],1]);
+$('#k3')[0].onclick=function(){var a=+$('#k1')[0].value,t=+$('#k2')[0].value;$('#k4')[0].textContent=(a>=4&&a<=48&&t>=7&&t<=84)?'Estimated cluster points: '+(Math.sqrt(a/48*t/84)*48).toFixed(3)+' / 48':'Please check your numbers.'};
+var bv=$('#bv')[0];bv.innerHTML=$('#cv')[0].innerHTML;
+$('#bb')[0].onclick=function(){var o=$('#bn')[0].value.split('\n').map(function(l){var p=l.split(','),n=p[0].trim();return n?CM[bv.value].replace(/\{n\}/g,n).replace(/\{s\}/g,(p[1]||'effort').trim()):''}).filter(Boolean).join('\n\n');$('#bo')[0].textContent=o;$('#bc')[0].hidden=!o};
+$('#bc')[0].onclick=function(){try{navigator.clipboard.writeText($('#bo')[0].textContent);this.textContent='Copied Γ£ô'}catch(e){}};
+var cal=$('#cal')[0];cal.innerHTML=[1,2,3].map(function(i){return'<div style="display:flex;gap:.5rem;align-items:center;margin:.4rem 0;flex-wrap:wrap"><b style="width:70px">Term '+i+'</b><input class="sel" type="date" style="width:auto" aria-label="Term '+i+' opens"><input class="sel" type="date" style="width:auto" aria-label="Term '+i+' closes"></div>'}).join('');
+$('#cdl')[0].onclick=function(){var ev=[],ins=$('input',cal);for(var i=0;i<3;i++){var a=ins[i*2].value,b=ins[i*2+1].value;if(a&&b){var e=new Date(b);e.setDate(e.getDate()+1);ev.push('BEGIN:VEVENT\r\nUID:t'+i+'@mwalimufamily\r\nDTSTAMP:20260101T000000Z\r\nSUMMARY:Term '+(i+1)+' (school open)\r\nDTSTART;VALUE=DATE:'+a.replace(/-/g,'')+'\r\nDTEND;VALUE=DATE:'+e.toISOString().slice(0,10).replace(/-/g,'')+'\r\nEND:VEVENT')}}if(!ev.length)return;var l=document.createElement('a');l.href=URL.createObjectURL(new Blob(['BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//Mwalimu Family//EN\r\n'+ev.join('\r\n')+'\r\nEND:VCALENDAR'],{type:'text/calendar'}));l.download='school-terms.ics';document.body.appendChild(l);l.click();l.remove()};
+var de=document.documentElement,sv0=null;try{sv0=localStorage.getItem('lite')}catch(e){}
+function lite(on){de.classList.toggle('lite',on);$('#lt')[0].textContent=on?'Full':'Lite';try{localStorage.setItem('lite',on?'1':'0')}catch(e){}}
+lite(sv0==='1'||(sv0===null&&!!(navigator.connection&&navigator.connection.saveData)));
+$('#lt')[0].onclick=function(){lite(!de.classList.contains('lite'))};
+var fz=[18,20,22],fi=0;$('#fa')[0].onclick=function(){fi=(fi+1)%3;de.style.setProperty('--fs',fz[fi]+'px')};
+var SWM={'News':'Habari','Library':'Maktaba','Teaching':'Ualimu','Tools':'Zana','Parents':'Wazazi','Learn':'Jifunze','Teach':'Fundisha','Families':'Familia','Notices':'Taarifa','Tutoring':'Masomo','Jobs':'Kazi','Advertise':'Tangaza nasi','Videos':'Video','About':'Kuhusu','Contact':'Wasiliana','News that informs.':'Habari zinazoarifu.','Education that equips.':'Elimu inayowezesha.','Stories that connect.':'Hadithi zinazounganisha.','I am aΓÇª':'Mimi niΓÇª'},isw=false;
+$('#sl')[0].onclick=function(){isw=!isw;de.lang=isw?'sw':'en';this.textContent=isw?'English':'Kiswahili';$('nav a,.scene h1,#hau').forEach(function(e){if(!e.dataset.en)e.dataset.en=e.textContent;e.textContent=isw&&SWM[e.dataset.en]?SWM[e.dataset.en]:e.dataset.en})};
+var bt=$('footer .bot p')[1],fa=document.createElement('a');fa.textContent='Report an error';fa.target='_blank';fa.rel='noopener';fa.href='#';fa.onclick=function(){fa.href='https://wa.me/254715363944?text='+encodeURIComponent('I found an error on '+location.href+': ')};bt.appendChild(document.createTextNode(' \u00a0 '));bt.appendChild(fa);
+if('serviceWorker' in navigator&&/^https?:/.test(location.protocol))navigator.serviceWorker.register('sw.js').catch(function(){});
+})();
+(function(){
+var d0=document.createElement('div');d0.innerHTML='<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><filter id="chalk" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency=".04" numOctaves="3" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="3"/></filter><filter id="ds" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur in="SourceAlpha" stdDeviation="8"/><feOffset dx="10" dy="18"/><feComponentTransfer><feFuncA type="linear" slope=".55"/></feComponentTransfer><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge></filter><linearGradient id="wood" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f3d98f"/><stop offset=".5" stop-color="#dcb961"/><stop offset="1" stop-color="#c29640"/></linearGradient></defs></svg>';document.body.appendChild(d0.firstChild);
+var de=document.documentElement,EQ=['a┬▓ + b┬▓ = c┬▓','x = (ΓêÆb ┬▒ ΓêÜ(b┬▓ΓêÆ4ac)) / 2a','sin┬▓╬╕ + cos┬▓╬╕ = 1','Γê½ΓéÇ^╧Ç sin x dx = 2','╬ú n = n(n+1)/2','A = ╧Çr┬▓','(a+b)┬▓ = a┬▓ + 2ab + b┬▓','e^(i╧Ç) + 1 = 0','V = Γàô╧Çr┬▓h','log(ab) = log a + log b','d/dx xΓü┐ = nxΓü┐Γü╗┬╣','tan ╬╕ = sin ╬╕ / cos ╬╕','C = 2╧Çr','╬ú 1/n┬▓ = ╧Ç┬▓/6','ΓêÜ2 Γëê 1.41421','n! = n(nΓêÆ1)!','y = mx + c','lim sin x / x = 1'],
+SH=['M0 -70 L61 35 H-61 Z','M-55 -55 H55 V55 H-55 Z','M0 -70 L67 -22 L41 57 H-41 L-67 -22 Z','M0 -70 L61 -35 V35 L0 70 L-61 35 V-35 Z','M-70 0 A70 70 0 1 0 70 0 A70 70 0 1 0 -70 0','M0 -75 L20 -25 L75 -25 L30 8 L48 62 L0 30 L-48 62 L-30 8 L-75 -25 L-20 -25 Z','M-50 -20 L0 -60 L50 -20 L50 40 L0 70 L-50 40 Z M-50 -20 L0 20 L50 -20 M0 20 V70'];
+function art(bp){var c=bp?'#d6ebff':'#f6f3e8',P=[[90,150,-4,56],[640,95,3,48],[1010,560,-3,54],[110,640,2,52],[560,840,-2,50],[1330,190,4,60],[960,860,-2,44],[60,450,-5,52]],s='<svg viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg"><g fill="'+c+'" fill-opacity=".8" opacity=".5" filter="url(#chalk)" font-family="Caveat,cursive">';
+P.forEach(function(e,i){s+='<text class="eq" x="'+e[0]+'" y="'+e[1]+'" font-size="'+e[3]+'" transform="rotate('+e[2]+' '+e[0]+' '+e[1]+')">'+EQ[(i*3)%EQ.length]+'</text>'});
+s+='</g><g fill="none" stroke="'+c+'" stroke-width="3" stroke-linejoin="round" opacity=".5">';
+[[260,330],[1230,420],[820,520],[1450,700],[420,760]].forEach(function(p,i){s+='<g transform="translate('+p[0]+' '+p[1]+')"><path class="shp" style="animation-duration:'+(40+i*12)+'s;animation-direction:'+(i%2?'reverse':'normal')+'" d="'+SH[(i*2)%SH.length]+'"/></g>'});
+var t='';for(var i=0;i<=50;i++)t+='<path d="M'+(14+i*10)+' 0v'+(i%10?i%5?14:22:30)+'" stroke="#3a2a10" stroke-width="2"/>';
+var p='',R2=Math.PI/180;for(var a=0;a<=180;a+=10){var L=a%30?132:120;p+='<path d="M'+(-Math.cos(a*R2)*150).toFixed(1)+' '+(-Math.sin(a*R2)*150).toFixed(1)+' L'+(-Math.cos(a*R2)*L).toFixed(1)+' '+(-Math.sin(a*R2)*L).toFixed(1)+'" stroke="#fff" stroke-opacity=".8"/>'}
+return s+'</g><g filter="url(#ds)" opacity=".92"><g transform="translate(40 790) rotate(-6)"><rect width="540" height="78" rx="5" fill="url(#wood)"/>'+t+'</g><g transform="translate(1400 760) rotate(8)"><path d="M-160 0 A160 160 0 0 1 160 0 Z" fill="rgba(255,255,255,.13)" stroke="rgba(255,255,255,.6)" stroke-width="2"/>'+p+'</g></g></svg>'}
+function tk(){if(de.classList.contains('lite')||matchMedia('(prefers-reduced-motion:reduce)').matches||document.hidden)return;$('.mgx').forEach(function(m){if(!m.offsetParent)return;var e=$('.eq',m),el=e[R(e.length)],q=$('.shp',m),sp=q[R(q.length)];el.style.opacity=0;sp.style.opacity=0;setTimeout(function(){el.textContent=EQ[R(EQ.length)];sp.setAttribute('d',SH[R(SH.length)]);el.style.opacity='';sp.style.opacity=''},900)})}
+setInterval(tk,2800);
+$('#home .mgx,#home .gy').forEach(function(e){e.remove()});$('section.mb').forEach(function(sc){var d=document.createElement('div');d.className='mgx';d.setAttribute('aria-hidden','true');d.innerHTML=art(sc.classList.contains('bp'));sc.insertBefore(d,sc.firstChild)});
+var NX={job:'Want more visibility? <a class="dl" href="#advertise">Request a featured listing</a>.',ad:'We will reply on WhatsApp with rates.',find:'While you wait, <a class="dl" href="#tutoring">practise maths</a> or <a class="dl" href="#library">browse notes</a>.',tut:'Meanwhile, see <a class="dl" href="#jobs">tutoring jobs</a>.',note:'See the <a class="dl" href="#notices">notice board</a>.'},TI={job:1,note:1,find:0,tut:1,ad:2},sub=function(){try{return JSON.parse(localStorage.getItem('mfsub')||'[]')}catch(e){return[]}};
+var FM={job:['Post a job','Send for review',[['Employer / school','t'],['Job title','t'],['Category','s',['Teaching','School management','Support staff','Tutoring']],['Visibility','s',['Standard listing','Featured listing (rates on request)']],['County / location','t'],['How to apply (phone or email)','t'],['Description and deadline','a']],'I confirm this is a genuine vacancy and no application fee will be charged.'],
+ad:['Request a promotion quote','Request quote',[['Business / organisation','t'],['Contact (phone or email)','t'],['Package','s',['Sponsored notice','Featured job listing','Newsletter and WhatsApp mention','Homepage banner','Event promotion']],['What are you promoting?','a']],'I agree to the advertising standards above.'],
+find:['Find a tutor','Send request',[['Subject','t'],['Grade or level','t'],['Mode','s',['Online','In person','Either']],['Location','t'],['Your phone or email','t']],'I agree to be contacted. Learners under 18 need a parent or guardian to make the request.'],
+tut:['Become a tutor','Apply',[['Name','t'],['Subjects and grades','t'],['Qualifications and experience','a'],['Location or online','t'],['Phone or email','t']],'I confirm my details are true and agree to a verification check.'],
+note:['Submit a notice','Send for review',[['Organisation','t'],['Notice title','t'],['Details and dates','a'],['Contact','t']],'I confirm this notice is accurate and from my organisation.']};
+$('[data-fm]').forEach(function(d){var f=FM[d.dataset.fm];d.innerHTML='<h3>'+f[0]+'</h3>'+f[2].map(function(x){var h=x[1]==='a'?'<textarea class="sel" rows="3" data-l="'+x[0]+'"></textarea>':x[1]==='s'?'<select class="sel" data-l="'+x[0]+'">'+x[2].map(function(o){return'<option>'+o+'</option>'}).join('')+'</select>':'<input class="sel" type="text" data-l="'+x[0]+'">';return'<div><label>'+x[0]+'</label>'+h+'</div>'}).join('')+'<label class="ck"><input type="checkbox"> '+f[3]+'</label><p class="fe" style="color:#b3261e;font-size:.9rem" hidden>Please complete every field and tick the box.</p><button class="btn b1">'+f[1]+'</button><p style="font-size:.85rem">'+(window.MF_API?'Your details go straight to our team for review.':'Opens WhatsApp with your details for our team to review.')+' Nothing is published automatically. See our <a href="privacy.html" style="text-decoration:underline">privacy notice</a>.</p>';
+$('.btn',d)[0].onclick=function(){var ls=$('[data-l]',d),ok=$('input[type=checkbox]',d)[0].checked&&ls.every(function(e){return e.value.trim()});$('.fe',d)[0].hidden=ok;if(!ok)return;var k=d.dataset.fm,ref=({job:'JOB',ad:'ADV',find:'TUT',tut:'TTR',note:'NTC'})[k]+'-'+new Date().toISOString().slice(2,10).replace(/-/g,'')+'-'+(1000+R(9000)),L=sub();var wu='https://wa.me/254715363944?text='+encodeURIComponent('*'+f[0]+'* ['+ref+']\n'+ls.map(function(e){return e.dataset.l+': '+e.value.trim()}).join('\n'));window.MF?MF.submit(k,f[0],ref,ls.map(function(e){return[e.dataset.l,e.value.trim()]}),wu):open(wu,'_blank');L.unshift({ref:ref,type:f[0],title:ls[TI[k]].value.trim(),date:new Date().toISOString().slice(0,10)});try{localStorage.setItem('mfsub',JSON.stringify(L.slice(0,30)))}catch(e){}d.innerHTML='<h3>Sent for review</h3><p>Reference: <b>'+ref+'</b>. Keep it for follow-up. Track it in <a class="dl" href="#activity">My activity</a>.</p><p>'+NX[k]+'</p>'}});
+var CFG={feed:window.MF_FEED||''},JOBS=[{t:'Grade 7 Mathematics teacher',e:'Sample school',l:'Nairobi',c:'Teaching',d:'Example listing showing the layout. Real vacancies appear here after review.',x:1,st:'published',exp:'2027-01-31'},{t:'Evening KCSE maths tutor',e:'Sample tutoring centre',l:'Mombasa',c:'Tutoring',d:'Example listing. Employers can post using the form below.',x:1,st:'published',exp:'2027-01-31'}],
+NOTICES=[{k:'Exams',d:'20 Nov 2026',t:'Results release windows',b:'Ministry of Education: KJSEA results expected in December 2026. KCSE and KPSEA targeted for January 2027.',u:'#/s1',st:'published'},{k:'Safety',d:'21 Nov 2026',t:'Results scam alert',b:'Never pay to see results early. Use official channels only.',u:'#/s4',st:'published'}],nk='all';
+function live(a){var n=new Date().toISOString().slice(0,10);return a.filter(function(x){return x.st==='published'&&(!x.exp||x.exp>=n)}).sort(function(a,b){return(b.f||0)-(a.f||0)})}
+function lb(x){return x.f?'<span class="lab">Sponsored</span>':''}
+function rj(){var q=$('#jq')[0].value.toLowerCase(),c=$('#jc')[0].value,o=live(JOBS).filter(function(j){return(!c||j.c===c)&&(j.t+j.e+j.l).toLowerCase().indexOf(q)>-1});$('#jl')[0].innerHTML=o.length?o.map(function(j){return'<div>'+lb(j)+'<span class="tag">'+esc(j.c)+(j.x?' ┬╖ Sample':'')+'</span><h3 style="margin-top:.5rem">'+esc(j.t)+'</h3><p><b>'+esc(j.e)+'</b> ┬╖ '+esc(j.l)+'</p><p>'+esc(j.d)+'</p></div>'}).join(''):'<div><p>No jobs match your search.</p></div>'}
+function rnn(){$('#nl')[0].innerHTML=live(NOTICES).filter(function(n){return nk==='all'||n.k===nk}).map(function(n){return'<div>'+lb(n)+'<span class="tag">'+esc(n.k)+' ┬╖ '+esc(n.d)+'</span><h3 style="margin-top:.5rem">'+esc(n.t)+'</h3><p>'+esc(n.b)+(n.u?' <a class="dl" href="'+n.u+'">Read more</a>':'')+'</p></div>'}).join('')||'<div><p>No notices in this category.</p></div>'}
+$('#notices .chip').forEach(function(b){b.onclick=function(){$('#notices .chip').forEach(function(x){x.classList.toggle('on',x===b)});nk=b.dataset.v;rnn()}});
+if(CFG.feed)fetch(CFG.feed).then(function(r){return r.json()}).then(function(j){if(j.jobs)JOBS=j.jobs;if(j.notices)NOTICES=j.notices;rj();rnn()}).catch(function(){});
+$('#jq')[0].oninput=$('#jc')[0].onchange=rj;rj();rnn();
+var mq=[];function R(n){return Math.floor(Math.random()*n)}
+$('#mpb')[0].onclick=function(){var op=$('#mpo')[0].value,lv=+$('#mpl')[0].value,m=[10,50,200][lv-1];mq=[];for(var i=0;i<5;i++){var a=1+R(m),b=1+R(m),v;if(op==='├ù'){a=2+R(lv*6+6);b=2+R(lv*6+6)}if(op==='├╖'){b=2+R(lv*6+6);a=b*(2+R(lv*8+4))}if(op==='ΓêÆ'&&b>a){v=a;a=b;b=v}mq.push([a,op,b,op==='+'?a+b:op==='ΓêÆ'?a-b:op==='├ù'?a*b:a/b])}
+$('#mpq')[0].innerHTML=mq.map(function(x,i){return'<p><label>'+(i+1)+'. '+x[0]+' '+x[1]+' '+x[2]+' = <input class="sel" type="number" style="width:7rem;display:inline-block" data-i="'+i+'"></label></p>'}).join('');$('#mpr')[0].textContent='';$('#mpc')[0].hidden=false};
+$('#mpc')[0].onclick=function(){var n=0;$('#mpq input').forEach(function(e){if(+e.value===mq[+e.dataset.i][3]&&e.value!=='')n++});$('#mpr')[0].textContent='Score: '+n+' / '+mq.length+(n===mq.length?' ≡ƒÅå':'')};
+
+$('#advertise .x2>div').forEach(function(c){var h=$('h3',c)[0].textContent,b=document.createElement('button');b.className='gb o';b.textContent='Request this';b.onclick=function(){var o=$('#advertise [data-l="Package"] option').filter(function(x){return x.textContent.indexOf(h)===0})[0];if(o)o.selected=true;$('#advertise [data-l="Package"]')[0].scrollIntoView({behavior:'smooth',block:'center'})};c.appendChild(b)});
+function ra(){var L=sub(),v=0,n=0;try{v=JSON.parse(localStorage.getItem('mfs')||'[]').length;for(var i=0;i<5;i++)if(localStorage.getItem('g10'+i)==='1')n++}catch(e){}$('#as')[0].innerHTML=L.length?L.map(function(x){return'<p><b>'+esc(x.ref)+'</b> ┬╖ '+esc(x.type)+'<br>'+esc(x.title)+' ┬╖ '+x.date+' <span class="tag">Sent for review</span></p>'}).join(''):'<p>Nothing sent yet. Forms on Jobs, Tutoring, Notices and Advertise appear here.</p>';$('#am')[0].textContent=v+' saved';$('#ac')[0].textContent=n+' of 5 steps done'}
+ra();addEventListener('hashchange',ra);
+var NXT={news:[['parents','ParentsΓÇÖ hub'],['notices','Notice board'],['library','Learning library']],library:[['tutoring','Get a tutor'],['teaching','Teaching tools'],['parents','ParentsΓÇÖ hub']],teaching:[['jobs','Education jobs'],['library','Library'],['tools','Tools']],tools:[['library','Library'],['tutoring','Tutoring'],['parents','ParentsΓÇÖ hub']],parents:[['notices','Notices'],['tutoring','Find a tutor'],['library','Library']],notices:[['news','Latest news'],['parents','ParentsΓÇÖ hub'],['advertise','Post a sponsored notice']],tutoring:[['library','Revision notes'],['jobs','Tutor jobs'],['tools','Tools']],jobs:[['advertise','Feature your vacancy'],['teaching','Teaching tools'],['tutoring','Tutoring']],advertise:[['jobs','Education jobs'],['notices','Notice board'],['contact','Contact us']],videos:[['library','Library'],['news','News']],about:[['contact','Contact'],['advertise','Advertise']]};
+Object.keys(NXT).forEach(function(k){var sc=document.getElementById(k);if(!sc)return;var d=document.createElement('div');d.className='w nx';d.innerHTML='<h3 style="font-size:1.2rem;margin:2.5rem 0 .8rem">Where next?</h3><div class="chips">'+NXT[k].map(function(x){return'<a class="chip" href="#'+x[0]+'">'+x[1]+' ΓåÆ</a>'}).join('')+'</div>';sc.appendChild(d)});
+})();
+PG.forEach(function(id){var sec=document.getElementById(id),h=sec&&$('h2.sh',sec)[0];if(!h)return;var n=h.nextElementSibling,bl='',par=h.parentElement;if(n&&n.classList.contains('sub')){bl=n.textContent;n.remove()}
+var b=document.createElement('div');b.className='pbn';b.innerHTML='<div class="w"><div class="bc"><a href="#home">Home</a><span>/</span>'+esc(h.textContent)+'</div><h1 class="disp" id="'+h.id+'">'+esc(h.textContent)+'</h1>'+(bl?'<p>'+esc(bl)+'</p>':'')+'</div>';
+sec.insertBefore(b,sec.firstChild);sec.classList.add('pgs');h.remove();if(par.classList.contains('w')&&!par.children.length)par.remove()});
+route();
+})();
+</script>
+<script>
+(function(){
+var $=function(s,c){return Array.prototype.slice.call((c||document).querySelectorAll(s))},E=function(x){return String(x).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})};
+function dl(n,h){var b=new Blob(['<html><head><meta charset="utf-8"></head><body>'+h+'</body></html>'],{type:'application/msword'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=n+'.doc';document.body.appendChild(a);a.click();a.remove()}
+try{$('#wk')[0].innerHTML=$('#rows a').slice(0,4).map(function(a){return'<a class="x2c" href="'+a.getAttribute('href')+'"><span class="tag">'+E($('.tag',a)[0].textContent)+'</span><h3 style="font-size:1.1rem;margin-top:.5rem">'+E($('h3',a)[0].textContent)+'</h3><p>'+E($('time',a)[0].textContent)+'</p></a>'}).join('')}catch(e){}
+var GL=[['CBE','Competency-Based Education: a curriculum that focuses on what learners can do, not only what they remember.'],['KICD','Kenya Institute of Curriculum Development, which designs the national curriculum.'],['KNEC','Kenya National Examinations Council, which sets and marks national assessments.'],['KPSEA','Kenya Primary School Education Assessment, taken at the end of Grade 6.'],['KJSEA','Kenya Junior School Education Assessment, taken at the end of Grade 9.'],['KCSE','Kenya Certificate of Secondary Education, taken at the end of secondary school.'],['KUCCPS','Kenya Universities and Colleges Central Placement Service, which places students in universities and colleges.'],['HELB','Higher Education Loans Board, which offers student loans and bursaries.'],['NEMIS','National Education Management Information System, the MinistryΓÇÖs learner and school records system.'],['UPI','Unique Personal Identifier given to each learner in NEMIS.'],['Capitation','Government funds paid to public schools for each enrolled learner.'],['TVET','Technical and Vocational Education and Training, offered in technical colleges and institutes.'],['Pathway','A group of senior school subjects: STEM, Social Sciences, or Arts and Sports.'],['CSL','Community Service Learning, a senior school learning area that links classroom learning to community projects.'],['Scheme of work','A teacherΓÇÖs term plan showing what will be taught each week.']];
+function rg(q){q=(q||'').toLowerCase();$('#gl')[0].innerHTML=GL.filter(function(x){return(x[0]+' '+x[1]).toLowerCase().indexOf(q)>-1}).map(function(x){return'<dt>'+E(x[0])+'</dt><dd>'+E(x[1])+'</dd>'}).join('')||'<p>No matching terms.</p>'}
+rg();$('#gls')[0].oninput=function(){rg(this.value)};
+var rh='';
+$('#rg')[0].onclick=function(){var d=$('#rd')[0].value,sb=$('#rs')[0].value.split(',').map(function(x){return x.trim()}).filter(Boolean),n=+$('#rn')[0].value;if(!sb.length)return;
+var D=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],k=0,h='<table><tr><th>Day</th>';for(var i=1;i<=n;i++)h+='<th>Slot '+i+'</th>';h+='</tr>';
+D.forEach(function(x){h+='<tr><td>'+x+'</td>';for(var i=0;i<n;i++)h+='<td>'+E(sb[k++%sb.length])+'</td>';h+='</tr>'});h+='</table>';
+var m='';if(d){var t=Math.ceil((new Date(d)-new Date())/864e5);m=t>0?t+' days to your exam date.':'Choose a future date.'}
+rh=h;$('#ro')[0].innerHTML=h;$('#rm')[0].textContent=m;$('#rdl')[0].hidden=false};
+$('#rdl')[0].onclick=function(){dl('Revision-timetable','<h2>Weekly revision plan</h2>'+rh)};
+var mh='';
+$('#mg')[0].onclick=function(){var r=$('#mt')[0].value.split('\n').map(function(l){var p=l.split(',').map(function(x){return x.trim()});var m=p.slice(1).map(Number).filter(function(x){return!isNaN(x)});return{n:p[0],t:m.reduce(function(a,b){return a+b},0),c:m.length}}).filter(function(x){return x.n&&x.c});
+r.forEach(function(x){x.a=x.t/x.c});r.sort(function(a,b){return b.t-a.t});if(!r.length)return;
+var h='<table><tr><th>Rank</th><th>Name</th><th>Total</th><th>Mean</th></tr>'+r.map(function(x,i){return'<tr><td>'+(i+1)+'</td><td>'+E(x.n)+'</td><td>'+x.t+'</td><td>'+x.a.toFixed(1)+'</td></tr>'}).join('')+'</table><p>Class mean: '+(r.reduce(function(a,b){return a+b.a},0)/r.length).toFixed(1)+'</p>';
+mh=h;$('#mo2')[0].innerHTML=h;$('#mdl')[0].hidden=false};
+$('#mdl')[0].onclick=function(){dl('Class-marks','<h2>Class marks and ranking</h2>'+mh)};
+var FC={m:[['Area of a circle','╧Çr┬▓'],['Area of a triangle','┬╜ ├ù base ├ù height'],['Perimeter of a rectangle','2 ├ù (length + width)'],['Volume of a cuboid','length ├ù width ├ù height'],['PythagorasΓÇÖ theorem','a┬▓ + b┬▓ = c┬▓']],s:[['Photosynthesis','Plants make food from sunlight, water and carbon dioxide.'],['Which gas do plants take in?','Carbon dioxide'],['Unit of force','Newton (N)'],['Chemical symbol for water','HΓééO'],['Organ that pumps blood','The heart']],k:[['Maji','Water'],['Nyumba','House'],['Shule','School'],['Kitabu','Book'],['Rafiki','Friend'],['Mwalimu','Teacher']]},fi=0,fb=false;
+function fr(){var d=FC[$('#fcs')[0].value],c=d[fi%d.length];$('#fcc')[0].textContent=fb?c[1]:c[0]}
+$('#fcc')[0].onclick=function(){fb=!fb;fr()};$('#fcc')[0].onkeydown=function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();this.onclick()}};
+$('#fcn')[0].onclick=function(){fi++;fb=false;fr()};$('#fcs')[0].onchange=function(){fi=0;fb=false;fr()};fr();
+})();
+</script>
+<div class="mfw" id="mfw"><div class="mfp" id="mfp" role="dialog" aria-label="Ask Mwalimu" hidden><header><span>Ask Mwalimu</span><button id="mfx" aria-label="Close assistant">├ù</button></header><div class="mfl" id="mfl" aria-live="polite"></div><div class="mfq" id="mfq"></div><form class="mff" id="mff"><input id="mfi" type="text" placeholder="Ask about exams, templates, coursesΓÇª" aria-label="Your question" autocomplete="off"><button type="submit">Send</button></form></div><a class="fb wa" href="https://wa.me/254715363944?text=Hello%20Mwalimu%20Family" target="_blank" rel="noopener" aria-label="Chat on WhatsApp"><svg width="22" height="22" viewBox="0 0 44 44" aria-hidden="true"><path d="M22 6a16 16 0 0 0-13.700 24.300L6 38l7.900-2.200A16 16 0 1 0 22 6z" fill="none" stroke="#0b2b14" stroke-width="3" stroke-linejoin="round"/><path d="M17.500 15c.7 5.500 5.700 10.400 11.500 12.200l2.300-2.400-3.700-2.200-1.700 1.300c-1.900-.7-3.900-2.700-4.600-4.600l1.300-1.700-2.200-3.700z" fill="#0b2b14"/></svg>WhatsApp</a><button class="fb ai" id="mfo" aria-expanded="false" aria-controls="mfp">≡ƒÆ¼ Ask Mwalimu</button></div>
+<script>
+(function(){
+var $=function(s,c){return Array.prototype.slice.call((c||document).querySelectorAll(s))};
+var K=[
+['Digital basics','Digital','Beginner','About 2 hours','Use computers and phones with confidence and stay safe online.',['Parts of a computer and a phone','Typing and keyboard shortcuts','Word processing basics','Spreadsheet basics: rows, columns and sums','Passwords, scams and online safety']],
+['Study skills','Study','Beginner','About 1.5 hours','Build habits that make revision and exams easier.',['Setting goals','Planning revision (try our timetable maker in Tools)','Note-taking methods','Memory techniques','Exam-day habits']],
+['Money skills','Life','Beginner','About 1.5 hours','Understand saving, budgeting and mobile money.',['Needs and wants','Saving and budgeting','Mobile money safety','Borrowing basics','Planning for school fees']],
+['Communication skills','Life','Beginner','About 1.5 hours','Speak, write and listen clearly.',['Speaking clearly','Writing a good message or email','Active listening','Public speaking','Working in a team']],
+['Career readiness','Career','Intermediate','About 2 hours','Explore careers and prepare to apply.',['Exploring careers and pathways (see Pathway starter in Tools)','Writing a CV','Writing a cover letter','Interview practice','Learning options after school: college, TVET and work']],
+['English and Kiswahili practice','Language','Beginner','About 2 hours','Practise everyday language in both languages.',['Everyday vocabulary','Building sentences','Reading comprehension tips','Writing short compositions (insha)','Speaking practice']],
+['Coding first steps','Digital','Intermediate','About 3 hours','Learn the ideas behind programming.',['What is a program?','Variables','Decisions with if','Loops','Build a tiny project']],
+['Teacher skills','Teaching','Intermediate','About 2.5 hours','Plan, assess and manage learning in a CBE classroom.',['Lesson planning basics (use our templates in the Library)','Assessment in CBE','Classroom management','Keeping records','Writing report-form comments (use the Tools generator)']]];
+var LS={'Digital basics':['A computer has input (keyboard, mouse, touchscreen), a processor, memory, storage and output (screen, speakers). A phone is a small computer. Practise naming each part on a device you use.','Use all ten fingers and keep your eyes on the screen. Learn Ctrl+C (copy), Ctrl+V (paste), Ctrl+Z (undo) and Ctrl+S (save). Practise ten minutes a day.','Type, select text, change font size, make lists and save a file. Use headings to organise longer work and save with a clear file name.','A spreadsheet is a grid of rows and columns, and each box is a cell. Try =SUM(A1:A5) to add numbers. Use it for budgets and marks.','Use long, different passwords and never share codes sent to your phone. Be careful with links from unknown senders. Real organisations never ask you to pay to claim a prize.'],'Study skills':['Write one specific, measurable goal for the term, such as raising a Mathematics mark by 10 points. Break it into weekly steps.','List your subjects, give harder ones more time and plan 25 to 40 minute sessions with breaks. Include rest and meals.','Try headings with bullet points, mind maps or question-and-answer cards. Review notes within a day to remember more.','Test yourself instead of only rereading. Spread revision over several days and link new facts to things you already know.','Sleep well, eat before the exam, read instructions carefully, plan your time per question and check your answers if time remains.'],'Money skills':['Needs are things you must have, such as food and school supplies. Wants are nice to have. List both before you spend.','Write down income and spending for the month. Set aside savings first, even a small amount, then budget the rest.','Check the name and amount before you send money. Never share your PIN. Be careful of messages claiming a mistaken transfer.','Before borrowing, ask the total you will repay and the due date. Avoid borrowing for wants.','List fees, uniform, books and transport for each term. Divide the total by the weeks left to see how much to save each week.']};
+Object.assign(LS,{'Communication skills':['Speak at a steady pace, look at your listener and use simple words. Pause between ideas so people can follow.','Start with a clear greeting or subject line, state your purpose in the first sentence, keep paragraphs short and end with what you need.','Give your full attention, do not interrupt, and repeat back what you heard to check you understood.','Plan three main points, practise aloud and use a short opening and closing. Breathe slowly if you feel nervous.','Agree roles, share tasks fairly, listen to every idea and give kind, specific feedback.'],'Career readiness':['List what you enjoy and what you are good at, then match them to careers. Talk to people who do the jobs that interest you.','Include contact details, education, skills, experience and referees. Keep it to one or two pages with a clear layout.','Write three short paragraphs: why you are applying, what you offer and how to reach you. Address it to a named person where possible.','Research the employer, prepare examples of your strengths, practise answers aloud and prepare two questions to ask.','Compare colleges, TVET institutions, apprenticeships and work. Check entry requirements and costs with the official institution.'],'English and Kiswahili practice':['Learn ten new words each week in both English and Kiswahili and use each in a sentence you say aloud.','Build sentences with a subject, a verb and an object. Swap words to make new sentences.','Read the questions first, then the passage. Underline key words and answer in full sentences.','Plan a beginning, middle and end, use paragraphs and check spelling and punctuation. In insha, use methali and nahau where they fit.','Talk for two minutes on a familiar topic each day. Record yourself and listen for ways to improve.'],'Coding first steps':['A program is a list of clear instructions a computer follows. Practise by writing the steps for making tea.','A variable stores a value under a name, such as score = 0. You can change it as the program runs.','An if statement lets a program choose: if the score is above 50, show Pass, otherwise show Try again.','A loop repeats steps. Use it to count to ten or print a times table without writing every line.','Combine variables, decisions and loops to make a quiz or a simple calculator. Start small and improve it step by step.'],'Teacher skills':['State the learning outcome, plan an introduction, activities and a conclusion, and list resources and how you will assess learning.','Use varied methods such as observation, oral questions, projects and portfolios. Give feedback learners can act on.','Set routines early, praise effort, keep instructions short and address problems calmly and privately.','Keep your record of work, learner progress and assessment evidence up to date each week so reporting is easier.','Describe what the learner can do, give one strength and one next step, and keep the tone encouraging and specific.']});
+var KN={'Digital basics':'Use M-Pesa and eCitizen safely, and watch for fake paybill and prize messages.','Study skills':'Plan around the Kenyan school calendar and your exam timetable, and practise with past papers from your teacher.','Money skills':'Compare mobile money fees, plan for school fees each term and consider saving through a chama or SACCO.','Communication skills':'Practise switching between English, Kiswahili and Sheng to suit your audience.','Career readiness':'Explore KUCCPS programmes, TVET institutions and the certificates employers ask for.','English and Kiswahili practice':'Practise with methali, nahau and everyday market and matatu conversations.','Coding first steps':'Build something local, such as a matatu fare calculator or a school marks tracker.','Teacher skills':'Link examples to learnersΓÇÖ homes: markets, farms, local leaders and community projects.'};
+var CT=['All','Digital','Study','Life','Career','Language','Teaching'],cat='All',q='';
+function ld(){try{return JSON.parse(localStorage.getItem('mfc')||'{}')}catch(e){return{}}}
+function sv(d){try{localStorage.setItem('mfc',JSON.stringify(d))}catch(e){}}
+function rd(){var d=ld(),dn=0,tot=0;K.forEach(function(c){tot+=c[5].length;dn+=(d[c[0]]||[]).length});
+$('#cp')[0].textContent=dn+' of '+tot+' lessons completed on this device.';
+var h=K.map(function(c,ci){return{c:c,ci:ci}}).filter(function(x){var c=x.c;return(cat==='All'||c[1]===cat)&&(!q||(c[0]+' '+c[4]+' '+c[5].join(' ')).toLowerCase().indexOf(q)>-1)}).map(function(x){var c=x.c,a=d[c[0]]||[],pc=Math.round(a.length/c[5].length*100);
+return'<div><span class="tag">'+c[1]+' ┬╖ '+c[2]+' ┬╖ '+c[3]+'</span><h3 style="margin-top:.5rem">'+c[0]+'</h3><p>'+c[4]+'</p><p style="font-size:.9rem"><b>In Kenya:</b> '+KN[c[0]]+'</p><div class="pb" style="margin:.6rem 0"><i style="width:'+pc+'%"></i></div><small>'+a.length+' of '+c[5].length+' lessons done</small><details style="margin:.6rem 0"><summary style="cursor:pointer;font-weight:600">Lessons</summary>'+c[5].map(function(l,i){return'<label style="display:flex;gap:.5rem;margin:.4rem 0;color:var(--tx)"><input type="checkbox" data-c="'+c[0]+'" data-i="'+i+'"'+(a.indexOf(i)>-1?' checked':'')+'><span>'+l+((LS[c[0]]||[])[i]?'<br><small style="color:var(--mu)">'+LS[c[0]][i]+'</small>':'')+'</span></label>'}).join('')+'</details><a class="gb o" target="_blank" rel="noopener" href="https://wa.me/254715363944?text='+encodeURIComponent('Hello Mwalimu Family, I am interested in the '+c[0]+' course.')+'">Ask about this course</a></div>'}).join('');
+$('#cl2')[0].innerHTML=h||'<p class="empty">No courses match. Try another search.</p>'}
+$('#ccs')[0].innerHTML=CT.map(function(t,i){return'<button class="chip'+(i?'':' on')+'" data-v="'+t+'" aria-pressed="'+(i?'false':'true')+'">'+t+'</button>'}).join('');
+$('#ccs .chip').forEach(function(b){b.onclick=function(){cat=b.dataset.v;$('#ccs .chip').forEach(function(x){x.classList.toggle('on',x===b);x.setAttribute('aria-pressed',x===b)});rd()}});
+$('#csq')[0].oninput=function(){q=this.value.trim().toLowerCase();rd()};
+$('#cl2')[0].addEventListener('change',function(e){var t=e.target;if(!t.dataset||t.dataset.c===undefined)return;var d=ld(),a=d[t.dataset.c]||[],i=+t.dataset.i,k=a.indexOf(i);if(t.checked&&k<0)a.push(i);if(!t.checked&&k>-1)a.splice(k,1);d[t.dataset.c]=a;sv(d);var o=t.closest('details').open;rd();var n=$('details',$('#cl2')[0]).filter(function(x){return x.querySelector('[data-c="'+t.dataset.c+'"]')})[0];if(n&&o)n.open=true});
+rd();
+})();
+</script>
+<script>
+(function(){
+var P=document.getElementById('mfp'),L=document.getElementById('mfl'),I=document.getElementById('mfi'),O=document.getElementById('mfo');
+var KB=[[['result','kjsea','kcse','kpsea','release'],'KJSEA results are expected in December 2026. KCSE and KPSEA are targeted for January 2027. These are targets, so watch official Ministry of Education and KNEC channels.','#exams','Open the Exams hub'],[['fake','scam','pay','early','suspicious'],'Never pay to see results early. Only official Ministry of Education and KNEC channels release results.','#/s4','Read how to spot fake messages'],[['scheme','template','lesson plan','record','download','word'],'Our library has free, editable Word templates for every grade, subject and term.','#library','Open the library'],[['grade 10','pathway','stem','placement','senior'],'Grade 10 pathways are STEM, Social Sciences, and Arts and Sports. Confirm placement details with the Ministry or your school.','#parents','Open the ParentsΓÇÖ hub'],[['kuccps','cluster','university','college','points'],'You can estimate cluster points in Tools. KUCCPS sets the exact cut-offs, so confirm on their site.','#tools','Open Tools'],[['helb','loan','bursary'],'Apply for HELB loans on the official HELB site and never pay agents.','#parents','See official links'],[['course','skill','cv','money','coding','typing','career'],'We have eight self-paced skills courses with progress tracking.','#courses','Browse courses'],[['job','vacancy','hiring','employ'],'Browse education vacancies or submit one for review. Genuine employers never charge application fees.','#jobs','Open Jobs'],[['advert','promote','sponsor','banner'],'You can advertise with a sponsored notice, featured job, newsletter mention or event promotion.','#advertise','See advertising options'],[['tutor','practice','maths','quiz','flashcard'],'Practise maths, take a quick quiz or find a tutor.','#tutoring','Open Tutoring'],[['timetable','revision','marks','comment','calculator'],'Tools include a revision timetable, class marks ranking, report comments and calculators.','#tools','Open Tools'],[['glossary','meaning','cbe','nemis','upi','what is'],'Our glossary explains CBE, KICD, KNEC, KUCCPS, NEMIS, UPI and more.','#help','Open Help and glossary'],[['game','quiz','play','memory','scramble','score'],'Play subject quizzes and learning games from Mwalimu Family. Scores are saved on your device.','#games','Open Games and quizzes'],[['contact','email','subscribe','newsletter'],'You can message us on WhatsApp or use the contact form.','#contact','Open Contact']];
+function add(t,c,l){var d=document.createElement('div');d.className=c;d.appendChild(document.createTextNode(t));if(l){d.appendChild(document.createElement('br'));var a=document.createElement('a');a.href=l[0];a.textContent=l[1]+' ΓåÆ';a.onclick=function(){P.hidden=true;O.setAttribute('aria-expanded','false')};d.appendChild(a)}L.appendChild(d);L.scrollTop=L.scrollHeight}
+function kb(q){q=q.toLowerCase();var best=null,n=0;KB.forEach(function(e){var c=e[0].filter(function(k){return q.indexOf(k)>-1}).length;if(c>n){n=c;best=e}});return best}
+function ask(q){add(q,'u');var ep=window.MF_AI_ENDPOINT;
+function fb(){var e=kb(q);if(e)add(e[1],'b',[e[2],e[3]]);else add('No matching page found. Use the search box on the home page or contact our team on WhatsApp.','b',['https://wa.me/254715363944?text='+encodeURIComponent(q),'Ask on WhatsApp'])}
+if(ep&&window.fetch){fetch(ep,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:q})}).then(function(r){return r.json()}).then(function(j){j&&j.reply?add(j.reply,'b'):fb()}).catch(fb)}else fb()}
+add('Welcome. I can direct you to the right page on this site. Select a question or type your own.','b');
+var qs=document.getElementById('mfq');['When are results out?','Where are templates?','Grade 10 pathways','Courses'].forEach(function(t){var b=document.createElement('button');b.type='button';b.textContent=t;b.onclick=function(){ask(t)};qs.appendChild(b)});
+document.getElementById('mff').onsubmit=function(e){e.preventDefault();var v=I.value.trim();if(v){I.value='';ask(v)}};
+O.onclick=function(){P.hidden=!P.hidden;O.setAttribute('aria-expanded',!P.hidden);if(!P.hidden)I.focus()};
+document.getElementById('mfx').onclick=function(){P.hidden=true;O.setAttribute('aria-expanded','false');O.focus()};
+addEventListener('keydown',function(e){if(e.key==='Escape'&&!P.hidden){P.hidden=true;O.focus()}});
+})();
+</script>
+<script>
+(function(){
+var V=document.getElementById('view'),tr=[location.hash||'#home'],rm=matchMedia('(prefers-reduced-motion:reduce)').matches;
+function back(){if(tr.length>1)history.back();else location.hash='#home'}
+function mk(){var b=document.createElement('button');b.type='button';b.className='bkb';b.textContent='ΓåÉ Back';b.setAttribute('aria-label','Go back to the previous page');b.onclick=back;return b}
+['news','library','parents','teaching','tools','notices','tutoring','jobs','advertise','activity','videos','about','contact','exams','help','courses','games'].forEach(function(id){var x=document.getElementById(id);if(!x)return;var w=document.createElement('div');w.className='w bkw';w.appendChild(mk());x.insertBefore(w,x.firstChild)});
+function dec(){var a=V.querySelector('.art');if(!V.hidden&&a&&!a.querySelector('.bkb')){var f=a.querySelector(':scope>a.dl');if(f&&/^ΓåÉ/.test(f.textContent))f.remove();a.insertBefore(mk(),a.firstChild)}}
+addEventListener('hashchange',function(){var h=location.hash||'#home',n=tr.length;if(n>1&&tr[n-2]===h)tr.pop();else if(tr[n-1]!==h)tr.push(h);dec()});
+dec();
+var t=document.createElement('button');t.type='button';t.className='bt';t.hidden=true;t.textContent='Γåæ';t.setAttribute('aria-label','Back to top');
+t.onclick=function(){scrollTo({top:0,behavior:rm?'auto':'smooth'})};document.body.appendChild(t);
+function sc(){t.hidden=scrollY<500}addEventListener('scroll',sc,{passive:true});sc();
+})();
+</script>
+<script>
+(function(){
+var $=function(s,c){return Array.prototype.slice.call((c||document).querySelectorAll(s))},g=function(i){return document.getElementById(i)},E=function(x){return String(x).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})};
+function dl(n,h){var b=new Blob(['<html><head><meta charset="utf-8"></head><body style="font-family:Arial">'+h+'</body></html>'],{type:'application/msword'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=n+'.doc';document.body.appendChild(a);a.click();a.remove()}
+var lh='',rh='';
+g('lpb').onclick=function(){var d=+g('lpd').value,m=function(f){return Math.max(1,Math.round(d*f))};
+var o=g('lpo').value.trim()||'________',h='<h2>Lesson plan</h2><table border="1" cellpadding="6" style="border-collapse:collapse;width:100%"><tr><td><b>School</b></td><td>________</td><td><b>Teacher</b></td><td>________</td></tr><tr><td><b>Grade</b></td><td>'+E(g('lpg').value)+'</td><td><b>Subject</b></td><td>'+E(g('lps').value)+'</td></tr><tr><td><b>Topic</b></td><td>'+E(g('lpt').value||'________')+'</td><td><b>Duration</b></td><td>'+d+' minutes</td></tr><tr><td><b>Date</b></td><td>________</td><td><b>Roll</b></td><td>________</td></tr></table><p><b>Specific learning outcome:</b> '+E(o)+'</p><p><b>Key inquiry question:</b> ________</p><p><b>Learning resources:</b> ________</p><p><b>Local context:</b> ________</p><table border="1" cellpadding="6" style="border-collapse:collapse;width:100%"><tr><th>Stage</th><th>Time</th><th>Teacher activity</th><th>Learner activity</th></tr><tr><td>Introduction</td><td>'+m(.15)+' min</td><td></td><td></td></tr><tr><td>Development</td><td>'+m(.6)+' min</td><td></td><td></td></tr><tr><td>Conclusion</td><td>'+m(.15)+' min</td><td></td><td></td></tr><tr><td>Assessment</td><td>'+m(.1)+' min</td><td></td><td></td></tr></table><p><b>Core competencies:</b> Communication and collaboration, Critical thinking and problem solving, Creativity and imagination, Citizenship, Digital literacy, Learning to learn, Self-efficacy.</p><p><b>Values:</b> ________</p><p><b>Assessment method:</b> ________</p><p><b>Reflection:</b> ________</p>';
+lh=h;g('lpo2').innerHTML=h;g('lpx').hidden=false};
+g('lpx').onclick=function(){dl('Lesson-plan',lh)};
+g('rbb').onclick=function(){var cr=g('rbc').value.split(',').map(function(x){return x.trim()}).filter(Boolean);if(!cr.length)return;
+var h='<h2>Assessment rubric: '+E(g('rbt').value)+'</h2><table border="1" cellpadding="6" style="border-collapse:collapse;width:100%"><tr><th>Criterion</th><th>Exceeds expectation</th><th>Meets expectation</th><th>Approaches expectation</th><th>Below expectation</th></tr>'+cr.map(function(c){c=E(c);return'<tr><td><b>'+c+'</b></td><td>Shows '+c+' consistently and independently, and applies it in new situations.</td><td>Shows '+c+' correctly in familiar situations.</td><td>Shows '+c+' with some support or occasional errors.</td><td>Needs substantial support to show '+c+'.</td></tr>'}).join('')+'</table>';
+rh=h;g('rbo').innerHTML=h;g('rbx').hidden=false};
+g('rbx').onclick=function(){dl('Rubric',rh)};
+g('f6').onclick=function(){var t=0;['f1','f2','f3','f4'].forEach(function(i){t+=Math.max(0,+g(i).value||0)});var w=Math.max(1,+g('f5').value||1),f=function(n){return Math.ceil(n).toLocaleString('en-KE')};
+g('f7').textContent='Total: KES '+f(t)+'. Save about KES '+f(t/w)+' per week, or KES '+f(t/(w/4.345))+' per month, to be ready on time.'};
+var LV=[[90,'EE1',8,'Exceeds expectation'],[75,'EE2',7,'Exceeds expectation'],[58,'ME1',6,'Meets expectation'],[41,'ME2',5,'Meets expectation'],[31,'AE1',4,'Approaches expectation'],[21,'AE2',3,'Approaches expectation'],[11,'BE1',2,'Below expectation'],[0,'BE2',1,'Below expectation']];
+g('sc3').onclick=function(){var a=+g('sc1').value,b=+g('sc2').value;if(!(b>0)||a<0||a>b){g('sc4').textContent='Enter a score between 0 and the total.';return}
+var pc=Math.round(a/b*100),l=LV.filter(function(x){return pc>=x[0]})[0];g('sc4').textContent=pc+'%: '+l[1]+' ('+l[2]+' points), '+l[3]};
+var tm=null,left=0,mode=0,TD=g('ft2');
+function show(){var m=Math.floor(left/60),x=left%60;TD.textContent=(m<10?'0':'')+m+':'+(x<10?'0':'')+x}
+function init(){clearInterval(tm);tm=null;var v=g('ft1').value.split(',');left=+v[0]*60;mode=0;show();g('ft4').textContent='Start';g('ft3').textContent=''}
+g('ft1').onchange=init;g('ft5').onclick=init;init();
+g('ft4').onclick=function(){if(tm){clearInterval(tm);tm=null;this.textContent='Resume';return}this.textContent='Pause';var b=this;
+tm=setInterval(function(){left--;if(left<=0){var v=g('ft1').value.split(',');mode=mode?0:1;left=+v[mode]*60;g('ft3').textContent=mode?'Study session complete. Take a break.':'Break over. Start the next session.'}show()},1000)};
+var MP={'KCSE grade calculator':'C L','Report-form comments':'T','KUCCPS cluster points':'P L C','Bulk report comments':'T','Pathway conversation starter':'P L','Revision timetable maker':'L','Class marks and ranking':'T C','Flashcards':'L','Lesson plan builder':'T','Rubric builder':'T','School fees planner':'P C','Score to performance level':'L P C','Focus timer':'L','Word counter':'T L','Attendance calculator':'T C','KJSEA points total':'P L C','Group maker':'T'};
+var CH=[['All',''],['Teachers','T'],['Parents','P'],['Learners','L'],['Calculators','C']],cur='',q='';
+var cards=$('#tools .card').filter(function(c){return c.querySelector('h3')&&MP[c.querySelector('h3').textContent]!==undefined});
+function ft(){var n=0;cards.forEach(function(c){var t=c.querySelector('h3').textContent,ok=(!cur||MP[t].split(' ').indexOf(cur)>-1)&&(!q||t.toLowerCase().indexOf(q)>-1);c.hidden=!ok;if(ok)n++});g('tcn').textContent=n+' of '+cards.length+' tools shown'}
+g('tcs').innerHTML=CH.map(function(c,i){return'<button class="chip'+(i?'':' on')+'" data-v="'+c[1]+'" aria-pressed="'+(i?'false':'true')+'">'+c[0]+'</button>'}).join('');
+$('#tcs .chip').forEach(function(b){b.onclick=function(){cur=b.dataset.v;$('#tcs .chip').forEach(function(x){x.classList.toggle('on',x===b);x.setAttribute('aria-pressed',x===b)});ft()}});
+g('tsq').oninput=function(){q=this.value.trim().toLowerCase();ft()};ft();
+})();
+</script>
+<script>
+(function(){
+var g=function(i){return document.getElementById(i)},$=function(s,c){return Array.prototype.slice.call((c||document).querySelectorAll(s))};
+function sg(){try{return JSON.parse(localStorage.getItem('mfg')||'{}')}catch(e){return{}}}
+function ss(d){try{localStorage.setItem('mfg',JSON.stringify(d))}catch(e){}}
+function sh(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t}return a}
+function rn(a,b){return a+Math.floor(Math.random()*(b-a+1))}
+function bs(){var d=sg(),q=d.q||{},p=[];Object.keys(q).forEach(function(k){p.push(k+' '+q[k]+'/5')});
+g('gsc').textContent=(p.length?'Quizzes: '+p.join(', ')+'. ':'No quiz scores yet. ')+(d.m?'Memory match: '+d.m+' moves. ':'')+(d.s?'Speed maths: '+Object.keys(d.s).map(function(k){return k+' '+d.s[k]}).join(', ')+'. ':'')+(d.w?'Word scramble: '+d.w+' solved.':'')}
+$('#gtabs .chip').forEach(function(b){b.onclick=function(){$('#gtabs .chip').forEach(function(x){x.classList.toggle('on',x===b);x.setAttribute('aria-pressed',x===b);g(x.dataset.p).hidden=x!==b})}});
+var Q={'Mathematics':[['What is 3/4 of 80?',['40','60','64','70'],1,'Divide 80 by 4 to get 20, then multiply by 3.'],['What is the area of a rectangle 8 cm by 5 cm?',['13 cm┬▓','26 cm┬▓','40 cm┬▓','80 cm┬▓'],2,'Area = length ├ù width.'],['Which number is prime?',['21','27','29','33'],2,'29 has no factors except 1 and itself.'],['What is 15% of 200?',['15','20','30','45'],2,'10% is 20 and 5% is 10, so the total is 30.'],['What is the value of 2┬│ + 4?',['10','12','14','16'],1,'2┬│ = 8, then add 4.']],
+'Science':[['Which gas do plants absorb for photosynthesis?',['Oxygen','Carbon dioxide','Nitrogen','Hydrogen'],1,'Plants use carbon dioxide, water and light to make food.'],['What is the boiling point of water at sea level?',['50 ┬░C','90 ┬░C','100 ┬░C','120 ┬░C'],2,'Water boils at 100 ┬░C at sea level.'],['Which organ pumps blood around the body?',['Lungs','Liver','Heart','Kidney'],2,'The heart pumps blood through the body.'],['Which unit measures force?',['Joule','Newton','Watt','Pascal'],1,'Force is measured in newtons.'],['Which plant part absorbs water from the soil?',['Leaf','Stem','Root','Flower'],2,'Roots absorb water and mineral salts.']],
+'Kiswahili':[['What does maji mean?',['Fire','Water','Food','Milk'],1,'Maji means water.'],['Which word means teacher?',['Daktari','Mwalimu','Mkulima','Dereva'],1,'Mwalimu means teacher.'],['Shule meansΓÇª',['Market','Church','School','Hospital'],2,'Shule means school.'],['What is the plural of kitabu?',['Kitabu','Vitabu','Mitabu','Witabu'],1,'Ki- nouns take vi- in the plural: vitabu.'],['Complete the methali: Haraka haraka hainaΓÇª',['baraka','faida','mwisho','nguvu'],0,'Haraka haraka haina baraka: rushing brings no blessing.']],
+'English':[['Choose the correct sentence.',['She go to school.','She goes to school.','She going to school.','She gone to school.'],1,'A singular subject takes goes.'],['What is the opposite of ancient?',['Old','Modern','Rare','Large'],1,'Modern is the opposite of ancient.'],['Which word is a noun?',['Quickly','Beautiful','Teacher','Run'],2,'A noun names a person, place or thing.'],['What is the plural of child?',['Childs','Childes','Children','Childrens'],2,'Child has an irregular plural: children.'],['Which mark ends a question?',['.','!','?',','],2,'A question ends with a question mark.']],
+'Kenya and Social Studies':[['What is the capital city of Kenya?',['Mombasa','Nairobi','Kisumu','Nakuru'],1,'Nairobi is KenyaΓÇÖs capital.'],['Which is the highest mountain in Kenya?',['Mount Kenya','Mount Elgon','Mount Longonot','Aberdare Range'],0,'Mount Kenya is the highest mountain in Kenya.'],['Which ocean borders Kenya?',['Atlantic','Indian','Pacific','Arctic'],1,'KenyaΓÇÖs coast is on the Indian Ocean.'],['In which year did Kenya gain independence?',['1957','1963','1969','1978'],1,'Kenya became independent in 1963.'],['Which is AfricaΓÇÖs largest lake and borders Kenya?',['Lake Turkana','Lake Victoria','Lake Naivasha','Lake Baringo'],1,'Lake Victoria is the largest lake in Africa.']]};
+g('qzs').innerHTML=Object.keys(Q).map(function(k){return'<option>'+k+'</option>'}).join('');
+var qi=0,qs=0,qd=null,qn='';
+function qr(){var A=g('qza');if(qi>=qd.length){var d=sg();d.q=d.q||{};if(!(d.q[qn]>=qs))d.q[qn]=qs;ss(d);bs();A.innerHTML='<h3>Score: '+qs+' of '+qd.length+'</h3><p>'+(qs===qd.length?'Excellent work.':qs>=3?'Good effort. Try again to improve.':'Keep practising and try again.')+'</p>';return}
+var q=qd[qi];A.innerHTML='<p style="margin-top:1rem"><b>Question '+(qi+1)+' of '+qd.length+'</b></p><p style="color:var(--tx);font-size:1.1rem">'+q[0]+'</p>'+q[1].map(function(o,i){return'<button class="gb o qo" data-i="'+i+'">'+o+'</button>'}).join('')+'<p id="qf"></p>';
+$('.qo',A).forEach(function(b){b.onclick=function(){var i=+b.dataset.i;$('.qo',A).forEach(function(x){x.disabled=true;if(+x.dataset.i===q[2])x.classList.add('ok')});if(i===q[2])qs++;else b.classList.add('no');g('qf').innerHTML=(i===q[2]?'Correct. ':'Not quite. ')+q[3]+'<br><button class="gb" id="qnx">'+(qi+1<qd.length?'Next question':'See score')+'</button>';g('qnx').onclick=function(){qi++;qr()}}})}
+g('qzb').onclick=function(){qn=g('qzs').value;qd=sh(Q[qn].slice());qi=0;qs=0;qr()};
+var MP=[['maji','water'],['nyumba','house'],['shule','school'],['kitabu','book'],['rafiki','friend'],['mwalimu','teacher']],op=[],mv=0,mt=0,lk=false;
+function mi(){var c=[];MP.forEach(function(p,i){c.push([i,p[0]]);c.push([i,p[1]])});sh(c);op=[];mv=0;mt=0;lk=false;g('mmi').textContent='Moves: 0';
+g('mmg').innerHTML=c.map(function(x,k){return'<button class="mmc" data-k="'+x[0]+'" aria-label="Card">?</button>'}).join('');
+$('#mmg .mmc').forEach(function(b,k){b.onclick=function(){if(lk||b.classList.contains('up')||b.classList.contains('ok'))return;b.textContent=c[k][1];b.classList.add('up');op.push(b);
+if(op.length===2){mv++;g('mmi').textContent='Moves: '+mv;var a=op[0],d=op[1];if(a.dataset.k===d.dataset.k){a.classList.replace('up','ok');d.classList.replace('up','ok');mt++;op=[];if(mt===MP.length){var z=sg();if(!z.m||mv<z.m)z.m=mv;ss(z);bs();g('mmi').textContent='Complete in '+mv+' moves.'}}else{lk=true;setTimeout(function(){[a,d].forEach(function(x){x.classList.remove('up');x.textContent='?'});op=[];lk=false},800)}}}})}
+g('mmr').onclick=mi;mi();
+var sp={t:0,s:0,a:0,iv:null};
+function sq(){var o=g('spo').value,a=rn(2,12),b=rn(2,12);if(o==='+'){a=rn(1,50);b=rn(1,50);sp.a=a+b}else if(o==='ΓêÆ'){a=rn(10,60);b=rn(1,a);sp.a=a-b}else sp.a=a*b;g('spq').textContent=a+' '+o+' '+b+' = ?'}
+function sk(){if(!sp.iv)return;var v=g('spa').value;if(v==='')return;if(+v===sp.a)sp.s++;g('spa').value='';g('spr').textContent='Score: '+sp.s;sq();g('spa').focus()}
+g('sps').onclick=function(){clearInterval(sp.iv);sp.t=60;sp.s=0;g('spr').textContent='Score: 0';g('spa').disabled=false;g('spk').disabled=false;g('spt').textContent='Time left: 60';sq();g('spa').focus();
+sp.iv=setInterval(function(){sp.t--;g('spt').textContent='Time left: '+sp.t;if(sp.t<=0){clearInterval(sp.iv);sp.iv=null;g('spa').disabled=true;g('spk').disabled=true;var o=g('spo').value,d=sg();d.s=d.s||{};if(!(d.s[o]>=sp.s))d.s[o]=sp.s;ss(d);bs();g('spr').textContent='Time is up. Final score: '+sp.s}},1000)};
+g('spk').onclick=sk;g('spa').onkeydown=function(e){if(e.key==='Enter')sk()};
+var WD=[['MWALIMU','Teacher in Kiswahili'],['SCHOOL','Where learners study'],['NAIROBI','Capital of Kenya'],['LIBRARY','Place with many books'],['KITABU','Book in Kiswahili'],['SCIENCE','Study of nature and experiments'],['MOUNTAIN','Mount Kenya is one'],['RAFIKI','Friend in Kiswahili'],['HOMEWORK','Work done after class']],wc='',ws=0;
+function wn(){var w=WD[rn(0,WD.length-1)];wc=w[0];var x;do{x=sh(wc.split('')).join('')}while(x===wc);g('wsq').textContent=x;g('wsh').textContent='Hint: '+w[1];g('wsa').value='';g('wsr').textContent=ws?'Solved: '+ws:''}
+function wk(){var v=g('wsa').value.trim().toUpperCase();if(!v)return;if(v===wc){ws++;var d=sg();if(!(d.w>=ws))d.w=ws;ss(d);bs();wn();g('wsr').textContent='Correct. Solved: '+ws}else g('wsr').textContent='Try again.'}
+g('wsk').onclick=wk;g('wsa').onkeydown=function(e){if(e.key==='Enter')wk()};g('wsn').onclick=wn;wn();bs();
+/* extra tools */
+var G=function(i){return document.getElementById(i)};
+G('wc1').oninput=function(){var t=this.value.trim(),w=t?t.split(/\s+/).length:0,sn=t?(t.match(/[.!?]+/g)||[]).length:0;G('wc2').textContent=w+' words, '+t.length+' characters, '+sn+' sentences, about '+Math.max(w?1:0,Math.round(w/200))+' min read.'};
+G('at3').onclick=function(){var p=+G('at1').value||0,a=+G('at2').value||0,t=p+a;G('at4').textContent=t?'Attendance: '+(p/t*100).toFixed(1)+'% ('+p+' of '+t+' days).':'Enter days present or absent.'};
+G('kp2').onclick=function(){var v=G('kp1').value.split(',').map(Number).filter(function(x){return x>=1&&x<=8});G('kp3').textContent=v.length>9?'KJSEA has nine learning areas. Enter up to nine scores.':v.length?'Total: '+v.reduce(function(a,b){return a+b},0)+' of '+v.length*8+' points'+(v.length===9?' (maximum 72)':'')+'. Average: '+(v.reduce(function(a,b){return a+b},0)/v.length).toFixed(1)+' per learning area.':'Enter points from 1 to 8, separated by commas.'};
+G('gm3').onclick=function(){var n=G('gm1').value.split('\n').map(function(x){return x.trim()}).filter(Boolean),k=Math.max(2,+G('gm2').value||2);if(!n.length)return;sh(n);var o=[];for(var i=0;i<n.length;i+=k)o.push('Group '+(o.length+1)+': '+n.slice(i,i+k).join(', '));G('gm4').textContent=o.join('\n')};
+})();
+</script>
+<script src="mf-client.js" defer></script>
+</body>
+</html>

@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
+
+export const dynamic = 'force-dynamic';
 import { supabase, getAdminClient, SEED_SUBMISSIONS, SEED_ITEMS } from '@/lib/supabase';
 import { Submission } from '@/lib/types';
 
@@ -84,8 +86,8 @@ export async function PATCH(req: NextRequest) {
         if (submissionData) {
           const kind = submissionData.type === 'job' ? 'job' : 'notice';
           const who = submissionData.from_name || 'Contributor';
-          const loc = submissionData.fields.find(([k]) => /location|town|county/i.test(k))?.[1] || '';
-          const cat = submissionData.fields.find(([k]) => /subject|category|level/i.test(k))?.[1] || 'General';
+          const loc = submissionData.fields.find(([k]: [string, string]) => /location|town|county/i.test(k))?.[1] || '';
+          const cat = submissionData.fields.find(([k]: [string, string]) => /subject|category|level/i.test(k))?.[1] || 'General';
 
           await admin.from('items').insert([
             {
@@ -94,7 +96,7 @@ export async function PATCH(req: NextRequest) {
               who,
               loc,
               cat,
-              body: submissionData.fields.map(([k, v]) => `${k}: ${v}`).join('\n'),
+              body: submissionData.fields.map(([k, v]: [string, string]) => `${k}: ${v}`).join('\n'),
               st: 'draft',
               exp: new Date(Date.now() + 60 * 864e5).toISOString().slice(0, 10),
             },

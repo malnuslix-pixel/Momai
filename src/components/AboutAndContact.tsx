@@ -20,7 +20,7 @@ export default function AboutAndContact() {
       const res = await fetch('/api/subscribe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email }),
+        body: JSON.stringify({ name, email, consent: agreed }),
       });
       const data = await res.json();
       if (data.ok) {

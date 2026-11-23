@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
+
+export const dynamic = 'force-dynamic';
 import { initiateSTKPush, formatPhone } from '@/lib/mpesa';
 import { getAdminClient } from '@/lib/supabase';
 

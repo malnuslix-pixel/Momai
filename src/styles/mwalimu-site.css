@@ -57,17 +57,17 @@ html {
 
 body {
   font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-  line-height: 1.6;
+  line-height: 1.7;
   color: var(--tx);
   background: var(--bg);
-  font-size: var(--fs, 16px);
+  font-size: var(--fs, 18px);
   overflow-x: clip;
   padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 
 h1, h2, h3, .disp {
   font-family: 'Fraunces', Georgia, serif;
-  line-height: 1.15;
+  line-height: 1.1;
   letter-spacing: -0.02em;
   color: var(--hd);
   word-wrap: break-word;
@@ -1577,38 +1577,98 @@ main > section:not([hidden]) {
 .pbn {
   position: relative;
   z-index: 2;
-  padding: 7rem 0 2.5rem;
+  padding: 5.5rem 0 2rem;
   background: radial-gradient(60% 120% at 85% 0, rgba(244, 162, 97, 0.28), transparent 60%),
               linear-gradient(160deg, #16341a, #2c5f2d);
 }
 
+@media (min-width: 768px) {
+  .pbn {
+    padding: 6.8rem 0 2.6rem;
+  }
+}
+
+.pbn-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.8rem;
+  flex-wrap: wrap;
+}
+
+.pbn-btn-back,
+.pbn-btn-home {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.42rem 0.95rem;
+  min-height: 40px;
+  background: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 999px;
+  color: #ffffff !important;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  touch-action: manipulation;
+}
+
+.pbn-btn-back:hover,
+.pbn-btn-home:hover {
+  background: rgba(255, 255, 255, 0.28);
+  border-color: rgba(255, 255, 255, 0.45);
+  transform: translateY(-1px);
+}
+
 .pbn h1 {
-  font-size: clamp(2rem, 5.5vw, 4rem);
+  font-size: clamp(1.8rem, 5vw, 3.4rem);
   color: #fff;
   font-weight: 800;
+  line-height: 1.15;
 }
 
 .pbn p {
-  color: rgba(255, 255, 255, 0.88);
-  max-width: 36em;
-  font-size: 1.1rem;
-  margin-top: 0.8rem;
+  color: rgba(255, 255, 255, 0.9);
+  max-width: 42em;
+  font-size: clamp(0.95rem, 2.5vw, 1.1rem);
+  margin-top: 0.6rem;
+  line-height: 1.6;
 }
 
 .bc {
-  font-size: 0.88rem;
-  color: rgba(255, 255, 255, 0.75);
-  margin-bottom: 0.8rem;
+  font-size: 0.84rem;
+  color: rgba(255, 255, 255, 0.78);
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
 }
 
 .bc a {
+  color: #ffffff;
   text-decoration: underline;
   text-underline-offset: 3px;
+  opacity: 0.9;
 }
 
-.bc span {
+.bc a:hover {
+  opacity: 1;
+}
+
+.bc span[aria-current="page"] {
+  color: #ffd8a8;
+  font-weight: 600;
+  opacity: 1;
+}
+
+.bc span:not([aria-current]) {
   opacity: 0.6;
-  margin: 0 0.3rem;
+  margin: 0 0.1rem;
 }
 
 .hh {
@@ -2069,6 +2129,56 @@ section.mb .sh, section.mb .sub, section.mb .pbn h1, section.mb .pbn p, section.
   border-radius: 8px !important;
   padding: 0 0.9rem !important;
   cursor: pointer !important;
+}
+
+@media screen and (max-width: 640px) {
+  html, body {
+    overflow-x: hidden;
+  }
+
+  button, a.btn, a.gb, .chip {
+    min-height: 42px;
+  }
+
+  input[type="text"], input[type="search"], input[type="tel"], input[type="email"], select, textarea {
+    font-size: 16px !important;
+  }
+
+  .chips {
+    display: flex;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 0.4rem;
+    gap: 0.4rem;
+  }
+
+  .chips .chip {
+    flex-shrink: 0;
+  }
+
+  .pbn {
+    padding: 5.2rem 0 1.6rem !important;
+  }
+
+  .pbn h1 {
+    font-size: 1.85rem !important;
+    line-height: 1.2 !important;
+  }
+
+  .pbn p {
+    font-size: 0.95rem !important;
+  }
+
+  .pbn-actions {
+    gap: 0.45rem;
+    margin-bottom: 0.6rem;
+  }
+
+  .pbn-btn-back, .pbn-btn-home {
+    font-size: 0.8rem;
+    padding: 0.35rem 0.75rem;
+    min-height: 36px;
+  }
 }
 
 @media screen and (max-width: 600px) {

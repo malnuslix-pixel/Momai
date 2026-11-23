@@ -1,4 +1,6 @@
 import { ImageResponse } from 'next/og';
+
+export const dynamic = 'force-dynamic';
 import { NextRequest } from 'next/server';
 
 export const runtime = 'edge';
@@ -145,7 +147,7 @@ export async function GET(req: NextRequest) {
             >
               <span>🇰🇪 Kenya&apos;s Education Portal</span>
               <span>•</span>
-              <span>CBC &amp; 8-4-4 Materials</span>
+              <span>CBC & 8-4-4 Materials</span>
               <span>•</span>
               <span>mwalimufamily.co.ke</span>
             </div>

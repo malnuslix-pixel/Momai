@@ -39,7 +39,7 @@ export default function Footer({ onNavClick }: FooterProps) {
           </div>
           <div>
             <h4>Explore</h4>
-            <Link href="/#news">News</Link>
+            <Link href="/news">News</Link>
             <Link href="/learn">Library</Link>
             <Link href="/teach">Teaching</Link>
             <Link href="/tools">Tools</Link>

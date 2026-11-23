@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Link from 'next/link';
 import { ARTICLES, Article } from '@/lib/mwalimu-data';
 
 interface NewsSectionProps {
@@ -192,6 +193,24 @@ export default function NewsSection({ onNavClick, activeStoryId, onSelectStory }
           {filtered.length === 0 && (
             <p className="empty">No stories match your search. Follow @mwalimufamily on WhatsApp for updates.</p>
           )}
+        </div>
+
+        {/* View More News CTA */}
+        <div style={{ textAlign: 'center', marginTop: '2.5rem' }}>
+          <Link
+            href="/news"
+            className="btn b1"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.6rem',
+              padding: '0.85rem 2.2rem',
+              fontSize: '1.05rem',
+              textDecoration: 'none'
+            }}
+          >
+            📰 View More News & Updates →
+          </Link>
         </div>
       </div>
     </section>

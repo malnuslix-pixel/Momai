@@ -47,7 +47,6 @@ export default function Footer({ onNavClick }: FooterProps) {
           </div>
           <div>
             <h4>Learn</h4>
-            <a href="#exams" onClick={(e) => { e.preventDefault(); onNavClick('#exams'); }}>Exams hub</a>
             <a href="#games" onClick={(e) => { e.preventDefault(); onNavClick('#games'); }}>Games & quizzes</a>
             <a href="#courses" onClick={(e) => { e.preventDefault(); onNavClick('#courses'); }}>Courses</a>
             <a href="#notices" onClick={(e) => { e.preventDefault(); onNavClick('#notices'); }}>Notice board</a>
@@ -59,14 +58,12 @@ export default function Footer({ onNavClick }: FooterProps) {
             <a href="#about" onClick={(e) => { e.preventDefault(); onNavClick('#about'); }}>About</a>
             <a href="#contact" onClick={(e) => { e.preventDefault(); onNavClick('#contact'); }}>Contact</a>
             <Link href="/pricing">💳 Pricing</Link>
-            <Link href="/control-room">Control Room</Link>
           </div>
         </div>
 
         <div className="bot">
           <p>© 2026 Mwalimu Family. Proudly serving Kenya’s 47 counties.</p>
           <p>
-            <Link href="/control-room">Control Room</Link> &nbsp;·&nbsp;
             <Link href="/privacy">Privacy Notice</Link> &nbsp;·&nbsp;
             <a href="https://wa.me/254715363944" target="_blank" rel="noopener">WhatsApp Support</a>
           </p>

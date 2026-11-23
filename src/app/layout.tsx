@@ -66,6 +66,13 @@ export default function RootLayout({
       <head>
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Caveat:wght@500&family=Fraunces:opsz,wght@9..144,600;9..144,700;9..144,800&display=swap"
+          rel="stylesheet"
+        />
+        <link rel="dns-prefetch" href="https://wa.me" />
       </head>
       <body>{children}</body>
     </html>

@@ -1,6 +1,6 @@
 /* Mwalimu Family Service Worker - Offline Revision & Past Papers Caching
    Bump VERSION whenever cache assets change */
-const VERSION = 'mf-v2-production';
+const VERSION = 'mf-v3-speed';
 const PRECACHE_ASSETS = [
   '/',
   '/offline',
@@ -8,7 +8,7 @@ const PRECACHE_ASSETS = [
   '/tutor',
   '/leaderboard',
   '/privacy',
-  '/mwalimu-main.js',
+  '/favicon.ico',
   '/manifest.webmanifest',
   '/icons/favicon-32.png',
   '/icons/apple-touch-icon.png',

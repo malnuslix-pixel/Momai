@@ -2,23 +2,25 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
 import '@/styles/mwalimu-site.css';
 
-// TypeScript Components
+// Critical Above-the-Fold Components
 import Header from '@/components/Header';
 import Hero from '@/components/Hero';
 import RoleChooser from '@/components/RoleChooser';
 import NewsSection from '@/components/NewsSection';
-import LibrarySection from '@/components/LibrarySection';
-import TeachingSection from '@/components/TeachingSection';
-import ToolsSection from '@/components/ToolsSection';
-import NoticesSection from '@/components/NoticesSection';
-import ExamsHub from '@/components/ExamsHub';
-import CoursesAndGames from '@/components/CoursesAndGames';
-import ParentsAndJobs from '@/components/ParentsAndJobs';
-import AboutAndContact from '@/components/AboutAndContact';
 import Footer from '@/components/Footer';
-import FloatingWidgets from '@/components/FloatingWidgets';
+
+// Code-Split Below-the-Fold Components for Blazing-Fast Initial Load
+const LibrarySection = dynamic(() => import('@/components/LibrarySection'), { ssr: true });
+const TeachingSection = dynamic(() => import('@/components/TeachingSection'), { ssr: true });
+const ToolsSection = dynamic(() => import('@/components/ToolsSection'), { ssr: true });
+const NoticesSection = dynamic(() => import('@/components/NoticesSection'), { ssr: true });
+const CoursesAndGames = dynamic(() => import('@/components/CoursesAndGames'), { ssr: true });
+const ParentsAndJobs = dynamic(() => import('@/components/ParentsAndJobs'), { ssr: true });
+const AboutAndContact = dynamic(() => import('@/components/AboutAndContact'), { ssr: true });
+const FloatingWidgets = dynamic(() => import('@/components/FloatingWidgets'), { ssr: false });
 
 export default function HomePage() {
   const [isMaintenance, setIsMaintenance] = useState(false);
@@ -74,7 +76,8 @@ export default function HomePage() {
   const HASH_ALIASES: Record<string, string> = {
     tutoring: 'tools',
     videos: 'courses',
-    help: 'exams',
+    help: 'parents',
+    exams: 'notices',
   };
 
   const handleNavClick = (hash: string) => {
@@ -126,8 +129,8 @@ export default function HomePage() {
             The system is undergoing scheduled editorial and technical maintenance. We will be right back shortly.
           </p>
           <p style={{ marginTop: '1.5rem' }}>
-            <Link href="/control-room" style={{ color: '#2c5f2d', fontWeight: 600 }}>
-              Access Control Room →
+            <Link href="/admin" style={{ color: '#2c5f2d', fontWeight: 600 }}>
+              Access Admin →
             </Link>
           </p>
         </div>
@@ -170,7 +173,6 @@ export default function HomePage() {
             <TeachingSection onNavClick={handleNavClick} />
             <ToolsSection />
             <NoticesSection />
-            <ExamsHub onNavClick={handleNavClick} />
             <CoursesAndGames />
             <ParentsAndJobs onNavClick={handleNavClick} />
             <AboutAndContact />

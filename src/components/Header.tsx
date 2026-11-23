@@ -10,6 +10,7 @@ interface HeaderProps {
 
 export default function Header({ onNavClick, activeNav }: HeaderProps) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isLite, setIsLite] = useState(false);
   const [fontSizeIdx, setFontSizeIdx] = useState(0);
@@ -21,6 +22,18 @@ export default function Header({ onNavClick, activeNav }: HeaderProps) {
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleOutsideClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (!target.closest('.dd')) {
+        setOpenDropdown(null);
+      }
+    };
+    document.addEventListener('click', handleOutsideClick);
+    return () => document.removeEventListener('click', handleOutsideClick);
   }, []);
 
   const toggleLite = () => {
@@ -47,7 +60,13 @@ export default function Header({ onNavClick, activeNav }: HeaderProps) {
 
   const handleLink = (hash: string) => {
     setMenuOpen(false);
+    setOpenDropdown(null);
     onNavClick(hash);
+  };
+
+  const toggleDropdown = (name: string, e: React.MouseEvent) => {
+    e.preventDefault();
+    setOpenDropdown(prev => prev === name ? null : name);
   };
 
   return (
@@ -101,8 +120,8 @@ export default function Header({ onNavClick, activeNav }: HeaderProps) {
               </a>
             </li>
 
-            <li className="dd">
-              <a href="#library" onClick={(e) => { e.preventDefault(); handleLink('#library'); }}>
+            <li className={`dd ${openDropdown === 'learn' ? 'dd-open' : ''}`}>
+              <a href="#library" onClick={(e) => { toggleDropdown('learn', e); }}>
                 {lang === 'sw' ? 'Jifunze' : 'Learn'}
               </a>
               <ul>
@@ -136,8 +155,8 @@ export default function Header({ onNavClick, activeNav }: HeaderProps) {
               </a>
             </li>
 
-            <li className="dd">
-              <a href="#teaching" onClick={(e) => { e.preventDefault(); handleLink('#teaching'); }}>
+            <li className={`dd ${openDropdown === 'teach' ? 'dd-open' : ''}`}>
+              <a href="#teaching" onClick={(e) => { toggleDropdown('teach', e); }}>
                 {lang === 'sw' ? 'Fundisha' : 'Teach'}
               </a>
               <ul>
@@ -146,14 +165,13 @@ export default function Header({ onNavClick, activeNav }: HeaderProps) {
               </ul>
             </li>
 
-            <li className="dd">
-              <a href="#parents" onClick={(e) => { e.preventDefault(); handleLink('#parents'); }}>
+            <li className={`dd ${openDropdown === 'families' ? 'dd-open' : ''}`}>
+              <a href="#parents" onClick={(e) => { toggleDropdown('families', e); }}>
                 {lang === 'sw' ? 'Familia' : 'Families'}
               </a>
               <ul>
                 <li><a href="#parents" onClick={(e) => { e.preventDefault(); handleLink('#parents'); }}>Parents</a></li>
-                <li><a href="#exams" onClick={(e) => { e.preventDefault(); handleLink('#exams'); }}>Exams</a></li>
-                <li><a href="#exams" onClick={(e) => { e.preventDefault(); handleLink('#exams'); }}>Help & glossary</a></li>
+                <li><a href="#parents" onClick={(e) => { e.preventDefault(); handleLink('#parents'); }}>Help & glossary</a></li>
                 <li><a href="#notices" onClick={(e) => { e.preventDefault(); handleLink('#notices'); }}>Notices</a></li>
               </ul>
             </li>
@@ -166,12 +184,6 @@ export default function Header({ onNavClick, activeNav }: HeaderProps) {
               >
                 Advertise
               </a>
-            </li>
-
-            <li>
-              <Link href="/control-room" onClick={() => setMenuOpen(false)}>
-                Control Room
-              </Link>
             </li>
 
             <li>

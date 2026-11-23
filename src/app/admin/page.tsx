@@ -25,7 +25,7 @@ const CK_LABELS = [
   'Dates and location match official records',
 ];
 
-export default function ControlRoomPage() {
+export default function AdminPage() {
   const [tab, setTab] = useState<TabType>('overview');
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
   const [items, setItems] = useState<FeedItem[]>(SEED_ITEMS);

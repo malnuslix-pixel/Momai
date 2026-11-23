@@ -52,7 +52,8 @@ export default function HomePage() {
         window.scrollTo({ top: 0, behavior: 'instant' });
       } else if (hash) {
         setActiveStoryId(null);
-        const sectionId = hash.replace('#', '');
+        let sectionId = hash.replace('#', '');
+        if (HASH_ALIASES[sectionId]) sectionId = HASH_ALIASES[sectionId];
         setActiveNav(sectionId);
         const el = document.getElementById(sectionId);
         if (el) {
@@ -69,24 +70,37 @@ export default function HomePage() {
     return () => window.removeEventListener('hashchange', handleHash);
   }, []);
 
+  // Map legacy / dead hash targets to real section IDs
+  const HASH_ALIASES: Record<string, string> = {
+    tutoring: 'tools',
+    videos: 'courses',
+    help: 'exams',
+  };
+
   const handleNavClick = (hash: string) => {
-    window.location.hash = hash;
     if (hash.startsWith('#/s')) {
+      window.location.hash = hash;
       const sId = hash.replace('#/', '');
       setActiveStoryId(sId);
       setActiveNav('news');
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
       setActiveStoryId(null);
-      const targetId = hash.replace('#', '');
+      let targetId = hash.replace('#', '');
+      // Resolve aliases so dead anchors still navigate
+      if (HASH_ALIASES[targetId]) targetId = HASH_ALIASES[targetId];
+      window.location.hash = `#${targetId}`;
       setActiveNav(targetId);
-      if (targetId === 'home') {
+      if (targetId === 'home' || targetId === '') {
         window.scrollTo({ top: 0, behavior: 'smooth' });
       } else {
-        const el = document.getElementById(targetId);
-        if (el) {
-          el.scrollIntoView({ behavior: 'smooth' });
-        }
+        // Use requestAnimationFrame so the DOM has settled after any state change
+        requestAnimationFrame(() => {
+          const el = document.getElementById(targetId);
+          if (el) {
+            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        });
       }
     }
   };

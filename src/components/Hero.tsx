@@ -8,46 +8,58 @@ interface HeroProps {
 
 const SLIDES = [
   {
+    kicker: "🇰🇪 Kenya Education Desk",
     h1: "Kenya’s school news, made clear.",
     p: "What exam timelines, policies and placements mean for your family, explained in plain words.",
     btn1: { label: "Read the latest", href: "#news" },
     btn2: { label: "Browse learning materials", href: "#library" }
   },
   {
+    kicker: "📚 Teacher & Classroom Hub",
     h1: "Classroom-ready resources.",
     p: "Schemes of work, lesson plans and records for every grade, built for Kenyan teachers.",
     btn1: { label: "Open the library", href: "#library" },
     btn2: { label: "Read education news", href: "#news" }
   },
   {
+    kicker: "🚀 Lifelong Skills & Growth",
     h1: "Practical skills for school and work.",
     p: "Short courses in study, money, digital and career skills, with Kenyan examples.",
     btn1: { label: "Explore courses", href: "#courses" },
-    btn2: { label: "Watch videos", href: "#videos" }
+    btn2: { label: "Open study tools", href: "#tools" }
   }
 ];
 
 export default function Hero({ onNavClick }: HeroProps) {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
 
   useEffect(() => {
+    if (isPaused) return;
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % SLIDES.length);
-    }, 6500);
+    }, 6000);
     return () => clearInterval(timer);
-  }, []);
+  }, [isPaused]);
 
   const slide = SLIDES[currentSlide];
 
   return (
-    <section className="hero" id="home" aria-label="Introduction" style={{ height: 'auto', minHeight: '680px' }}>
-      <div className="stage" style={{ position: 'relative', height: 'auto', minHeight: '680px', padding: '6.5rem 0 3.5rem' }}>
+    <section
+      className="hero"
+      id="home"
+      aria-label="Introduction"
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+    >
+      <div className="stage">
         <div className="sun" aria-hidden="true" />
         <div className="ring" aria-hidden="true" />
 
-        <div className="w" style={{ position: 'relative', zIndex: 10 }}>
-          <div className="scenes" style={{ height: 'auto', minHeight: '340px' }}>
-            <div className="scene on" key={currentSlide} style={{ position: 'relative', opacity: 1, transform: 'none' }}>
+        <div className="w">
+          <div className="scenes">
+            <div className="scene on" key={currentSlide}>
+              <span className="hero-kicker">{slide.kicker}</span>
               <h1>{slide.h1}</h1>
               <p>{slide.p}</p>
               <div className="btns">
@@ -76,22 +88,14 @@ export default function Hero({ onNavClick }: HeroProps) {
           </div>
 
           {/* Slide Indicator Pills */}
-          <div style={{ display: 'flex', gap: '0.45rem', marginTop: '1.5rem' }}>
+          <div className="slide-indicators" role="tablist" aria-label="Slide navigation">
             {SLIDES.map((_, idx) => (
               <button
                 key={idx}
                 onClick={() => setCurrentSlide(idx)}
                 aria-label={`Go to slide ${idx + 1}`}
-                style={{
-                  width: currentSlide === idx ? '32px' : '10px',
-                  height: '8px',
-                  borderRadius: '50px',
-                  border: 'none',
-                  background: currentSlide === idx ? '#f4a261' : 'rgba(255,255,255,0.3)',
-                  cursor: 'pointer',
-                  transition: 'all 0.3s ease',
-                  padding: 0
-                }}
+                aria-current={currentSlide === idx ? 'true' : 'false'}
+                className={`slide-pill ${currentSlide === idx ? 'active' : ''}`}
               />
             ))}
           </div>

@@ -16,6 +16,17 @@ export default function Header({ onNavClick, activeNav }: HeaderProps) {
   const [fontSizeIdx, setFontSizeIdx] = useState(0);
   const [lang, setLang] = useState<'en' | 'sw'>('en');
 
+  // Sync Lite mode from localStorage / saveData on mount
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('lite');
+      const isDataSaver = !!(navigator as any).connection?.saveData;
+      const on = saved === '1' || (saved === null && isDataSaver);
+      setIsLite(on);
+      document.documentElement.classList.toggle('lite', on);
+    } catch {}
+  }, []);
+
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 40);

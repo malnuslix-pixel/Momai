@@ -132,11 +132,18 @@ export default function Header({ onNavClick, activeNav }: HeaderProps) {
               </a>
             </li>
 
-            <li
-              className={`dd ${openDropdown === 'learn' ? 'dd-open' : ''}`}
-              onMouseLeave={() => setOpenDropdown(null)}
-            >
-              <a href="#library" onClick={(e) => { toggleDropdown('learn', e); }}>
+            <li className={`dd ${openDropdown === 'learn' ? 'dd-open' : ''}`}>
+              <a
+                href="#library"
+                onClick={(e) => {
+                  if (typeof window !== 'undefined' && window.innerWidth < 900) {
+                    toggleDropdown('learn', e);
+                  } else {
+                    e.preventDefault();
+                    handleLink('#library');
+                  }
+                }}
+              >
                 {lang === 'sw' ? 'Jifunze' : 'Learn'}
               </a>
               <ul>
@@ -170,11 +177,18 @@ export default function Header({ onNavClick, activeNav }: HeaderProps) {
               </a>
             </li>
 
-            <li
-              className={`dd ${openDropdown === 'teach' ? 'dd-open' : ''}`}
-              onMouseLeave={() => setOpenDropdown(null)}
-            >
-              <a href="#teaching" onClick={(e) => { toggleDropdown('teach', e); }}>
+            <li className={`dd ${openDropdown === 'teach' ? 'dd-open' : ''}`}>
+              <a
+                href="#teaching"
+                onClick={(e) => {
+                  if (typeof window !== 'undefined' && window.innerWidth < 900) {
+                    toggleDropdown('teach', e);
+                  } else {
+                    e.preventDefault();
+                    handleLink('#teaching');
+                  }
+                }}
+              >
                 {lang === 'sw' ? 'Fundisha' : 'Teach'}
               </a>
               <ul>
@@ -183,11 +197,18 @@ export default function Header({ onNavClick, activeNav }: HeaderProps) {
               </ul>
             </li>
 
-            <li
-              className={`dd ${openDropdown === 'families' ? 'dd-open' : ''}`}
-              onMouseLeave={() => setOpenDropdown(null)}
-            >
-              <a href="#parents" onClick={(e) => { toggleDropdown('families', e); }}>
+            <li className={`dd ${openDropdown === 'families' ? 'dd-open' : ''}`}>
+              <a
+                href="#parents"
+                onClick={(e) => {
+                  if (typeof window !== 'undefined' && window.innerWidth < 900) {
+                    toggleDropdown('families', e);
+                  } else {
+                    e.preventDefault();
+                    handleLink('#parents');
+                  }
+                }}
+              >
                 {lang === 'sw' ? 'Familia' : 'Families'}
               </a>
               <ul>

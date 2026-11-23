@@ -278,8 +278,10 @@ nav a.cta {
   list-style: none;
 }
 
-.dd.dd-open > ul {
-  display: flex !important;
+@media (max-width: 899px) {
+  .dd.dd-open > ul {
+    display: flex !important;
+  }
 }
 
 .dd > ul li a {
@@ -2310,7 +2312,7 @@ section.mb .sh, section.mb .sub, section.mb .pbn h1, section.mb .pbn p, section.
   }
 
   .dd > ul {
-    display: none !important;
+    display: none;
     position: absolute;
     top: 100%;
     left: 0;
@@ -2327,8 +2329,18 @@ section.mb .sh, section.mb .sub, section.mb .pbn h1, section.mb .pbn p, section.
     list-style: none;
   }
 
-  .dd:hover > ul,
-  .dd.dd-open > ul {
+  /* Invisible hover bridge so mouse moving from link to dropdown never loses hover */
+  .dd::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    height: 12px;
+  }
+
+  /* Desktop dropdown appears and disappears strictly on hover trigger */
+  .dd:hover > ul {
     display: flex !important;
   }
 
@@ -2490,8 +2502,8 @@ section.mb .sh, section.mb .sub, section.mb .pbn h1, section.mb .pbn p, section.
 }
 
 /* 10. LITE / LOW-DATA MODE */
-/* Retains cinematic hero scroll track while disabling GPU-heavy decorative glows and ticker animations */
-.lite .sun, .lite .ring, .lite .gy, .lite .mgx {
+/* Retains full cinematic hero scroll track, sun, and rings while disabling background glyphs and ticker animation */
+.lite .gy, .lite .mgx {
   display: none !important;
 }
 

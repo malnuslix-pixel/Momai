@@ -63,12 +63,20 @@ export default function AdminPage() {
 
   // Sync with hash if present
   useEffect(() => {
-    try {
-      const stored = localStorage.getItem('mf_admin_auth');
-      setIsAuthenticated(stored === 'true');
-    } catch {
-      setIsAuthenticated(false);
-    }
+    // Verify server-side session via HTTP-only cookie
+    fetch('/api/admin/auth')
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.ok && data.authenticated) {
+          setIsAuthenticated(true);
+          loadData();
+        } else {
+          setIsAuthenticated(false);
+        }
+      })
+      .catch(() => {
+        setIsAuthenticated(false);
+      });
 
     const hash = window.location.hash.replace('#', '') as TabType;
     if (TABS.some((t) => t[0] === hash)) {
@@ -91,49 +99,42 @@ export default function AdminPage() {
     setAuthLoading(true);
     setAuthError(null);
 
-    const validSecretKey = process.env.NEXT_PUBLIC_ADMIN_SECRET_KEY || 'Mwalimu@2025';
-    const normalizedUser = authEmail.trim().toLowerCase();
     const enteredPass = authPassword.trim();
-
-    // Check directly or via API endpoint
-    let isSuccess = (enteredPass === 'Mwalimu@2025' || enteredPass === validSecretKey);
-
-    if (!isSuccess) {
-      try {
-        const res = await fetch('/api/admin/auth', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ key: enteredPass, user: normalizedUser }),
-        });
-        const data = await res.json();
-        if (data.ok) {
-          isSuccess = true;
-        }
-      } catch {}
+    if (!enteredPass) {
+      setAuthError('Please enter your administrator secret key.');
+      setAuthLoading(false);
+      return;
     }
 
-    if (isSuccess) {
-      setIsAuthenticated(true);
-      setAuthLoading(false);
-      try {
-        localStorage.setItem('mf_admin_auth', 'true');
-        sessionStorage.setItem('mf_admin_auth', 'true');
-      } catch {}
-      loadData();
-    } else {
-      setAuthError('Invalid credentials or secret key. Access denied.');
+    try {
+      const res = await fetch('/api/admin/auth', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key: enteredPass }),
+      });
+      const data = await res.json();
+      if (data.ok) {
+        setIsAuthenticated(true);
+        setAuthLoading(false);
+        loadData();
+      } else {
+        setAuthError(data.message || 'Invalid credentials or secret key. Access denied.');
+        setAuthLoading(false);
+      }
+    } catch {
+      setAuthError('Connection error during authentication. Please retry.');
       setAuthLoading(false);
     }
   };
 
-  const handleSignOut = () => {
+  const handleSignOut = async () => {
+    try {
+      await fetch('/api/admin/auth', { method: 'DELETE' });
+    } catch {}
     setIsAuthenticated(false);
     setAuthEmail('');
     setAuthPassword('');
     setAuthError(null);
-    try {
-      localStorage.removeItem('mf_admin_auth');
-    } catch {}
   };
 
   // Fetch live data from API endpoints
@@ -282,6 +283,16 @@ export default function AdminPage() {
   };
 
   const handleSubmissionAction = async (ref: string, action: 'approve' | 'reject') => {
+    // Strictly enforce 3-point editorial checklist prior to approval
+    const target = submissions.find((s) => s.ref === ref);
+    if (action === 'approve' && target) {
+      const allChecked = target.checks.every((c) => Boolean(c));
+      if (!allChecked) {
+        alert('Editorial Policy: All 3 verification checks must be completed before approving a submission.');
+        return;
+      }
+    }
+
     const newSt = action === 'approve' ? 'approved' : 'rejected';
     setSubmissions((prev) =>
       prev.map((s) => (s.ref === ref ? { ...s, st: newSt } : s))

@@ -23,32 +23,32 @@ export default function ErrorBoundary({
       justifyContent: 'center',
       padding: '2rem',
       textAlign: 'center',
-      background: 'var(--bg, #fbfbf9)'
+      background: 'var(--bg, #1a3d1b)'
     }}>
       <div style={{
         maxWidth: '560px',
         padding: '3rem 2rem',
-        borderRadius: '24px',
-        background: '#fff',
-        border: '1px solid #e0ddd6',
-        boxShadow: '0 8px 30px rgba(0,0,0,0.06)'
+        borderRadius: '20px',
+        background: 'var(--card, #224b23)',
+        border: '1px solid var(--ln, rgba(255, 255, 255, 0.18))',
+        boxShadow: '0 8px 30px rgba(0,0,0,0.35)'
       }}>
-        <span style={{ fontSize: '3.5rem', display: 'block', marginBottom: '1rem' }}>⚠️</span>
+        <span style={{ fontSize: '3.5rem', display: 'block', marginBottom: '1rem' }}>✨</span>
         <h1 style={{
           fontFamily: "'Fraunces', serif",
           fontSize: '2rem',
-          color: 'var(--hd, #173b22)',
+          color: '#ffffff',
           marginBottom: '0.8rem'
         }}>
-          Something went wrong
+          Something refreshed unexpectedly
         </h1>
         <p style={{
-          color: '#555',
+          color: 'var(--mu, #d1dcd2)',
           fontSize: '1rem',
           lineHeight: '1.6',
           marginBottom: '2rem'
         }}>
-          We encountered an unexpected issue while loading this section. You can try refreshing the page or head back to the main homepage.
+          We encountered an unexpected display issue while rendering this section. Click below to reload or return home.
         </p>
         <div style={{ display: 'flex', gap: '0.8rem', justifyContent: 'center', flexWrap: 'wrap' }}>
           <button

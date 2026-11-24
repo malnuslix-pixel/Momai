@@ -39,9 +39,6 @@ export default function LearnPage() {
               >
                 ← Back
               </button>
-              <Link href="/" className="pbn-btn-home" aria-label="Go to homepage">
-                🏠 Back to Home
-              </Link>
             </div>
             <nav className="bc" aria-label="Breadcrumb">
               <Link href="/">Home</Link>

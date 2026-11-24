@@ -24,13 +24,16 @@ export default function VideosSection() {
   return (
     <section className="sec alt" id="videos" aria-labelledby="vh" style={{ paddingLeft: 0, paddingRight: 0 }}>
       <div className="w">
-        <div className="hh">
-          <div>
-            <h2 className="sh rv" id="vh">Watch and learn</h2>
-            <p className="sub rv">
-              Educational lessons, parent guidance discussions and family documentaries on our official YouTube channel.
-            </p>
-          </div>
+        <div style={{ marginBottom: '1.2rem' }}>
+          <span className="tag" style={{ marginBottom: '0.6rem', display: 'inline-block' }}>
+            YouTube Classroom
+          </span>
+          <h2 className="sh" id="vh" style={{ margin: '0 0 0.4rem' }}>
+            Watch and learn
+          </h2>
+          <p className="sub" style={{ margin: 0 }}>
+            Educational lessons, parent guidance discussions and family documentaries on our official YouTube channel.
+          </p>
         </div>
       </div>
 

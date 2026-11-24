@@ -103,8 +103,9 @@ export default function Hero({ onNavClick }: HeroProps) {
         <div className="tick">
           <div className="w tk">
             <strong>Latest:</strong>
-            <div className="mq">
+            <div className="mq" role="region" aria-label="Latest education news ticker">
               <div className="mt">
+                {/* Half 1 */}
                 <a href="#/s1" onClick={(e) => { e.preventDefault(); onNavClick('#/s1'); }}>
                   2026 KJSEA results expected in December, KCSE targeted for January 2027
                 </a>
@@ -117,9 +118,19 @@ export default function Hero({ onNavClick }: HeroProps) {
                   KPSEA, KJSEA and KCSE explained
                 </a>
                 <span aria-hidden="true">•</span>
+                {/* Half 2 - Exact duplicate for seamless 50% translation loop */}
                 <a href="#/s1" onClick={(e) => { e.preventDefault(); onNavClick('#/s1'); }}>
                   2026 KJSEA results expected in December, KCSE targeted for January 2027
                 </a>
+                <span aria-hidden="true">•</span>
+                <a href="#/s4" onClick={(e) => { e.preventDefault(); onNavClick('#/s4'); }}>
+                  How to spot fake KJSEA and KCSE results messages
+                </a>
+                <span aria-hidden="true">•</span>
+                <a href="#/s5" onClick={(e) => { e.preventDefault(); onNavClick('#/s5'); }}>
+                  KPSEA, KJSEA and KCSE explained
+                </a>
+                <span aria-hidden="true">•</span>
               </div>
             </div>
           </div>

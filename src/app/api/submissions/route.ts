@@ -3,9 +3,13 @@ import { NextRequest, NextResponse } from 'next/server';
 export const dynamic = 'force-dynamic';
 import { supabase, getAdminClient, SEED_SUBMISSIONS, SEED_ITEMS } from '@/lib/supabase';
 import { Submission } from '@/lib/types';
+import { verifyRequestAdmin } from '@/lib/auth';
 
 export async function GET(req: NextRequest) {
   try {
+    if (!(await verifyRequestAdmin(req))) {
+      return NextResponse.json({ error: 'Unauthorized: Admin session required' }, { status: 401 });
+    }
     const { searchParams } = new URL(req.url);
     const filter = searchParams.get('filter') || 'all';
 
@@ -40,6 +44,9 @@ export async function GET(req: NextRequest) {
 
 export async function PATCH(req: NextRequest) {
   try {
+    if (!(await verifyRequestAdmin(req))) {
+      return NextResponse.json({ error: 'Unauthorized: Admin session required' }, { status: 401 });
+    }
     const body = await req.json();
     const { ref, action, checkIndex, checkValue } = body;
 
@@ -71,6 +78,21 @@ export async function PATCH(req: NextRequest) {
 
     // Approve or Reject action
     if (action === 'approve' || action === 'reject') {
+      if (action === 'approve') {
+        const { data: current } = await admin
+          .from('submissions')
+          .select('checks')
+          .eq('ref', ref)
+          .single();
+        const checks = (current?.checks || SEED_SUBMISSIONS.find((s) => s.ref === ref)?.checks || [false, false, false]);
+        if (!checks.every(Boolean)) {
+          return NextResponse.json(
+            { error: 'Editorial Policy Violation: All 3 verification checks must be completed before approving.' },
+            { status: 400 }
+          );
+        }
+      }
+
       const newStatus = action === 'approve' ? 'approved' : 'rejected';
 
       const { data: sub } = await admin

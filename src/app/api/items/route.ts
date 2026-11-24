@@ -3,11 +3,16 @@ import { NextRequest, NextResponse } from 'next/server';
 export const dynamic = 'force-dynamic';
 import { supabase, getAdminClient, SEED_ITEMS } from '@/lib/supabase';
 import { FeedItem } from '@/lib/types';
+import { verifyRequestAdmin } from '@/lib/auth';
 
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
-    const all = searchParams.get('all') === 'true';
+    const requestedAll = searchParams.get('all') === 'true';
+    
+    // Only verified administrators can request drafts and rejected items
+    const isAdmin = requestedAll ? await verifyRequestAdmin(req) : false;
+    const all = requestedAll && isAdmin;
 
     const admin = getAdminClient();
     let query = admin.from('items').select('*').order('created_at', { ascending: false });
@@ -40,6 +45,9 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
+    if (!(await verifyRequestAdmin(req))) {
+      return NextResponse.json({ error: 'Unauthorized: Admin session required' }, { status: 401 });
+    }
     const body = await req.json();
     const item: Partial<FeedItem> = {
       k: body.k === 'job' ? 'job' : 'notice',
@@ -83,6 +91,9 @@ export async function POST(req: NextRequest) {
 
 export async function PATCH(req: NextRequest) {
   try {
+    if (!(await verifyRequestAdmin(req))) {
+      return NextResponse.json({ error: 'Unauthorized: Admin session required' }, { status: 401 });
+    }
     const body = await req.json();
     const { id, st, exp } = body;
 

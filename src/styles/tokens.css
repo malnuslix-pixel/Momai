@@ -1,0 +1,136 @@
+/* ==============================================================================
+   MWALIMU FAMILY - DESIGN SYSTEM TOKENS (THE KENYAN ACADEMIC GAZETTE)
+   Authoritative, Accessible, Bandwidth-Conscious Design Architecture
+   ============================================================================== */
+
+:root {
+  /* 1. Core Brand Color System - Hero Green Harmonized */
+  --mf-forest-deep: #1a3d1b;     /* Primary brand & Hero Background Green (#1a3d1b) */
+  --mf-forest-main: #347c37;     /* Active brand, verified badges, action buttons */
+  --mf-forest-light: #52a856;    /* Interactive hover states, secondary highlights */
+  --mf-forest-subtle: rgba(255, 255, 255, 0.08);   /* Elevated container surface on hero green */
+
+  /* 2. Kenyan Academic Gazette Editorial Palette - Site-Wide Hero Green Canvas */
+  --mf-cream-bg: #1a3d1b;       /* Hero background Green as main site canvas */
+  --mf-card-bg: #224b23;        /* Elevated card surface on hero green */
+  --mf-border-main: rgba(255, 255, 255, 0.18);    /* Clean visible hairline borders */
+  --mf-border-subtle: rgba(255, 255, 255, 0.12);  /* Subtle dividers */
+
+  /* 3. Cultural & Functional Accents (High Contrast on Green) */
+  --mf-ochre: #f59e0b;          /* Rift Valley Ochre: Exam deadlines, target dates, highlights */
+  --mf-ochre-light: rgba(245, 158, 11, 0.18);   /* Ochre callout background */
+  --mf-ochre-border: rgba(245, 158, 11, 0.45);  /* Ochre alert border */
+  --mf-alert: #f87171;          /* High-visibility alert crimson on dark green */
+  --mf-alert-bg: rgba(185, 28, 28, 0.28);       /* Scam alert banner background */
+  --mf-alert-border: rgba(239, 68, 68, 0.45);   /* Alert border */
+
+  /* 4. Text & Contrast Tokens (WCAG AAA compliant on #1a3d1b & #224b23) */
+  --mf-text-main: #f3f5f3;      /* Ultra-high contrast light body text */
+  --mf-text-muted: #d1dcd2;     /* Clear readable informational subtitles & descriptions */
+  --mf-text-faint: #b4c4b5;     /* Timestamps, metadata, fine print */
+  --mf-text-inverse: #1a3d1b;   /* Inverse text for bright badges/buttons */
+
+  /* 5. Typography Scale */
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-body: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-accent: 'Caveat', cursive;
+
+  /* 6. Spacing Scale */
+  --mf-space-2xs: 0.25rem;
+  --mf-space-xs: 0.5rem;
+  --mf-space-sm: 0.75rem;
+  --mf-space-md: 1rem;
+  --mf-space-lg: 1.5rem;
+  --mf-space-xl: 2.25rem;
+  --mf-space-2xl: 3.5rem;
+  --mf-space-3xl: 5rem;
+
+  /* 7. Elevation & Border Radii */
+  --mf-radius-xs: 4px;
+  --mf-radius-sm: 8px;
+  --mf-radius-md: 12px;
+  --mf-radius-lg: 18px;
+  --mf-radius-xl: 24px;
+  --mf-radius-full: 9999px;
+
+  --mf-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.2);
+  --mf-shadow-md: 0 4px 14px rgba(0, 0, 0, 0.28);
+  --mf-shadow-lg: 0 10px 28px rgba(0, 0, 0, 0.35);
+
+  /* 8. Transitions & Motion */
+  --mf-transition-fast: 150ms cubic-bezier(0.16, 1, 0.3, 1);
+  --mf-transition-normal: 250ms cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* 9. Backwards-Compatibility Mapping to Legacy Variables */
+  --bg: var(--mf-cream-bg);
+  --card: var(--mf-card-bg);
+  --tx: var(--mf-text-main);
+  --mu: var(--mf-text-muted);
+  --ln: var(--mf-border-main);
+  --hd: #ffffff;
+  --g: var(--mf-forest-main);
+  --gl: #6ec272;
+  --gd: var(--mf-forest-deep);
+  --ac: var(--mf-ochre);
+}
+
+/* 10. High-Contrast Accessible Dark Mode */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --mf-cream-bg: #143215;
+    --mf-card-bg: #1c3d1d;
+    --mf-border-main: rgba(255, 255, 255, 0.2);
+    --mf-border-subtle: rgba(255, 255, 255, 0.12);
+    --mf-text-main: #f5f7f5;
+    --mf-text-muted: #d5ded5;
+    --mf-text-faint: #b0c0b1;
+    --mf-forest-subtle: rgba(255, 255, 255, 0.08);
+    --mf-forest-light: #52a856;
+    
+    --bg: #143215;
+    --card: #1c3d1d;
+    --tx: #f5f7f5;
+    --mu: #d5ded5;
+    --ln: rgba(255, 255, 255, 0.2);
+    --hd: #ffffff;
+    --gl: #6ec272;
+    --ac: #f59e0b;
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --mf-cream-bg: #143215;
+  --mf-card-bg: #1c3d1d;
+  --mf-border-main: rgba(255, 255, 255, 0.2);
+  --mf-border-subtle: rgba(255, 255, 255, 0.12);
+  --mf-text-main: #f5f7f5;
+  --mf-text-muted: #d5ded5;
+  --mf-text-faint: #b0c0b1;
+  --mf-forest-subtle: rgba(255, 255, 255, 0.08);
+  --mf-forest-light: #52a856;
+
+  --bg: #143215;
+  --card: #1c3d1d;
+  --tx: #f5f7f5;
+  --mu: #d5ded5;
+  --ln: rgba(255, 255, 255, 0.2);
+  --hd: #ffffff;
+  --gl: #6ec272;
+  --ac: #f59e0b;
+  color-scheme: dark;
+}
+
+/* 11. Low-Bandwidth / Lite Mode Overrides - Keep Marquee running smoothly */
+html.lite {
+  --mf-shadow-sm: none;
+  --mf-shadow-md: none;
+  --mf-shadow-lg: none;
+  --mf-transition-fast: 0s;
+  --mf-transition-normal: 0s;
+}
+
+html.lite *:not(.mt):not(.tick):not(.mq) {
+  animation: none !important;
+  transition: none !important;
+}

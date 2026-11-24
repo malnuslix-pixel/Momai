@@ -4,6 +4,18 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
+import {
+  BookOpen,
+  Calculator,
+  FileCheck,
+  GraduationCap,
+  Sparkles,
+  Megaphone,
+  Briefcase,
+  Users,
+  BookmarkCheck,
+  ArrowRight
+} from 'lucide-react';
 
 // Critical Above-the-Fold Components
 import Header from '@/components/Header';
@@ -71,18 +83,18 @@ export default function HomePage() {
         minHeight: '100vh',
         display: 'grid',
         placeItems: 'center',
-        background: '#faf8f5',
-        color: '#1a1a1a',
+        background: '#1a3d1b',
+        color: '#ffffff',
         padding: '2rem',
         textAlign: 'center',
         fontFamily: "'Segoe UI', system-ui, sans-serif"
       }}>
         <div style={{ maxWidth: '32rem' }}>
           <div style={{ fontSize: '3rem' }}>🛠️</div>
-          <h1 style={{ fontFamily: 'Georgia, serif', color: '#2c5f2d', margin: '0.8rem 0' }}>
+          <h1 style={{ fontFamily: 'Georgia, serif', color: '#ffffff', margin: '0.8rem 0' }}>
             Mwalimu Family
           </h1>
-          <p style={{ color: '#555', lineHeight: 1.6 }}>
+          <p style={{ color: '#d1dcd2', lineHeight: 1.6 }}>
             The system is undergoing scheduled editorial and technical maintenance. We will be right back shortly.
           </p>
         </div>
@@ -142,72 +154,91 @@ export default function HomePage() {
 
                 <div className="x2" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(270px, 1fr))', gap: '1.2rem' }}>
                   <Link href="/learn" className="x2c">
-                    <span style={{ fontSize: '2rem' }}>📚</span>
+                    <div className="hub-tag-icon"><BookOpen size={20} /></div>
                     <h3>Curriculum Library</h3>
                     <p>Free editable schemes of work, lesson plans, notes & Word (.doc) templates from PP1 to Form 4.</p>
-                    <span className="dl" style={{ marginTop: '0.8rem', display: 'inline-block' }}>Browse Library →</span>
+                    <span className="dl" style={{ marginTop: '0.8rem', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                      Browse Library <ArrowRight size={14} />
+                    </span>
                   </Link>
 
                   <Link href="/tools" className="x2c">
-                    <span style={{ fontSize: '2rem' }}>🧮</span>
+                    <div className="hub-tag-icon"><Calculator size={20} /></div>
                     <h3>Classroom & KCSE Tools</h3>
                     <p>Instant KCSE points calculator, KUCCPS university cluster cutoffs & CBC report remark generators.</p>
-                    <span className="dl" style={{ marginTop: '0.8rem', display: 'inline-block' }}>Explore Tools →</span>
+                    <span className="dl" style={{ marginTop: '0.8rem', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                      Explore Tools <ArrowRight size={14} />
+                    </span>
                   </Link>
 
                   <Link href="/exams" className="x2c">
-                    <span style={{ fontSize: '2rem' }}>📝</span>
+                    <div className="hub-tag-icon"><FileCheck size={20} /></div>
                     <h3>National Exams Hub</h3>
                     <p>Verified KPSEA, KJSEA & KCSE 2026/2027 timelines, marking centers, and official results advisories.</p>
-                    <span className="dl" style={{ marginTop: '0.8rem', display: 'inline-block' }}>View Exams Hub →</span>
+                    <span className="dl" style={{ marginTop: '0.8rem', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                      View Exams Hub <ArrowRight size={14} />
+                    </span>
                   </Link>
 
                   <Link href="/teach" className="x2c">
-                    <span style={{ fontSize: '2rem' }}>👩🏾‍🏫</span>
+                    <div className="hub-tag-icon"><GraduationCap size={20} /></div>
                     <h3>Teacher Preparation</h3>
                     <p>Custom term scheme builder, timetable planner & 7 official TPAD-aligned classroom record templates.</p>
-                    <span className="dl" style={{ marginTop: '0.8rem', display: 'inline-block' }}>Open Teacher Desk →</span>
+                    <span className="dl" style={{ marginTop: '0.8rem', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                      Open Teacher Desk <ArrowRight size={14} />
+                    </span>
                   </Link>
 
                   <Link href="/tutor" className="x2c">
-                    <span style={{ fontSize: '2rem' }}>🤖</span>
+                    <div className="hub-tag-icon"><Sparkles size={20} /></div>
                     <h3>Ask Mwalimu AI Tutor</h3>
                     <p>Instant curriculum revision, homework explanations & interactive offline-capable subject quizzes.</p>
-                    <span className="dl" style={{ marginTop: '0.8rem', display: 'inline-block' }}>Start AI Tutor →</span>
+                    <span className="dl" style={{ marginTop: '0.8rem', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                      Start AI Tutor <ArrowRight size={14} />
+                    </span>
                   </Link>
 
                   <Link href="/notices" className="x2c">
-                    <span style={{ fontSize: '2rem' }}>📢</span>
+                    <div className="hub-tag-icon"><Megaphone size={20} /></div>
                     <h3>Education Notice Board</h3>
                     <p>Official Ministry of Education term dates, Grade 10 Senior School checklists & circulars.</p>
-                    <span className="dl" style={{ marginTop: '0.8rem', display: 'inline-block' }}>Check Notices →</span>
+                    <span className="dl" style={{ marginTop: '0.8rem', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                      Check Notices <ArrowRight size={14} />
+                    </span>
                   </Link>
 
                   <Link href="/jobs" className="x2c">
-                    <span style={{ fontSize: '2rem' }}>💼</span>
+                    <div className="hub-tag-icon"><Briefcase size={20} /></div>
                     <h3>Education Jobs Board</h3>
                     <p>Teaching, tutoring & school administration vacancies across Kenya with 100% zero placement fees.</p>
-                    <span className="dl" style={{ marginTop: '0.8rem', display: 'inline-block' }}>Browse Jobs →</span>
+                    <span className="dl" style={{ marginTop: '0.8rem', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                      Browse Jobs <ArrowRight size={14} />
+                    </span>
                   </Link>
 
                   <Link href="/parents" className="x2c">
-                    <span style={{ fontSize: '2rem' }}>👨🏾‍👩🏾‍👧🏾</span>
+                    <div className="hub-tag-icon"><Users size={20} /></div>
                     <h3>Parents’ Guidance Hub</h3>
                     <p>Senior School Grade 10 pathway decider, consultation checklists & school calendar phone sync.</p>
-                    <span className="dl" style={{ marginTop: '0.8rem', display: 'inline-block' }}>Open Parents Hub →</span>
+                    <span className="dl" style={{ marginTop: '0.8rem', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                      Open Parents Hub <ArrowRight size={14} />
+                    </span>
                   </Link>
                 </div>
 
                 {/* Device Activity Quick Banner */}
-                <div className="card" style={{ marginTop: '1.2rem', background: '#f5faf5', borderColor: '#cfe5cf', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
-                  <div>
-                    <h3 style={{ margin: 0, color: '#1a4d1d' }}>📋 Saved Materials & Submissions</h3>
-                    <p style={{ margin: '0.3rem 0 0', color: '#555', fontSize: '0.92rem' }}>
-                      Quickly access your saved templates, tutor inquiries, submitted vacancy listings, and bookmarks on this device.
-                    </p>
+                <div className="card" style={{ marginTop: '1.2rem', background: 'rgba(0, 0, 0, 0.3)', borderColor: 'rgba(255, 255, 255, 0.16)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
+                    <div className="hub-tag-icon" style={{ margin: 0 }}><BookmarkCheck size={20} /></div>
+                    <div>
+                      <h3 style={{ margin: 0, color: '#ffffff' }}>Saved Materials & Submissions</h3>
+                      <p style={{ margin: '0.2rem 0 0', color: 'var(--mf-text-muted, #d1dcd2)', fontSize: '0.92rem' }}>
+                        Quickly access your saved templates, tutor inquiries, submitted vacancy listings, and bookmarks on this device.
+                      </p>
+                    </div>
                   </div>
-                  <Link href="/activity" className="gb">
-                    View My Activity →
+                  <Link href="/activity" className="gb" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                    View My Activity <ArrowRight size={14} />
                   </Link>
                 </div>
               </div>

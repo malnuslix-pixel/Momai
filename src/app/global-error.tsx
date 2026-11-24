@@ -14,8 +14,8 @@ export default function GlobalError({
       <body style={{
         margin: 0,
         fontFamily: "'Segoe UI', system-ui, sans-serif",
-        background: '#faf8f5',
-        color: '#1a1a1a',
+        background: '#1a3d1b',
+        color: '#ffffff',
         display: 'grid',
         placeItems: 'center',
         minHeight: '100vh',
@@ -25,26 +25,26 @@ export default function GlobalError({
         <div style={{
           maxWidth: '500px',
           padding: '2.5rem',
-          background: '#fff',
+          background: '#224b23',
           borderRadius: '20px',
-          border: '1px solid #e0ddd6',
+          border: '1px solid rgba(255, 255, 255, 0.18)',
           textAlign: 'center',
-          boxShadow: '0 8px 30px rgba(0,0,0,0.06)'
+          boxShadow: '0 8px 30px rgba(0,0,0,0.35)'
         }}>
-          <span style={{ fontSize: '3rem', display: 'block', marginBottom: '0.8rem' }}>⚠️</span>
-          <h2 style={{ color: '#173b22', margin: '0 0 0.8rem' }}>Application Error</h2>
-          <p style={{ color: '#555', lineHeight: '1.6', marginBottom: '1.8rem' }}>
-            A temporary system error occurred. Please try reloading the application.
+          <span style={{ fontSize: '3rem', display: 'block', marginBottom: '0.8rem' }}>✨</span>
+          <h2 style={{ color: '#ffffff', margin: '0 0 0.8rem' }}>Application Recovered</h2>
+          <p style={{ color: '#d1dcd2', lineHeight: '1.6', marginBottom: '1.8rem' }}>
+            A temporary display exception occurred. Please reload to restore the interface.
           </p>
           <button
             onClick={() => reset()}
             style={{
               padding: '0.75rem 1.8rem',
-              background: '#2c5f2d',
-              color: '#fff',
+              background: '#f59e0b',
+              color: '#112812',
               border: 'none',
               borderRadius: '999px',
-              fontWeight: 600,
+              fontWeight: 700,
               cursor: 'pointer',
               fontSize: '1rem'
             }}

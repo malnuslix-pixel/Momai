@@ -1,4 +1,4 @@
-/* Fonts loaded with preconnect & display=swap via layout head for zero render-blocking */
+@import './tokens.css';
 
 /* ==============================================================================
    MWALIMU FAMILY - GLOBAL MOBILE-FIRST FOUNDATIONS
@@ -19,6 +19,9 @@ body {
   padding: 0;
   width: 100%;
   overflow-x: clip;
+  font-family: var(--font-body);
+  background-color: var(--mf-cream-bg);
+  color: var(--mf-text-main);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-tap-highlight-color: rgba(44, 95, 45, 0.15);
@@ -42,20 +45,36 @@ body {
 
 /* Touch target standard for mobile buttons and interactive elements */
 @media screen and (max-width: 640px) {
-  button, .btn, .gb, select, input[type="button"], input[type="submit"] {
+  button, .btn, .gb, select, input[type="button"], input[type="submit"], a.bkb, .chip, nav a {
     min-height: 44px;
   }
+}
+
+/* High contrast and font visibility across the entire site */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--hd, #ffffff);
+}
+
+/* Ensure inputs on hero green have clear white text and high-contrast borders */
+input, select, textarea {
+  color: #ffffff;
+  background-color: rgba(0, 0, 0, 0.35);
+  border: 1.5px solid rgba(255, 255, 255, 0.25);
+}
+
+input::placeholder, textarea::placeholder {
+  color: rgba(255, 255, 255, 0.65) !important;
+}
+
+/* Accessible focus rings */
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+  outline: 2px solid var(--ac, #f59e0b) !important;
+  outline-offset: 2px !important;
 }
 
 /* ==============================================================================
    HIGH-SPEED PERFORMANCE & ZERO-FOUC OPTIMIZATIONS
    ============================================================================== */
-
-/* Defer rendering of heavy below-the-fold sections until user scrolls near them */
-#portals, #videos, #about, #contact {
-  content-visibility: auto;
-  contain-intrinsic-size: auto 400px;
-}
 
 /* Ensure smooth image and SVG rendering */
 img, svg, video {

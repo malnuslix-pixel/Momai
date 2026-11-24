@@ -156,12 +156,13 @@ export default function NewsSection({ onNavClick, activeStoryId, onSelectStory }
               <p className="meta">{featured.l} · {featured.d} · National examinations</p>
               <h3>{featured.t}</h3>
               <p style={{ margin: '1rem 0 1.4rem' }}>{featured.c[0]}</p>
-              <button
+              <Link
+                href="/news/s1"
                 className="btn b1"
-                onClick={() => onSelectStory('s1')}
+                style={{ display: 'inline-flex', alignItems: 'center' }}
               >
                 Read the full story
-              </button>
+              </Link>
             </div>
             <div className="stats">
               <div><b>1,048,355</b><span>KCSE candidates</span></div>
@@ -175,19 +176,15 @@ export default function NewsSection({ onNavClick, activeStoryId, onSelectStory }
         {/* Stories List */}
         <div className="rows">
           {filtered.map((item) => (
-            <a
+            <Link
               key={item.id}
-              href={`#/${item.id}`}
-              onClick={(e) => {
-                e.preventDefault();
-                onSelectStory(item.id);
-              }}
+              href={`/news/${item.id}`}
             >
               <time>{item.d}</time>
               <span className="tag">{item.l}</span>
               <h3>{item.t}</h3>
               <span className="dl">Read Story →</span>
-            </a>
+            </Link>
           ))}
 
           {filtered.length === 0 && (

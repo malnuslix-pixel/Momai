@@ -1,6 +1,9 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import KcseCalculator from '@/components/tools/KcseCalculator';
+import KuccpsCalculator from '@/components/tools/KuccpsCalculator';
+import KjseaCalculator from '@/components/tools/KjseaCalculator';
 import {
   downloadCustomRubricDoc,
   downloadRevisionDoc,
@@ -354,91 +357,19 @@ export default function ToolsSection() {
 
         <div className="cg" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(min(320px, 100%), 1fr))', gap: '1.4rem' }}>
           
-          {/* TOOL 1: KCSE Calculator */}
+          {/* FLAGSHIP MODULAR KENYAN CALCULATORS - PATHWAY CALCULATOR IN POSITION #1 */}
           {(filterCategory === 'All' || filterCategory === 'Calculators' || filterCategory === 'Learners') && (
-            <div className="card">
-              <h3>KCSE mean grade calculator</h3>
-              <p style={{ fontSize: '0.88rem', color: '#666', marginBottom: '0.6rem' }}>Select points for your 7 best subjects (max 84):</p>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(110px, 1fr))', gap: '0.35rem', marginBottom: '0.8rem' }}>
-                {kcseGrades.map((val, idx) => (
-                  <select
-                    key={idx}
-                    className="sel"
-                    value={val}
-                    onChange={(e) => {
-                      const next = [...kcseGrades];
-                      next[idx] = Number(e.target.value);
-                      setKcseGrades(next);
-                    }}
-                    style={{ minHeight: '38px', fontSize: '0.85rem' }}
-                  >
-                    <option value={12}>Sub {idx + 1}: A (12)</option>
-                    <option value={11}>Sub {idx + 1}: A- (11)</option>
-                    <option value={10}>Sub {idx + 1}: B+ (10)</option>
-                    <option value={9}>Sub {idx + 1}: B (9)</option>
-                    <option value={8}>Sub {idx + 1}: B- (8)</option>
-                    <option value={7}>Sub {idx + 1}: C+ (7)</option>
-                    <option value={6}>Sub {idx + 1}: C (6)</option>
-                    <option value={5}>Sub {idx + 1}: C- (5)</option>
-                    <option value={4}>Sub {idx + 1}: D+ (4)</option>
-                    <option value={3}>Sub {idx + 1}: D (3)</option>
-                    <option value={2}>Sub {idx + 1}: D- (2)</option>
-                    <option value={1}>Sub {idx + 1}: E (1)</option>
-                  </select>
-                ))}
+            <>
+              <div style={{ gridColumn: '1 / -1' }}>
+                <KjseaCalculator />
               </div>
-              <button className="gb" onClick={calculateKcse}>Calculate</button>
-              {kcseResult && <p style={{ fontWeight: 700, color: '#2c5f2d', marginTop: '0.5rem' }}>{kcseResult}</p>}
-            </div>
-          )}
-
-          {/* TOOL 2: KUCCPS Cluster Points */}
-          {(filterCategory === 'All' || filterCategory === 'Calculators' || filterCategory === 'Learners') && (
-            <div className="card">
-              <h3>KUCCPS cluster points</h3>
-              <label>Points in your 4 cluster subjects (4 to 48):</label>
-              <input
-                className="sel"
-                type="number"
-                min={4}
-                max={48}
-                value={cluster4}
-                onChange={(e) => setCluster4(Number(e.target.value))}
-              />
-              <label>Total points in 7 subjects (max 84):</label>
-              <input
-                className="sel"
-                type="number"
-                min={7}
-                max={84}
-                value={total7}
-                onChange={(e) => setTotal7(Number(e.target.value))}
-              />
-              <button className="gb" onClick={calculateCluster}>Calculate Cluster</button>
-              {clusterResult && <p style={{ fontWeight: 700, color: '#2c5f2d', marginTop: '0.5rem' }}>{clusterResult}</p>}
-              <p style={{ fontSize: '0.8rem', color: '#777', marginTop: '0.4rem' }}>
-                Formula: √(r/48 × t/84) × 48. KUCCPS publishes the official annual cut-offs.
-              </p>
-            </div>
-          )}
-
-          {/* TOOL 3: KJSEA Points Total */}
-          {(filterCategory === 'All' || filterCategory === 'Calculators' || filterCategory === 'Learners') && (
-            <div className="card">
-              <h3>KJSEA points total</h3>
-              <label>Points per learning area (1 to 8, comma separated):</label>
-              <input
-                className="sel"
-                type="text"
-                value={kjseaInput}
-                onChange={(e) => setKjseaInput(e.target.value)}
-              />
-              <button className="gb" onClick={calculateKjsea}>Calculate KJSEA</button>
-              {kjseaResult && <p style={{ fontWeight: 700, color: '#2c5f2d', marginTop: '0.5rem' }}>{kjseaResult}</p>}
-              <p style={{ fontSize: '0.8rem', color: '#777', marginTop: '0.4rem' }}>
-                Across 9 Grade 9 learning areas (maximum 72 points).
-              </p>
-            </div>
+              <div style={{ gridColumn: '1 / -1' }}>
+                <KcseCalculator />
+              </div>
+              <div style={{ gridColumn: '1 / -1' }}>
+                <KuccpsCalculator />
+              </div>
+            </>
           )}
 
           {/* TOOL 4: Report-form Comments Generator */}

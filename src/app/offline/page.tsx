@@ -194,23 +194,6 @@ export default function OfflinePage() {
 
           <div style={{ display: 'flex', gap: '0.6rem', justifyContent: 'center', flexWrap: 'wrap' }}>
             <Link
-              href="/"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '0.4rem',
-                padding: '0.6rem 1.2rem',
-                borderRadius: '50px',
-                background: '#f4a261',
-                color: '#1a1a1a',
-                fontWeight: 700,
-                fontSize: '0.9rem',
-                textDecoration: 'none',
-              }}
-            >
-              🏠 Back to Home
-            </Link>
-            <Link
               href="/tools"
               style={{
                 display: 'inline-flex',

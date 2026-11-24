@@ -83,20 +83,6 @@ export default function PrivacyPage() {
           >
             ← Back
           </button>
-          <Link
-            href="/"
-            style={{
-              padding: '0.4rem 0.9rem',
-              borderRadius: '999px',
-              border: '1px solid var(--ln)',
-              background: 'none',
-              color: 'var(--tx)',
-              textDecoration: 'none',
-              fontSize: '0.88rem'
-            }}
-          >
-            🏠 Back to Home
-          </Link>
         </div>
         <h1>Privacy notice</h1>
         <p>Last updated: 21 November 2026</p>

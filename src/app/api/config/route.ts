@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export const dynamic = 'force-dynamic';
 import { supabase, getAdminClient, SEED_CONFIG, SEED_CHECKS } from '@/lib/supabase';
+import { verifyRequestAdmin } from '@/lib/auth';
 
 export async function GET() {
   try {
@@ -35,6 +36,9 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
   try {
+    if (!(await verifyRequestAdmin(req))) {
+      return NextResponse.json({ error: 'Unauthorized: Admin session required' }, { status: 401 });
+    }
     const body = await req.json();
     const { flags, banner, checkAction } = body;
 

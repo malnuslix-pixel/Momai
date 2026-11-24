@@ -89,25 +89,6 @@ export default function LeaderboardPage() {
             >
               ← Back
             </button>
-            <Link
-              href="/"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '0.35rem',
-                padding: '0.4rem 0.9rem',
-                minHeight: '38px',
-                background: 'rgba(255, 255, 255, 0.16)',
-                border: '1px solid rgba(255, 255, 255, 0.3)',
-                borderRadius: '999px',
-                color: '#fff',
-                fontSize: '0.85rem',
-                fontWeight: 600,
-                textDecoration: 'none'
-              }}
-            >
-              🏠 Back to Home
-            </Link>
           </div>
           <h1 style={{
             fontFamily: 'Fraunces, Georgia, serif',

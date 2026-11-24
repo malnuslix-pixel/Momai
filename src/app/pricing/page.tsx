@@ -94,20 +94,62 @@ export default function PricingPage() {
 
       const data = await res.json();
 
-      if (data.ok) {
+      if (data.ok && data.checkout_request_id) {
         setMessage({
-          type: 'success',
-          text: '📱 Prompt sent! Check your phone and enter your M-Pesa PIN to complete payment.',
+          type: 'info',
+          text: '📱 Prompt sent! Check your phone and enter your M-Pesa PIN.',
         });
+
+        const checkoutId = data.checkout_request_id;
+        let attempts = 0;
+        const maxAttempts = 15; // Poll for 45s
+
+        const interval = setInterval(async () => {
+          attempts++;
+          try {
+            const checkRes = await fetch(`/api/mpesa/status?checkout_id=${checkoutId}`);
+            const checkData = await checkRes.json();
+            if (checkData.ok && checkData.payment?.status === 'completed') {
+              clearInterval(interval);
+              setLoading(false);
+              setMessage({
+                type: 'success',
+                text: `✅ Payment confirmed! Receipt: ${checkData.payment.mpesa_receipt || 'Confirmed'}. Your ${selectedPlan} Study Pass is now active!`,
+              });
+              try {
+                localStorage.setItem('mf_study_pass', selectedPlan);
+              } catch {}
+            } else if (checkData.ok && checkData.payment?.status === 'failed') {
+              clearInterval(interval);
+              setLoading(false);
+              setMessage({
+                type: 'error',
+                text: `Transaction cancelled or failed: ${checkData.payment.result_desc || 'Declined'}`,
+              });
+            } else if (attempts >= maxAttempts) {
+              clearInterval(interval);
+              setLoading(false);
+              setMessage({
+                type: 'info',
+                text: 'Waiting window closed. If you entered your PIN, your subscription will activate shortly via SMS confirmation.',
+              });
+            }
+          } catch {
+            if (attempts >= maxAttempts) {
+              clearInterval(interval);
+              setLoading(false);
+            }
+          }
+        }, 3000);
       } else {
         setMessage({
           type: 'error',
           text: data.error || 'Payment request could not be completed. Please try again.',
         });
+        setLoading(false);
       }
     } catch {
       setMessage({ type: 'error', text: 'Network connection issue. Please check your internet.' });
-    } finally {
       setLoading(false);
     }
   };
@@ -148,25 +190,6 @@ export default function PricingPage() {
             >
               ← Back
             </button>
-            <Link
-              href="/"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '0.35rem',
-                padding: '0.4rem 0.9rem',
-                minHeight: '38px',
-                background: 'rgba(255, 255, 255, 0.16)',
-                border: '1px solid rgba(255, 255, 255, 0.3)',
-                borderRadius: '999px',
-                color: '#fff',
-                fontSize: '0.85rem',
-                fontWeight: 600,
-                textDecoration: 'none'
-              }}
-            >
-              🏠 Back to Home
-            </Link>
           </div>
           <h1 style={{
             fontFamily: 'Fraunces, Georgia, serif',

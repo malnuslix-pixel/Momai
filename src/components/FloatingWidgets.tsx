@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { getAskMwalimuReply } from '@/lib/mwalimu-data';
 
 interface FloatingWidgetsProps {
-  onNavClick: (hash: string) => void;
+  onNavClick?: (hash: string) => void;
 }
 
 export default function FloatingWidgets({ onNavClick }: FloatingWidgetsProps) {
@@ -70,9 +70,11 @@ export default function FloatingWidgets({ onNavClick }: FloatingWidgetsProps) {
                       <a
                         href={m.link[0]}
                         onClick={(e) => {
-                          e.preventDefault();
                           setIsOpen(false);
-                          onNavClick(m.link![0]);
+                          if (onNavClick) {
+                            e.preventDefault();
+                            onNavClick(m.link![0]);
+                          }
                         }}
                       >
                         {m.link[1]} →

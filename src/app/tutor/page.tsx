@@ -290,7 +290,7 @@ function TutorClient() {
         background: 'rgba(15, 36, 16, 0.98)',
         backdropFilter: 'blur(12px)',
         borderBottom: '1px solid rgba(255, 255, 255, 0.16)',
-        padding: '0.75rem 1rem',
+        padding: 'calc(0.75rem + env(safe-area-inset-top, 0px)) 1rem 0.75rem',
       }}>
         <div style={{
           maxWidth: '1080px',

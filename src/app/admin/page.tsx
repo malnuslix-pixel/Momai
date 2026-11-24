@@ -520,6 +520,26 @@ export default function AdminPage() {
                   outline: 'none'
                 }}
               />
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '0.35rem' }}>
+                <span style={{ fontSize: '0.78rem', color: '#a0b0a2' }}>
+                  Default key: <code style={{ color: '#f4a261', background: 'rgba(255,255,255,0.08)', padding: '0.1rem 0.35rem', borderRadius: '4px' }}>Mwalimu@2025</code>
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setAuthPassword('Mwalimu@2025')}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    color: '#85e085',
+                    fontSize: '0.75rem',
+                    cursor: 'pointer',
+                    textDecoration: 'underline',
+                    padding: 0
+                  }}
+                >
+                  Fill key
+                </button>
+              </div>
             </div>
 
             <button

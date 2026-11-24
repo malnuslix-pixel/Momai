@@ -10,7 +10,7 @@ export default function PrivacyPage() {
       background: 'var(--bg, #faf8f5)',
       color: 'var(--tx, #1a1a1a)',
       font: "18px/1.7 'Segoe UI', system-ui, sans-serif",
-      padding: 'max(1.5rem, env(safe-area-inset-top)) 1.5rem max(3rem, env(safe-area-inset-bottom))',
+      padding: 'calc(3.5rem + env(safe-area-inset-top, 0px)) 1.5rem max(3rem, env(safe-area-inset-bottom))',
       minHeight: '100vh',
     }}>
       <style jsx global>{`

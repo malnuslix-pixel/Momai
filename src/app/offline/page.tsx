@@ -114,7 +114,7 @@ export default function OfflinePage() {
       color: '#1a1a1a',
       fontFamily: "'Segoe UI', system-ui, -apple-system, sans-serif",
       padding: '1.5rem clamp(1rem, 4vw, 2.5rem)',
-      paddingTop: 'max(1.5rem, env(safe-area-inset-top))',
+      paddingTop: 'calc(3.5rem + env(safe-area-inset-top, 0px))',
       paddingBottom: 'max(2.5rem, env(safe-area-inset-bottom))',
     }}>
       {/* Top Banner */}

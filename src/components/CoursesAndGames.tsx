@@ -1,18 +1,20 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import {
   COURSES,
   QUIZZES_FULL,
   MEMORY_MATCH_PAIRS,
   WORD_SCRAMBLE_WORDS
 } from '@/lib/mwalimu-data';
+import { useLanguage } from '@/lib/language';
 
 interface CoursesAndGamesProps {
   mode?: 'all' | 'courses' | 'games';
 }
 
 export default function CoursesAndGames({ mode = 'all' }: CoursesAndGamesProps) {
+  const [lang] = useLanguage();
   // ==========================================
   // COURSES STATE & LOGIC
   // ==========================================
@@ -200,19 +202,27 @@ export default function CoursesAndGames({ mode = 'all' }: CoursesAndGamesProps) 
   const [scrambleFeedback, setScrambleFeedback] = useState<string | null>(null);
 
   const currentScramble = WORD_SCRAMBLE_WORDS[scrambleIdx % WORD_SCRAMBLE_WORDS.length];
-  const scrambledWord = currentScramble.word.split('').sort(() => Math.random() - 0.5).join('');
+  const scrambledWord = useMemo(() => {
+    const orig = currentScramble.word;
+    let chars = orig.split('');
+    for (let attempts = 0; attempts < 15; attempts++) {
+      chars = chars.sort(() => Math.random() - 0.5);
+      if (chars.join('') !== orig || orig.length <= 2) break;
+    }
+    return chars.join('');
+  }, [scrambleIdx, currentScramble.word]);
 
   const handleScrambleCheck = (e: React.FormEvent) => {
     e.preventDefault();
     if (scrambleInput.trim().toUpperCase() === currentScramble.word) {
-      setScrambleFeedback('🎉 Safi sana! Correct!');
+      setScrambleFeedback(lang === 'sw' ? '🎉 Safi sana! Sahihi!' : '🎉 Safi sana! Correct!');
       setTimeout(() => {
         setScrambleFeedback(null);
         setScrambleInput('');
         setScrambleIdx(i => i + 1);
       }, 1200);
     } else {
-      setScrambleFeedback('❌ Jaribu tena (Try again)');
+      setScrambleFeedback(lang === 'sw' ? '❌ Jaribu tena (Try again)' : '❌ Jaribu tena (Try again)');
       setTimeout(() => setScrambleFeedback(null), 1200);
     }
   };
@@ -223,13 +233,17 @@ export default function CoursesAndGames({ mode = 'all' }: CoursesAndGamesProps) 
       {mode !== 'games' && (
       <section className="sec alt" id="courses" aria-labelledby="crh">
         <div className="w">
-          <h2 className="sh" id="crh">Courses and skills</h2>
+          <h2 className="sh" id="crh">{lang === 'sw' ? 'Kozi na Ujuzi' : 'Courses and skills'}</h2>
           <p className="sub">
-            Free, self-paced skill guides for learners, parents and teachers. Tick off lessons as you go — your progress is securely saved on this device.
+            {lang === 'sw'
+              ? 'Miongozo ya bure ya kujiendeleza kwa wanafunzi, wazazi na walimu. Weka alama kwenye masomo unayomaliza — maendeleo yako yanahifadhiwa kwenye kifaa hiki.'
+              : 'Free, self-paced skill guides for learners, parents and teachers. Tick off lessons as you go — your progress is securely saved on this device.'}
           </p>
 
           <p style={{ fontWeight: 600, color: '#2c5f2d', marginBottom: '1rem' }}>
-            📊 {totalCompletedLessons} of {totalPossibleLessons} lessons completed on this device.
+            {lang === 'sw'
+              ? `📊 Masomo ${totalCompletedLessons} kati ya ${totalPossibleLessons} yamekamilika kwenye kifaa hiki.`
+              : `📊 ${totalCompletedLessons} of ${totalPossibleLessons} lessons completed on this device.`}
           </p>
 
           {/* Search & Category Filter */}
@@ -237,10 +251,10 @@ export default function CoursesAndGames({ mode = 'all' }: CoursesAndGamesProps) 
             <input
               className="sel"
               type="search"
-              placeholder="Search courses, e.g. CV, typing, M-Pesa..."
+              placeholder={lang === 'sw' ? 'Tafuta kozi, k.m. CV, chapa, M-Pesa...' : 'Search courses, e.g. CV, typing, M-Pesa...'}
               value={courseSearch}
               onChange={(e) => setCourseSearch(e.target.value)}
-              style={{ width: 'auto', minWidth: '240px' }}
+              style={{ width: 'auto', minWidth: '240px', minHeight: '44px' }}
             />
 
             <div className="chips" style={{ margin: 0 }}>
@@ -349,8 +363,12 @@ export default function CoursesAndGames({ mode = 'all' }: CoursesAndGamesProps) 
       {mode !== 'courses' && (
       <section className="sec" id="games" aria-labelledby="gmh">
         <div className="w">
-          <h2 className="sh" id="gmh">Games and quizzes</h2>
-          <p className="sub">Subject quizzes and interactive learning games with saved scores and streaks.</p>
+          <h2 className="sh" id="gmh">{lang === 'sw' ? 'Michezo na Chemsha Bongo' : 'Games and quizzes'}</h2>
+          <p className="sub">
+            {lang === 'sw'
+              ? 'Chemsha bongo za masomo na michezo shirikishi ya kujifunza yenye alama na rekodi zilizohifadhiwa.'
+              : 'Subject quizzes and interactive learning games with saved scores and streaks.'}
+          </p>
 
           {/* Game Tabs */}
           <div className="chips" style={{ marginBottom: '1.8rem' }}>
@@ -358,25 +376,25 @@ export default function CoursesAndGames({ mode = 'all' }: CoursesAndGamesProps) 
               className={`chip ${activeGameTab === 'quiz' ? 'on' : ''}`}
               onClick={() => setActiveGameTab('quiz')}
             >
-              📝 Subject Quizzes
+              📝 {lang === 'sw' ? 'Maswali ya Masomo' : 'Subject Quizzes'}
             </button>
             <button
               className={`chip ${activeGameTab === 'memory' ? 'on' : ''}`}
               onClick={() => setActiveGameTab('memory')}
             >
-              🧠 Memory Match
+              🧠 {lang === 'sw' ? 'Mechi ya Kumbukumbu' : 'Memory Match'}
             </button>
             <button
               className={`chip ${activeGameTab === 'speed' ? 'on' : ''}`}
               onClick={() => setActiveGameTab('speed')}
             >
-              ⚡ Speed Maths
+              ⚡ {lang === 'sw' ? 'Hisabati ya Kasi' : 'Speed Maths'}
             </button>
             <button
               className={`chip ${activeGameTab === 'scramble' ? 'on' : ''}`}
               onClick={() => setActiveGameTab('scramble')}
             >
-              🔤 Word Scramble
+              🔤 {lang === 'sw' ? 'Changamsha Maneno' : 'Word Scramble'}
             </button>
           </div>
 
@@ -395,20 +413,24 @@ export default function CoursesAndGames({ mode = 'all' }: CoursesAndGamesProps) 
                       setQuizStreak(0);
                       setSelectedOpt(null);
                     }}
-                    style={{ width: 'auto', minWidth: '180px' }}
+                    style={{ width: 'auto', minWidth: '180px', minHeight: '40px' }}
                   >
-                    <option value="m">🔢 Mathematics (8 Qs)</option>
-                    <option value="s">🔬 Integrated Science (8 Qs)</option>
-                    <option value="k">🗣️ Kiswahili (8 Qs)</option>
+                    <option value="m">🔢 {lang === 'sw' ? 'Hisabati (Maswali 8)' : 'Mathematics (8 Qs)'}</option>
+                    <option value="s">🔬 {lang === 'sw' ? 'Sayansi Unganishi (Maswali 8)' : 'Integrated Science (8 Qs)'}</option>
+                    <option value="k">🗣️ {lang === 'sw' ? 'Kiswahili (Maswali 8)' : 'Kiswahili (8 Qs)'}</option>
                   </select>
 
                   <div style={{ fontWeight: 700, color: '#2c5f2d', fontSize: '0.95rem' }}>
-                    Score: {quizScore} · Streak: {quizStreak} 🔥
+                    {lang === 'sw'
+                      ? `Alama: ${quizScore} · Msururu: ${quizStreak} 🔥`
+                      : `Score: ${quizScore} · Streak: ${quizStreak} 🔥`}
                   </div>
                 </div>
 
-                <p style={{ fontSize: '0.85rem', color: '#666', marginBottom: '0.4rem' }}>
-                  Question {(quizIdx % currentQuizList.length) + 1} of {currentQuizList.length}:
+                <p style={{ fontSize: '0.85rem', color: 'var(--tx-mu, #4a5568)', marginBottom: '0.4rem' }}>
+                  {lang === 'sw'
+                    ? `Swali la ${(quizIdx % currentQuizList.length) + 1} kati ya ${currentQuizList.length}:`
+                    : `Question ${(quizIdx % currentQuizList.length) + 1} of ${currentQuizList.length}:`}
                 </p>
                 <h3 style={{ fontSize: '1.25rem', marginBottom: '1.2rem' }}>{currentQ.q}</h3>
 
@@ -437,33 +459,55 @@ export default function CoursesAndGames({ mode = 'all' }: CoursesAndGamesProps) 
             {/* TAB 2: MEMORY MATCH */}
             {activeGameTab === 'memory' && (
               <div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                  <h3>Kiswahili - English Memory Match</h3>
-                  <button className="gb o" onClick={initMemoryGame} style={{ margin: 0, padding: '0.3rem 0.8rem', fontSize: '0.85rem' }}>
-                    Restart
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '0.5rem' }}>
+                  <h3 style={{ margin: 0, fontSize: '1.15rem' }}>
+                    {lang === 'sw' ? 'Mechi ya Kumbukumbu: Kiswahili - Kiingereza' : 'Kiswahili - English Memory Match'}
+                  </h3>
+                  <button className="gb o" onClick={initMemoryGame} style={{ margin: 0, padding: '0.35rem 0.85rem', fontSize: '0.85rem', minHeight: '38px' }}>
+                    {lang === 'sw' ? 'Anza Upya' : 'Restart'}
                   </button>
                 </div>
-                <p style={{ fontSize: '0.88rem', color: '#666', marginBottom: '1rem' }}>
-                  Match each Kiswahili word with its corresponding English translation. Matched: {matchesWon} / 6 pairs.
+                <p style={{ fontSize: '0.88rem', color: 'var(--tx-mu, #4a5568)', marginBottom: '1rem' }}>
+                  {lang === 'sw'
+                    ? `Oanisha neno la Kiswahili na tafsiri yake ya Kiingereza. Jozi zilizopatikana: ${matchesWon} / 6.`
+                    : `Match each Kiswahili word with its corresponding English translation. Matched: ${matchesWon} / 6 pairs.`}
                 </p>
 
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.6rem' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(72px, 1fr))', gap: '0.6rem' }}>
                   {memoryCards.map(c => (
                     <button
                       key={c.id}
                       onClick={() => handleCardClick(c.id)}
                       disabled={c.matched}
                       style={{
-                        aspectRatio: '1',
+                        minHeight: '62px',
                         borderRadius: '12px',
-                        border: '2px solid #4a8c4b',
-                        background: c.matched ? 'rgba(74,140,75,0.2)' : c.flipped ? '#2c5f2d' : '#fff',
-                        color: c.matched ? '#2c5f2d' : c.flipped ? '#fff' : '#1a1a1a',
+                        border: c.matched
+                          ? '2px solid rgba(74, 140, 75, 0.5)'
+                          : c.flipped
+                            ? '2px solid #ffd166'
+                            : '2px solid #3d6e42',
+                        background: c.matched
+                          ? 'rgba(46, 125, 50, 0.22)'
+                          : c.flipped
+                            ? '#1a3d1b'
+                            : 'rgba(255, 255, 255, 0.95)',
+                        color: c.matched
+                          ? '#2c5f2d'
+                          : c.flipped
+                            ? '#ffd166'
+                            : '#1a1a1a',
                         fontWeight: 700,
-                        fontSize: '0.85rem',
+                        fontSize: 'clamp(0.72rem, 3.2vw, 0.92rem)',
                         cursor: c.matched ? 'default' : 'pointer',
-                        padding: '0.2rem',
-                        transition: 'all 0.2s'
+                        padding: '0.35rem 0.2rem',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        textAlign: 'center',
+                        wordBreak: 'break-word',
+                        transition: 'all 0.2s',
+                        boxShadow: c.flipped ? '0 4px 12px rgba(0,0,0,0.15)' : 'none'
                       }}
                     >
                       {c.flipped || c.matched ? c.text : '❓'}
@@ -473,7 +517,7 @@ export default function CoursesAndGames({ mode = 'all' }: CoursesAndGamesProps) 
 
                 {matchesWon === 6 && (
                   <p style={{ marginTop: '1.2rem', fontWeight: 700, color: '#2c5f2d', textAlign: 'center', fontSize: '1.1rem' }}>
-                    🏆 Hongera! You solved all pairs!
+                    {lang === 'sw' ? '🏆 Hongera sana! Umelinganisha jozi zote kikamilifu!' : '🏆 Hongera! You solved all pairs!'}
                   </p>
                 )}
               </div>
@@ -482,8 +526,10 @@ export default function CoursesAndGames({ mode = 'all' }: CoursesAndGamesProps) 
             {/* TAB 3: SPEED MATHS */}
             {activeGameTab === 'speed' && (
               <div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                  <h3>60-Second Speed Maths</h3>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '0.6rem' }}>
+                  <h3 style={{ margin: 0, fontSize: '1.15rem' }}>
+                    {lang === 'sw' ? 'Hisabati ya Kasi ya Sekunde 60' : '60-Second Speed Maths'}
+                  </h3>
                   <select
                     className="sel"
                     value={speedOp}
@@ -492,36 +538,38 @@ export default function CoursesAndGames({ mode = 'all' }: CoursesAndGamesProps) 
                       setSpeedOp(op);
                       generateSpeedProblem(op);
                     }}
-                    style={{ width: 'auto' }}
+                    style={{ width: 'auto', minHeight: '40px' }}
                   >
-                    <option value="+">Addition (+)</option>
-                    <option value="−">Subtraction (−)</option>
-                    <option value="×">Multiplication (×)</option>
+                    <option value="+">{lang === 'sw' ? 'Kujumlisha (+)' : 'Addition (+)'}</option>
+                    <option value="−">{lang === 'sw' ? 'Kutoa (−)' : 'Subtraction (−)'}</option>
+                    <option value="×">{lang === 'sw' ? 'Kuzidisha (×)' : 'Multiplication (×)'}</option>
                   </select>
                 </div>
 
                 {!speedRunning ? (
                   <div style={{ textAlign: 'center', padding: '1.5rem 0' }}>
                     <p style={{ fontSize: '1.05rem', marginBottom: '1rem' }}>
-                      How many problems can you solve in 60 seconds?
+                      {lang === 'sw'
+                        ? 'Unaweza kutatua maswali mangapi ndani ya sekunde 60?'
+                        : 'How many problems can you solve in 60 seconds?'}
                     </p>
                     {speedScore > 0 && (
                       <p style={{ fontWeight: 700, color: '#2c5f2d', fontSize: '1.2rem', marginBottom: '1rem' }}>
-                        Last Score: {speedScore} correct! 🎉
+                        {lang === 'sw' ? `Alama ya Mwisho: ${speedScore} sahihi! 🎉` : `Last Score: ${speedScore} correct! 🎉`}
                       </p>
                     )}
-                    <button className="gb" onClick={startSpeedGame} style={{ fontSize: '1.1rem', padding: '0.7rem 1.8rem' }}>
-                      Start 60 Seconds
+                    <button className="gb" onClick={startSpeedGame} style={{ fontSize: '1.05rem', padding: '0.75rem 2rem', minHeight: '48px' }}>
+                      {lang === 'sw' ? 'Anza Sekunde 60' : 'Start 60 Seconds'}
                     </button>
                   </div>
                 ) : (
                   <div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.8rem' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.8rem', flexWrap: 'wrap', gap: '0.5rem' }}>
                       <span style={{ fontSize: '1.2rem', fontWeight: 800, color: '#c0392b' }}>
-                        ⏳ {speedSeconds}s left
+                        {lang === 'sw' ? `⏳ Sekunde ${speedSeconds} zimebaki` : `⏳ ${speedSeconds}s left`}
                       </span>
                       <span style={{ fontSize: '1.1rem', fontWeight: 700, color: '#2c5f2d' }}>
-                        Score: {speedScore}
+                        {lang === 'sw' ? `Alama: ${speedScore}` : `Score: ${speedScore}`}
                       </span>
                     </div>
 
@@ -529,17 +577,19 @@ export default function CoursesAndGames({ mode = 'all' }: CoursesAndGamesProps) 
                       {speedProblem.a} {speedOp} {speedProblem.b} = ?
                     </div>
 
-                    <form onSubmit={handleSpeedSubmit} style={{ display: 'flex', gap: '0.5rem', justifyContent: 'center' }}>
+                    <form onSubmit={handleSpeedSubmit} style={{ display: 'flex', gap: '0.5rem', justifyContent: 'center', flexWrap: 'wrap', alignItems: 'center' }}>
                       <input
                         className="sel"
                         type="number"
                         value={speedAnswer}
                         onChange={(e) => setSpeedAnswer(e.target.value)}
-                        placeholder="Your answer"
+                        placeholder={lang === 'sw' ? 'Jibu lako' : 'Your answer'}
                         autoFocus
-                        style={{ maxWidth: '160px', fontSize: '1.2rem', textAlign: 'center' }}
+                        style={{ maxWidth: '160px', fontSize: '1.2rem', textAlign: 'center', minHeight: '44px' }}
                       />
-                      <button type="submit" className="gb">Submit</button>
+                      <button type="submit" className="gb" style={{ minHeight: '44px', padding: '0.5rem 1.4rem' }}>
+                        {lang === 'sw' ? 'Wasilisha' : 'Submit'}
+                      </button>
                     </form>
                   </div>
                 )}
@@ -549,36 +599,41 @@ export default function CoursesAndGames({ mode = 'all' }: CoursesAndGamesProps) 
             {/* TAB 4: WORD SCRAMBLE */}
             {activeGameTab === 'scramble' && (
               <div>
-                <h3>Kenyan Education Word Scramble</h3>
-                <p style={{ fontSize: '0.88rem', color: '#666', marginBottom: '1rem' }}>
-                  Unscramble the letters to reveal the curriculum word.
+                <h3 style={{ fontSize: '1.15rem', marginBottom: '0.4rem' }}>
+                  {lang === 'sw' ? 'Changamsha Maneno ya Mtaala wa Kenya' : 'Kenyan Education Word Scramble'}
+                </h3>
+                <p style={{ fontSize: '0.88rem', color: 'var(--tx-mu, #4a5568)', marginBottom: '1rem' }}>
+                  {lang === 'sw' ? 'Panga herufi upya kufichua neno la kimasomo.' : 'Unscramble the letters to reveal the curriculum word.'}
                 </p>
 
-                <div style={{ font: '800 2.2rem Fraunces, serif', letterSpacing: '0.25em', color: '#2c5f2d', textAlign: 'center', margin: '1.2rem 0' }}>
+                <div style={{ font: '800 clamp(1.8rem, 5vw, 2.3rem) Fraunces, Georgia, serif', letterSpacing: '0.25em', color: '#1a3d1b', textAlign: 'center', margin: '1.2rem 0', wordBreak: 'break-all' }}>
                   {scrambledWord}
                 </div>
 
-                <p style={{ textAlign: 'center', color: '#555', fontStyle: 'italic', marginBottom: '1.2rem' }}>
-                  💡 Hint: {currentScramble.hint}
+                <p style={{ textAlign: 'center', color: 'var(--tx-mu, #4a5568)', fontStyle: 'italic', marginBottom: '1.2rem', fontSize: '0.92rem' }}>
+                  💡 {lang === 'sw' ? 'Dokezo' : 'Hint'}: {currentScramble.hint}
                 </p>
 
-                <form onSubmit={handleScrambleCheck} style={{ display: 'flex', gap: '0.5rem', justifyContent: 'center' }}>
+                <form onSubmit={handleScrambleCheck} style={{ display: 'flex', gap: '0.5rem', justifyContent: 'center', flexWrap: 'wrap', alignItems: 'center' }}>
                   <input
                     className="sel"
                     type="text"
                     value={scrambleInput}
                     onChange={(e) => setScrambleInput(e.target.value)}
-                    placeholder="Enter word..."
+                    placeholder={lang === 'sw' ? 'Andika neno...' : 'Enter word...'}
                     autoCapitalize="characters"
-                    style={{ maxWidth: '220px', textTransform: 'uppercase' }}
+                    style={{ maxWidth: '220px', textTransform: 'uppercase', minHeight: '44px', fontSize: '1rem' }}
                   />
-                  <button type="submit" className="gb">Check</button>
+                  <button type="submit" className="gb" style={{ minHeight: '44px', padding: '0.5rem 1.3rem' }}>
+                    {lang === 'sw' ? 'Angalia' : 'Check'}
+                  </button>
                   <button
                     type="button"
                     className="gb o"
                     onClick={() => { setScrambleIdx(i => i + 1); setScrambleInput(''); }}
+                    style={{ minHeight: '44px', padding: '0.5rem 1rem' }}
                   >
-                    Skip
+                    {lang === 'sw' ? 'Ruka' : 'Skip'}
                   </button>
                 </form>
 

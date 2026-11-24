@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useLanguage } from '@/lib/language';
 
 interface HeaderProps {
   onNavClick?: (hash: string) => void;
@@ -14,7 +15,7 @@ export default function Header({ onNavClick, activeNav = 'home' }: HeaderProps) 
   const [isScrolled, setIsScrolled] = useState(false);
   const [isLite, setIsLite] = useState(false);
   const [fontSizeIdx, setFontSizeIdx] = useState(0);
-  const [lang, setLang] = useState<'en' | 'sw'>('en');
+  const [lang, setLang] = useLanguage();
 
   // Sync Lite mode from localStorage / saveData on mount
   useEffect(() => {
@@ -66,7 +67,6 @@ export default function Header({ onNavClick, activeNav = 'home' }: HeaderProps) 
   const toggleLang = () => {
     const next = lang === 'en' ? 'sw' : 'en';
     setLang(next);
-    document.documentElement.lang = next;
   };
 
   const closeMenu = () => {
@@ -99,8 +99,8 @@ export default function Header({ onNavClick, activeNav = 'home' }: HeaderProps) 
           <button onClick={cycleFontSize} aria-label="Change text size">
             A+
           </button>
-          <button onClick={toggleLang}>
-            {lang === 'en' ? 'Kiswahili' : 'English'}
+          <button onClick={toggleLang} title={lang === 'en' ? 'Badilisha iwe Kiswahili' : 'Switch to English'}>
+            {lang === 'en' ? '🇰🇪 SW' : '🇬🇧 EN'}
           </button>
         </div>
 
@@ -155,7 +155,7 @@ export default function Header({ onNavClick, activeNav = 'home' }: HeaderProps) 
                 className={activeNav === 'courses' ? 'active' : ''}
                 onClick={closeMenu}
               >
-                Courses
+                {lang === 'sw' ? 'Kozi' : 'Courses'}
               </Link>
             </li>
 
@@ -165,7 +165,7 @@ export default function Header({ onNavClick, activeNav = 'home' }: HeaderProps) 
                 className={activeNav === 'games' ? 'active' : ''}
                 onClick={closeMenu}
               >
-                Games
+                {lang === 'sw' ? 'Michezo' : 'Games'}
               </Link>
             </li>
 
@@ -183,8 +183,8 @@ export default function Header({ onNavClick, activeNav = 'home' }: HeaderProps) 
                 {lang === 'sw' ? 'Fundisha' : 'Teach'}
               </Link>
               <ul>
-                <li><Link href="/teach" onClick={closeMenu}>👩🏾‍🏫 Teaching Materials</Link></li>
-                <li><Link href="/jobs" onClick={closeMenu}>💼 Education Jobs</Link></li>
+                <li><Link href="/teach" onClick={closeMenu}>👩🏾‍🏫 {lang === 'sw' ? 'Nyenzo za Kufundishia' : 'Teaching Materials'}</Link></li>
+                <li><Link href="/jobs" onClick={closeMenu}>💼 {lang === 'sw' ? 'Nafasi za Kazi' : 'Education Jobs'}</Link></li>
               </ul>
             </li>
 
@@ -202,10 +202,10 @@ export default function Header({ onNavClick, activeNav = 'home' }: HeaderProps) 
                 {lang === 'sw' ? 'Familia' : 'Families'}
               </Link>
               <ul>
-                <li><Link href="/parents" onClick={closeMenu}>👨🏾‍👩🏾‍👧🏾 Parents’ Hub</Link></li>
-                <li><Link href="/exams" onClick={closeMenu}>📝 Exams Hub</Link></li>
-                <li><Link href="/help" onClick={closeMenu}>❓ Help & Glossary</Link></li>
-                <li><Link href="/notices" onClick={closeMenu}>📢 Notice Board</Link></li>
+                <li><Link href="/parents" onClick={closeMenu}>👨🏾‍👩🏾‍👧🏾 {lang === 'sw' ? 'Mwongozo wa Wazazi' : 'Parents’ Hub'}</Link></li>
+                <li><Link href="/exams" onClick={closeMenu}>📝 {lang === 'sw' ? 'Kituo cha Mitihani' : 'Exams Hub'}</Link></li>
+                <li><Link href="/help" onClick={closeMenu}>❓ {lang === 'sw' ? 'Msaada na Faharasa' : 'Help & Glossary'}</Link></li>
+                <li><Link href="/notices" onClick={closeMenu}>📢 {lang === 'sw' ? 'Ubao wa Matangazo' : 'Notice Board'}</Link></li>
               </ul>
             </li>
 
@@ -215,7 +215,7 @@ export default function Header({ onNavClick, activeNav = 'home' }: HeaderProps) 
                 className={activeNav === 'advertise' ? 'active' : ''}
                 onClick={closeMenu}
               >
-                Advertise
+                {lang === 'sw' ? 'Tangaza' : 'Advertise'}
               </Link>
             </li>
 
@@ -225,7 +225,7 @@ export default function Header({ onNavClick, activeNav = 'home' }: HeaderProps) 
                 className={activeNav === 'about' ? 'active' : ''}
                 onClick={closeMenu}
               >
-                About
+                {lang === 'sw' ? 'Kuhusu' : 'About'}
               </Link>
             </li>
 
@@ -235,7 +235,7 @@ export default function Header({ onNavClick, activeNav = 'home' }: HeaderProps) 
                 className="cta"
                 onClick={closeMenu}
               >
-                Contact
+                {lang === 'sw' ? 'Wasiliana' : 'Contact'}
               </Link>
             </li>
           </ul>

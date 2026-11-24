@@ -64,7 +64,7 @@ export default function LeaderboardPage() {
       <div style={{
         background: 'linear-gradient(135deg, #2c5f2d, #1a3d1b)',
         color: '#fff',
-        padding: '2rem 1.5rem 3rem',
+        padding: 'calc(3.2rem + env(safe-area-inset-top, 0px)) 1.5rem 3rem',
         textAlign: 'center',
       }}>
         <div style={{ maxWidth: '650px', margin: '0 auto' }}>

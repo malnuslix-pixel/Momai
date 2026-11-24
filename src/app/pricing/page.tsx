@@ -165,7 +165,7 @@ export default function PricingPage() {
       <div style={{
         background: '#2c5f2d',
         color: '#fff',
-        padding: '2.5rem 1.5rem 3.5rem',
+        padding: 'calc(3.5rem + env(safe-area-inset-top, 0px)) 1.5rem 3.5rem',
         textAlign: 'center',
       }}>
         <div style={{ maxWidth: '850px', margin: '0 auto' }}>

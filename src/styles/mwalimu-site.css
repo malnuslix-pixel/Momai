@@ -2292,14 +2292,14 @@ main > section:not([hidden]) {
 .pbn {
   position: relative;
   z-index: 2;
-  padding: 5rem 0 1.5rem;
+  padding: calc(6.5rem + env(safe-area-inset-top, 0px)) 0 1.6rem;
   background: radial-gradient(60% 120% at 85% 0, rgba(244, 162, 97, 0.28), transparent 60%),
               linear-gradient(160deg, #16341a, #2c5f2d);
 }
 
 @media (min-width: 768px) {
   .pbn {
-    padding: 6rem 0 2rem;
+    padding: calc(7rem + env(safe-area-inset-top, 0px)) 0 2rem;
   }
 }
 
@@ -2307,7 +2307,8 @@ main > section:not([hidden]) {
   display: flex;
   align-items: center;
   gap: 0.6rem;
-  margin-bottom: 0.8rem;
+  margin-top: 0.25rem;
+  margin-bottom: 0.85rem;
   flex-wrap: wrap;
 }
 
@@ -2895,9 +2896,11 @@ section.mb .sh, section.mb .sub, section.mb .pbn h1, section.mb .pbn p, section.
     top: 0;
     height: 100vh;
     height: 100dvh;
-    padding: 0;
+    padding: calc(4.6rem + env(safe-area-inset-top, 0px)) 0 calc(3rem + env(safe-area-inset-bottom, 0px)) !important;
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    box-sizing: border-box;
   }
 
   .scenes {
@@ -3050,7 +3053,7 @@ section.mb .sh, section.mb .sub, section.mb .pbn h1, section.mb .pbn p, section.
 
   /* Sub-pages */
   .pbn {
-    padding: 5rem 0 1.4rem !important;
+    padding: calc(6.2rem + env(safe-area-inset-top, 0px)) 0 1.5rem !important;
   }
 
   .pbn h1 {
@@ -3589,13 +3592,15 @@ section.mb .sh, section.mb .sub, section.mb .pbn h1, section.mb .pbn p, section.
 /* In lite mode the hero displays all content statically with zero heavy animations */
 .lite .hero {
   height: auto !important;
+  min-height: auto !important;
 }
 
 .lite .stage {
   position: relative !important;
   top: auto !important;
   height: auto !important;
-  padding: 5.5rem 0 2.5rem !important;
+  min-height: auto !important;
+  padding: calc(4.6rem + env(safe-area-inset-top, 0px)) 0 1.2rem !important;
   display: flex !important;
   flex-direction: column !important;
   align-items: center !important;
@@ -3664,11 +3669,11 @@ section.mb .sh, section.mb .sub, section.mb .pbn h1, section.mb .pbn p, section.
 /* Lite mode responsive tweaks */
 @media screen and (max-width: 640px) {
   .lite .stage {
-    padding: 4.5rem 0 2rem !important;
+    padding: calc(4rem + env(safe-area-inset-top, 0px)) 0 1rem !important;
   }
 
   .lite .scene {
-    margin-bottom: 1.8rem !important;
+    margin-bottom: 0 !important;
   }
 
   .lite .scene h1 {
@@ -3681,7 +3686,7 @@ section.mb .sh, section.mb .sub, section.mb .pbn h1, section.mb .pbn p, section.
   }
 
   .lite .tick {
-    margin-top: 1.2rem !important;
+    margin-top: 1rem !important;
   }
 }
 

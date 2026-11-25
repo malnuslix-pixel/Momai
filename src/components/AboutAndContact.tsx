@@ -42,6 +42,7 @@ export default function AboutAndContact() {
       {/* About Section */}
       <section className="sec alt" id="about" aria-labelledby="ah">
         <div className="w">
+          <span className="tag" style={{ marginBottom: '0.5rem' }}>Who We Are</span>
           <h2 className="sh" id="ah">About Mwalimu Family</h2>
           <p className="sub" style={{ maxWidth: '36em' }}>
             “Mwalimu” means <em>teacher</em> in Swahili. We publish independent education news, verified curriculum templates and learning tools for Kenyan teachers, parents and learners.
@@ -72,6 +73,7 @@ export default function AboutAndContact() {
       <section className="contact" id="contact" aria-labelledby="ch">
         <div className="w two">
           <div>
+            <span className="tag" style={{ marginBottom: '0.5rem' }}>Alerts &amp; Updates</span>
             <h2 className="sh" id="ch" style={{ color: '#fff' }}>Stay in touch</h2>
             <p style={{ fontSize: '1.15rem', marginTop: '1rem', lineHeight: 1.6 }}>
               Receive Kenya national examination news, term dates, and new teaching schemes directly on WhatsApp or by email.
@@ -135,7 +137,7 @@ export default function AboutAndContact() {
             </button>
 
             {subStatus && (
-              <p role="status" style={{ fontSize: '0.92rem', color: '#1f7a3a', fontWeight: 600, marginTop: '0.5rem' }}>
+              <p role="status" style={{ fontSize: '0.92rem', color: '#86efac', fontWeight: 600, marginTop: '0.5rem' }}>
                 {subStatus}
               </p>
             )}

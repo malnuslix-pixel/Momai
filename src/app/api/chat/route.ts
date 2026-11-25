@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabase, getAdminClient } from '@/lib/supabase';
+import { getAdminClient } from '@/lib/supabase';
+import { generateAIResponse } from '@/lib/ai';
 
 export const dynamic = 'force-dynamic';
 
@@ -64,38 +65,15 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'invalid' }, { status: 400 });
     }
 
-    let reply = '';
-    const anthropicKey = process.env.ANTHROPIC_API_KEY;
+    const ai = await generateAIResponse({
+      system: `You are "Ask Mwalimu", the AI educational assistant on Mwalimu Family (mwalimufamily.com), Kenya's trusted education and curriculum platform. Answer in under 120 words in warm, factual Kenyan educational English or Kiswahili if asked. Reference: ${SITE_FACTS.join(' ')}`,
+      prompt: message,
+      temperature: 0.45,
+      maxTokens: 300,
+    });
 
-    if (anthropicKey && anthropicKey.startsWith('sk-ant')) {
-      try {
-        const response = await fetch('https://api.anthropic.com/v1/messages', {
-          method: 'POST',
-          headers: {
-            'x-api-key': anthropicKey,
-            'anthropic-version': '2023-06-01',
-            'content-type': 'application/json',
-          },
-          body: JSON.stringify({
-            model: 'claude-3-haiku-20240307',
-            max_tokens: 300,
-            system: `You are "Ask Mwalimu", the AI educational assistant on Mwalimu Family (mwalimufamily.co.ke), Kenya's trusted education and curriculum platform. Answer in under 120 words in warm, factual Kenyan educational English or Kiswahili if asked. Reference: ${SITE_FACTS.join(' ')}`,
-            messages: [{ role: 'user', content: message }],
-          }),
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          reply = data.content?.filter((c: any) => c.type === 'text').map((c: any) => c.text).join('\n').trim() || '';
-        }
-      } catch (e) {
-        console.warn('Anthropic API request failed, falling back to knowledge base:', e);
-      }
-    }
-
-    if (!reply) {
-      reply = getKnowledgeReply(message);
-    }
+    const reply = ai.text || getKnowledgeReply(message);
+    const usedModel = ai.provider === 'gemini' ? 'gemini-2.0-flash' : ai.provider === 'anthropic' ? 'claude-3-haiku' : 'knowledge-engine';
 
     // Log to Supabase assistant_logs
     try {
@@ -104,7 +82,7 @@ export async function POST(req: NextRequest) {
         {
           question: message,
           reply,
-          model: anthropicKey ? 'claude-3-haiku' : 'knowledge-engine',
+          model: usedModel,
           status: 'ok',
         },
       ]);

@@ -68,7 +68,7 @@ export default function KcseCalculator() {
   const qualifiesUniversity = totalPoints >= 46; // C+ and above
 
   const handleCopySummary = () => {
-    const text = `Mwalimu Family KCSE Calculation:\nBest 7 Subjects Total: ${totalPoints}/84 Points\nMean Grade: ${meanGrade} (${meanDescriptor})\nUniversity Direct Benchmark: ${qualifiesUniversity ? 'Qualified (C+ or higher)' : 'Eligible for TVET/Diploma'}\nCalculated at: https://mwalimufamily.co.ke/tools`;
+    const text = `Mwalimu Family KCSE Calculation:\nBest 7 Subjects Total: ${totalPoints}/84 Points\nMean Grade: ${meanGrade} (${meanDescriptor})\nUniversity Direct Benchmark: ${qualifiesUniversity ? 'Qualified (C+ or higher)' : 'Eligible for TVET/Diploma'}\nCalculated at: https://mwalimufamily.com/tools`;
     navigator.clipboard.writeText(text);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);

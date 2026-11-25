@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 export const dynamic = 'force-dynamic';
 import { getAdminClient } from '@/lib/supabase';
 import { buildTutorSystemPrompt, getFallbackResponse, generatePracticeQuestion } from '@/lib/tutor-engine';
+import { generateAIResponse } from '@/lib/ai';
 
 export async function POST(req: NextRequest) {
   try {
@@ -33,61 +34,16 @@ export async function POST(req: NextRequest) {
       });
     } catch {}
 
-    // Determine AI response
-    let reply: string = '';
-    const geminiKey = process.env.GEMINI_API_KEY;
-    const anthropicKey = process.env.ANTHROPIC_API_KEY;
+    // Determine AI response via unified AI engine
+    const systemPrompt = buildTutorSystemPrompt(ctx);
+    const ai = await generateAIResponse({
+      system: systemPrompt,
+      prompt: message,
+      temperature: 0.65,
+      maxTokens: 800,
+    });
 
-    if (geminiKey) {
-      try {
-        const systemPrompt = buildTutorSystemPrompt(ctx);
-        const res = await fetch(
-          `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${geminiKey}`,
-          {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              system_instruction: { parts: [{ text: systemPrompt }] },
-              contents: [{ parts: [{ text: message }] }],
-              generationConfig: {
-                temperature: 0.65,
-                maxOutputTokens: 800,
-              },
-            }),
-          }
-        );
-        const data = await res.json();
-        reply = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
-      } catch (apiErr) {
-        console.warn('Gemini tutor API fallback:', apiErr);
-      }
-    } else if (anthropicKey) {
-      try {
-        const systemPrompt = buildTutorSystemPrompt(ctx);
-        const res = await fetch('https://api.anthropic.com/v1/messages', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'x-api-key': anthropicKey,
-            'anthropic-version': '2023-06-01',
-          },
-          body: JSON.stringify({
-            model: 'claude-3-haiku-20240307',
-            max_tokens: 800,
-            system: systemPrompt,
-            messages: [{ role: 'user', content: message }],
-          }),
-        });
-        const data = await res.json();
-        reply = data?.content?.[0]?.text || '';
-      } catch (apiErr) {
-        console.warn('Anthropic tutor API fallback:', apiErr);
-      }
-    }
-
-    if (!reply) {
-      reply = getFallbackResponse(message, ctx);
-    }
+    const reply = ai.text || getFallbackResponse(message, ctx);
 
     // Log assistant turn
     try {

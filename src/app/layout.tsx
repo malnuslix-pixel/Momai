@@ -3,14 +3,32 @@ import '@/styles/globals.css';
 import '@/styles/mwalimu-site.css';
 import ServiceWorkerManager from '@/components/ServiceWorkerManager';
 import ErrorBoundary from '@/components/ErrorBoundary';
+import { SITE_URL, SITE_NAME } from '@/lib/seo';
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://mwalimufamily.co.ke'),
+  metadataBase: new URL(SITE_URL),
   title: {
     default: 'Mwalimu Family — Kenya’s Education News & Learning Hub',
     template: '%s | Mwalimu Family',
   },
   description: 'Kenya’s school news, KCSE & KJSEA exam timelines, free CBC schemes of work, revision notes and AI tutoring for teachers and families.',
+  alternates: {
+    canonical: SITE_URL,
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-snippet': -1,
+      'max-image-preview': 'large',
+      'max-video-preview': -1,
+    },
+  },
+  verification: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION
+    ? { google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION }
+    : undefined,
   keywords: [
     'Kenya education news',
     'CBC curriculum',
@@ -20,7 +38,7 @@ export const metadata: Metadata = {
     'lesson plans Kenya',
     'KPSEA',
     'KUCCPS cluster points',
-    'M-Pesa study pass',
+    'Grade 10 Senior School pathways',
     'AI tutor Kenya',
   ],
   manifest: '/manifest.webmanifest',
@@ -31,8 +49,8 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Mwalimu Family — Kenya’s School News & Learning Hub',
     description: 'Exam timelines, free schemes of work, CBC revision notes & AI tutoring for Kenyan families.',
-    url: 'https://mwalimufamily.co.ke',
-    siteName: 'Mwalimu Family',
+    url: SITE_URL,
+    siteName: SITE_NAME,
     locale: 'en_KE',
     type: 'website',
     images: [
@@ -78,6 +96,42 @@ export default function RootLayout({
         <link rel="dns-prefetch" href="https://wa.me" />
       </head>
       <body>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify([
+              {
+                '@context': 'https://schema.org',
+                '@type': 'Organization',
+                name: SITE_NAME,
+                url: SITE_URL,
+                logo: `${SITE_URL}/icons/apple-touch-icon.png`,
+                areaServed: {
+                  '@type': 'Country',
+                  name: 'Kenya',
+                },
+                sameAs: [
+                  'https://youtube.com/@mwalimufamily',
+                  'https://facebook.com/mwalimufamily',
+                  'https://instagram.com/mwalimufamily',
+                  'https://x.com/mwalimufamily',
+                ],
+              },
+              {
+                '@context': 'https://schema.org',
+                '@type': 'WebSite',
+                name: SITE_NAME,
+                url: SITE_URL,
+                inLanguage: ['en-KE', 'sw-KE'],
+                potentialAction: {
+                  '@type': 'SearchAction',
+                  target: `${SITE_URL}/learn?q={search_term_string}`,
+                  'query-input': 'required name=search_term_string',
+                },
+              },
+            ]),
+          }}
+        />
         <ServiceWorkerManager />
         <ErrorBoundary>
           {children}

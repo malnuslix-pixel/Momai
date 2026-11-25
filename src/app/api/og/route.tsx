@@ -149,7 +149,7 @@ export async function GET(req: NextRequest) {
               <span>•</span>
               <span>CBC & 8-4-4 Materials</span>
               <span>•</span>
-              <span>mwalimufamily.co.ke</span>
+              <span>mwalimufamily.com</span>
             </div>
 
             <div

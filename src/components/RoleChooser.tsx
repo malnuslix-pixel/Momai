@@ -42,7 +42,7 @@ export default function RoleChooser({ onNavClick }: RoleChooserProps) {
         </div>
 
         {/* 3 Main Role Columns */}
-        <div className="x2" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
+        <div className="x2 x2-3">
           {/* Teacher Pathway */}
           <div className="portal-card">
             <div className="portal-header">
@@ -176,7 +176,7 @@ export default function RoleChooser({ onNavClick }: RoleChooserProps) {
           </p>
         </div>
 
-        <div className="x2" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1.2rem', margin: 0 }}>
+        <div className="x2" style={{ margin: 0 }}>
           <Link className="x2c" href="/tutoring">
             <div className="hub-tag-icon"><Sparkles size={20} /></div>
             <h3>{lang === 'sw' ? 'Mafunzo ya Ziada' : 'Tutoring & Practice'}</h3>

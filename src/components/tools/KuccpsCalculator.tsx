@@ -34,7 +34,7 @@ export default function KuccpsCalculator() {
 
   const handleCopy = () => {
     if (!clusterPoints) return;
-    const text = `KUCCPS Cluster Calculation:\nPrerequisite 4 Subjects: ${cluster4}/48 Points\nKCSE Overall (7 Subjects): ${total7}/84 Points\nEstimated Weighted Cluster Points: ${clusterPoints.toFixed(3)} / 48.000\nPlacement Insight: ${guidance}\nCalculated at: https://mwalimufamily.co.ke/tools`;
+    const text = `KUCCPS Cluster Calculation:\nPrerequisite 4 Subjects: ${cluster4}/48 Points\nKCSE Overall (7 Subjects): ${total7}/84 Points\nEstimated Weighted Cluster Points: ${clusterPoints.toFixed(3)} / 48.000\nPlacement Insight: ${guidance}\nCalculated at: https://mwalimufamily.com/tools`;
     navigator.clipboard.writeText(text);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);

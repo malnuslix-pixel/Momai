@@ -1,16 +1,15 @@
 import { MetadataRoute } from 'next';
+import { SITE_URL } from '@/lib/seo';
 
 export default function robots(): MetadataRoute.Robots {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://mwalimufamily.co.ke';
-
   return {
     rules: [
       {
         userAgent: '*',
-        allow: '/',
-        disallow: ['/admin', '/api/admin/'],
+        allow: ['/', '/api/og'],
+        disallow: ['/admin', '/activity', '/offline', '/api/admin/', '/api/mpesa/', '/api/submit', '/api/subscribe'],
       },
     ],
-    sitemap: `${baseUrl}/sitemap.xml`,
+    sitemap: `${SITE_URL}/sitemap.xml`,
   };
 }

@@ -59,7 +59,7 @@ export default function KjseaCalculator() {
   }
 
   const handleCopy = () => {
-    const text = `KJSEA Grade 9 CBE Points Calculation:\nLearning Areas Evaluated: 9\nTotal Points: ${totalPoints} / ${maxPoints} (${percentage}%)\nPerformance Band: ${bandTitle}\nSenior School Pathway Guidance: ${pathwayRecommendation}\nCalculated at: https://mwalimufamily.co.ke/tools`;
+    const text = `KJSEA Grade 9 CBE Points Calculation:\nLearning Areas Evaluated: 9\nTotal Points: ${totalPoints} / ${maxPoints} (${percentage}%)\nPerformance Band: ${bandTitle}\nSenior School Pathway Guidance: ${pathwayRecommendation}\nCalculated at: https://mwalimufamily.com/tools`;
     navigator.clipboard.writeText(text);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);

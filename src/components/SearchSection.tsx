@@ -91,6 +91,31 @@ export default function SearchSection({ onNavClick }: SearchSectionProps) {
   const router = useRouter();
   const [query, setQuery] = useState('');
   const [lang] = useLanguage();
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiResult, setAiResult] = useState<{ answer: string; suggestedRoutes: { label: string; href: string }[] } | null>(null);
+
+  const askAI = async (rawQuery: string) => {
+    const q = rawQuery.trim();
+    if (!q) return;
+    setAiLoading(true);
+    try {
+      const res = await fetch('/api/ai/assist', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ task: 'search', query: q }),
+      });
+      const data = await res.json();
+      if (data.ok && data.answer) {
+        setAiResult({
+          answer: data.answer,
+          suggestedRoutes: Array.isArray(data.suggestedRoutes) ? data.suggestedRoutes : [],
+        });
+      }
+    } catch {
+    } finally {
+      setAiLoading(false);
+    }
+  };
 
   const executeSearch = (rawQuery: string) => {
     const q = rawQuery.trim().toLowerCase();
@@ -143,158 +168,104 @@ export default function SearchSection({ onNavClick }: SearchSectionProps) {
             onChange={(e) => setQuery(e.target.value)}
             placeholder={
               lang === 'sw'
-                ? 'Tafuta maazimio, notisi, mitihani, kazi, au uliza Mwalimu AI. Jaribu "Grade 8 Sayansi" au "Kikokotoo cha KCSE"'
-                : 'Search schemes, notes, exams, jobs, calculators or ask Mwalimu AI. Try “Grade 8 Science” or “KCSE calculator”'
+                ? 'Tafuta maazimio, notisi, mitihani, kazi, au uliza Mwalimu AI...'
+                : 'Search schemes, notes, exams, jobs, calculators or ask Mwalimu AI...'
             }
             aria-label={lang === 'sw' ? 'Tafuta kwenye wavuti' : 'Search the site'}
           />
+          <div style={{ display: 'flex', gap: '0.45rem' }}>
+            <button type="submit" className="btn b1 sb-btn" style={{ flex: 1 }}>
+              {lang === 'sw' ? 'Tafuta' : 'Search'}
+            </button>
+            <button
+              type="button"
+              className="btn b2 sb-btn"
+              onClick={() => askAI(query)}
+              disabled={aiLoading || !query.trim()}
+              style={{ whiteSpace: 'nowrap' }}
+            >
+              {aiLoading ? '…' : lang === 'sw' ? 'Uliza AI' : 'Ask AI'}
+            </button>
+          </div>
         </form>
+
+        {aiResult && (
+          <div className="card" style={{ marginBottom: '1.2rem', borderColor: 'rgba(244, 162, 97, 0.45)', background: 'rgba(18, 44, 20, 0.92)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.45rem' }}>
+              <span className="tag">Mwalimu AI Answer</span>
+              <button
+                type="button"
+                onClick={() => setAiResult(null)}
+                style={{ background: 'none', border: 0, color: '#d1dcd2', cursor: 'pointer', fontSize: '1.1rem' }}
+                aria-label="Close AI answer"
+              >
+                ×
+              </button>
+            </div>
+            <p style={{ color: '#fff', lineHeight: 1.6, marginBottom: aiResult.suggestedRoutes.length ? '0.8rem' : 0 }}>
+              {aiResult.answer}
+            </p>
+            {aiResult.suggestedRoutes.length > 0 && (
+              <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                {aiResult.suggestedRoutes.map((r, i) => (
+                  <Link key={i} href={r.href} className="gb" style={{ margin: 0, textDecoration: 'none' }}>
+                    {r.label} →
+                  </Link>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Shortcuts Section */}
         <div style={{ marginTop: '0.8rem' }}>
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            flexWrap: 'wrap',
-            gap: '0.5rem',
-            marginBottom: '0.8rem',
-          }}>
-            <span style={{
-              color: '#d1dcd2',
-              fontSize: '0.86rem',
-              fontWeight: 700,
-              letterSpacing: '0.04em',
-              textTransform: 'uppercase',
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '0.35rem'
-            }}>
+          <div className="shortcut-head">
+            <span className="shortcut-kicker">
               ⚡ {lang === 'sw' ? 'Njia za Mkato' : 'Quick Shortcuts'}
             </span>
-            <span style={{ color: '#a0b0a2', fontSize: '0.82rem' }}>
+            <span className="shortcut-sub">
               {lang === 'sw' ? 'Fikia huduma na zana maarufu moja kwa moja' : 'Jump straight to popular tools & services'}
             </span>
           </div>
 
           {/* Grid of Shortcuts */}
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-            gap: '0.75rem',
-          }}>
+          <div className="shortcut-grid">
             {SHORTCUTS_DATA.map((item, idx) => {
               const info = lang === 'sw' ? item.sw : item.en;
               return (
                 <Link
                   key={idx}
                   href={item.href}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '0.75rem',
-                    padding: '0.75rem 1rem',
-                    minHeight: '48px',
-                    borderRadius: '12px',
-                    background: item.highlight ? 'rgba(244, 162, 97, 0.16)' : 'rgba(255, 255, 255, 0.1)',
-                    border: item.highlight ? '1px solid rgba(244, 162, 97, 0.45)' : '1px solid rgba(255, 255, 255, 0.2)',
-                    color: '#ffffff',
-                    textDecoration: 'none',
-                    transition: 'all 0.18s ease',
-                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.borderColor = '#f4a261';
-                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.18)';
-                    e.currentTarget.style.transform = 'translateY(-2px)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.borderColor = item.highlight ? 'rgba(244, 162, 97, 0.45)' : 'rgba(255, 255, 255, 0.2)';
-                    e.currentTarget.style.background = item.highlight ? 'rgba(244, 162, 97, 0.16)' : 'rgba(255, 255, 255, 0.1)';
-                    e.currentTarget.style.transform = 'translateY(0)';
-                  }}
+                  className={`shortcut-card ${item.highlight ? 'shortcut-card-hl' : ''}`}
                 >
-                  <div style={{
-                    width: '34px',
-                    height: '34px',
-                    borderRadius: '8px',
-                    background: 'rgba(0, 0, 0, 0.25)',
-                    display: 'grid',
-                    placeItems: 'center',
-                    flexShrink: 0
-                  }}>
+                  <div className="shortcut-icon">
                     {item.icon}
                   </div>
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{
-                      fontSize: '0.88rem',
-                      fontWeight: 700,
-                      color: item.highlight ? '#ffd166' : '#ffffff',
-                      whiteSpace: 'nowrap',
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                      lineHeight: 1.2
-                    }}>
+                  <div className="shortcut-text">
+                    <div className="shortcut-title">
                       {info.label}
                     </div>
-                    <div style={{
-                      fontSize: '0.74rem',
-                      color: '#d1dcd2',
-                      marginTop: '0.15rem',
-                      whiteSpace: 'nowrap',
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis'
-                    }}>
+                    <div className="shortcut-badge">
                       {info.badge}
                     </div>
                   </div>
-                  <ArrowRight size={14} color="#d1dcd2" style={{ flexShrink: 0 }} />
+                  <ArrowRight size={14} className="shortcut-arrow" />
                 </Link>
               );
             })}
           </div>
 
           {/* Popular Search Suggestions Chips */}
-          <div style={{
-            marginTop: '1.2rem',
-            paddingTop: '0.9rem',
-            borderTop: '1px solid rgba(255, 255, 255, 0.12)',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.5rem',
-            flexWrap: 'wrap'
-          }}>
-            <span style={{ fontSize: '0.8rem', color: '#a0b0a2', fontWeight: 600 }}>
+          <div className="popular-queries">
+            <span className="pq-label">
               {lang === 'sw' ? 'Mifano ya utafutaji:' : 'Try searching:'}
             </span>
             {POPULAR_QUERIES.map((pq, pIdx) => (
               <button
                 key={pIdx}
                 type="button"
+                className="pq-chip"
                 onClick={() => handleSuggestionClick(pq)}
-                style={{
-                  background: 'rgba(255, 255, 255, 0.08)',
-                  border: '1px solid rgba(255, 255, 255, 0.2)',
-                  borderRadius: '50px',
-                  color: '#ffffff',
-                  fontSize: '0.78rem',
-                  fontWeight: 600,
-                  padding: '0.35rem 0.75rem',
-                  minHeight: '34px',
-                  cursor: 'pointer',
-                  fontFamily: 'inherit',
-                  transition: 'all 0.15s ease'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.borderColor = '#f4a261';
-                  e.currentTarget.style.color = '#f4a261';
-                  e.currentTarget.style.background = 'rgba(255, 255, 255, 0.15)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)';
-                  e.currentTarget.style.color = '#ffffff';
-                  e.currentTarget.style.background = 'rgba(255, 255, 255, 0.08)';
-                }}
               >
                 {pq}
               </button>

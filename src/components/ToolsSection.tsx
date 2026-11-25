@@ -69,6 +69,32 @@ export default function ToolsSection() {
   const [learnerLevel, setLearnerLevel] = useState('Meets expectation');
   const [generatedComment, setGeneratedComment] = useState('');
   const [copiedSingle, setCopiedSingle] = useState(false);
+  const [aiCommentLoading, setAiCommentLoading] = useState(false);
+
+  const generateAIComment = async () => {
+    setAiCommentLoading(true);
+    try {
+      const res = await fetch('/api/ai/assist', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          task: 'remark',
+          subject: `${learnerName}'s CBC Term Assessment`,
+          level: learnerLevel,
+          strengths: learnerStrength,
+        }),
+      });
+      const data = await res.json();
+      if (data.ok && data.text) {
+        setGeneratedComment(data.text);
+        setCopiedSingle(false);
+      }
+    } catch {
+      generateComment();
+    } finally {
+      setAiCommentLoading(false);
+    }
+  };
 
   const generateComment = () => {
     const templates: Record<string, string> = {
@@ -387,8 +413,11 @@ export default function ToolsSection() {
                 <option value="Approaches expectation">Approaches expectation</option>
                 <option value="Below expectation">Below expectation</option>
               </select>
-              <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.4rem' }}>
+              <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginTop: '0.4rem' }}>
                 <button className="gb" onClick={generateComment}>Generate</button>
+                <button type="button" className="gb o" style={{ color: 'var(--gl)', borderColor: 'var(--gl)' }} onClick={generateAIComment} disabled={aiCommentLoading}>
+                  {aiCommentLoading ? 'Writing…' : 'AI Remark'}
+                </button>
                 {generatedComment && (
                   <button className="gb o" onClick={copySingleComment}>
                     {copiedSingle ? 'Copied ✓' : 'Copy'}

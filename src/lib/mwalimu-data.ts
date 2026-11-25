@@ -582,7 +582,7 @@ function generateDocFile(filename: string, htmlBody: string) {
     <body>
       <div style="border-bottom: 2px solid #2c5f2d; padding-bottom: 6px; margin-bottom: 12px;">
         <span style="font-size: 14pt; font-weight: bold; color: #2c5f2d;">MWALIMU FAMILY</span>
-        <span style="float: right; color: #666; font-size: 9pt;">Kenya Education Learning Hub · mwalimufamily.co.ke</span>
+        <span style="float: right; color: #666; font-size: 9pt;">Kenya Education Learning Hub · mwalimufamily.com</span>
       </div>
       ${htmlBody}
       <br/><br/>

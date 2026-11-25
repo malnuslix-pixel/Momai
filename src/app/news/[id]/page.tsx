@@ -6,6 +6,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import FloatingWidgets from '@/components/FloatingWidgets';
 import { ARTICLES, Article } from '@/lib/mwalimu-data';
+import { SITE_URL } from '@/lib/seo';
 import {
   Calendar,
   Tag,
@@ -29,20 +30,33 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
   const article = ARTICLES[params.id];
   if (!article) return { title: 'Article Not Found' };
 
+  const ogUrl = `${SITE_URL}/api/og?${new URLSearchParams({
+    title: article.t,
+    tag: article.l,
+    desc: article.c[0] || 'Kenyan educational reporting and examination guidance.',
+  }).toString()}`;
+
   return {
     title: `${article.t} | Mwalimu Family News Desk`,
     description: article.c[0] || 'Kenyan educational reporting and examination guidance.',
     openGraph: {
       title: article.t,
       description: article.c[0],
-      url: `https://mwalimufamily.co.ke/news/${article.id}`,
+      url: `${SITE_URL}/news/${article.id}`,
       siteName: 'Mwalimu Family News Desk',
       locale: 'en_KE',
       type: 'article',
       publishedTime: article.d,
+      images: [{ url: ogUrl, width: 1200, height: 630, alt: article.t }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: article.t,
+      description: article.c[0],
+      images: [ogUrl],
     },
     alternates: {
-      canonical: `https://mwalimufamily.co.ke/news/${article.id}`,
+      canonical: `${SITE_URL}/news/${article.id}`,
     },
   };
 }
@@ -54,30 +68,53 @@ export default function ArticlePage({ params }: ArticlePageProps) {
     notFound();
   }
 
-  // Schema.org NewsArticle Structured Data
-  const jsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'NewsArticle',
-    headline: article.t,
-    datePublished: article.d,
-    dateModified: article.d,
-    author: {
-      '@type': 'Organization',
-      name: 'Mwalimu Family News Desk',
-      url: 'https://mwalimufamily.co.ke',
-    },
-    publisher: {
-      '@type': 'Organization',
-      name: 'Mwalimu Family',
-      url: 'https://mwalimufamily.co.ke',
-      logo: {
-        '@type': 'ImageObject',
-        url: 'https://mwalimufamily.co.ke/icons/apple-touch-icon.png',
+  // Schema.org NewsArticle + BreadcrumbList + optional FAQPage Structured Data
+  const jsonLd: Record<string, any>[] = [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'NewsArticle',
+      headline: article.t,
+      datePublished: article.d,
+      dateModified: article.d,
+      author: {
+        '@type': 'Organization',
+        name: 'Mwalimu Family News Desk',
+        url: SITE_URL,
       },
+      publisher: {
+        '@type': 'Organization',
+        name: 'Mwalimu Family',
+        url: SITE_URL,
+        logo: {
+          '@type': 'ImageObject',
+          url: `${SITE_URL}/icons/apple-touch-icon.png`,
+        },
+      },
+      description: article.c[0],
+      mainEntityOfPage: `${SITE_URL}/news/${article.id}`,
     },
-    description: article.c[0],
-    mainEntityOfPage: `https://mwalimufamily.co.ke/news/${article.id}`,
-  };
+    {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Home', item: `${SITE_URL}/` },
+        { '@type': 'ListItem', position: 2, name: 'News', item: `${SITE_URL}/news` },
+        { '@type': 'ListItem', position: 3, name: article.t, item: `${SITE_URL}/news/${article.id}` },
+      ],
+    },
+  ];
+
+  if (article.q && article.q.length > 0) {
+    jsonLd.push({
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: article.q.map(([question, answer]) => ({
+        '@type': 'Question',
+        name: question,
+        acceptedAnswer: { '@type': 'Answer', text: answer },
+      })),
+    });
+  }
 
   const relatedArticles = (article.r || [])
     .map((rid) => ARTICLES[rid])

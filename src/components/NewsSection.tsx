@@ -13,6 +13,31 @@ interface NewsSectionProps {
 export default function NewsSection({ onNavClick, activeStoryId, onSelectStory }: NewsSectionProps) {
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState<'all' | 'Education' | 'Explainer'>('all');
+  const [aiSummary, setAiSummary] = useState<string | null>(null);
+  const [aiSummarizing, setAiSummarizing] = useState(false);
+
+  const handleSummarizeStory = async (story: Article, lang: 'en' | 'sw') => {
+    setAiSummarizing(true);
+    try {
+      const res = await fetch('/api/ai/assist', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          task: 'summarize',
+          title: story.t,
+          content: story.c.join('\n\n'),
+          lang,
+        }),
+      });
+      const data = await res.json();
+      if (data.ok && data.text) {
+        setAiSummary(data.text);
+      }
+    } catch {
+    } finally {
+      setAiSummarizing(false);
+    }
+  };
 
   const storyList = Object.values(ARTICLES);
   const activeStory = activeStoryId ? ARTICLES[activeStoryId] : null;
@@ -43,6 +68,35 @@ export default function NewsSection({ onNavClick, activeStoryId, onSelectStory }
           <span className="lab">{activeStory.l}</span>
           By Mwalimu Family News Desk · Published {activeStory.d}
         </p>
+
+        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', margin: '0.8rem 0 1.2rem' }}>
+          <button
+            type="button"
+            className="gb"
+            onClick={() => handleSummarizeStory(activeStory, 'en')}
+            disabled={aiSummarizing}
+          >
+            {aiSummarizing ? 'Summarizing…' : 'AI Plain Summary'}
+          </button>
+          <button
+            type="button"
+            className="gb o"
+            style={{ color: 'var(--gl)', borderColor: 'var(--gl)' }}
+            onClick={() => handleSummarizeStory(activeStory, 'sw')}
+            disabled={aiSummarizing}
+          >
+            🇰🇪 Muhtasari (Kiswahili)
+          </button>
+        </div>
+
+        {aiSummary && (
+          <div className="note" style={{ marginTop: 0, marginBottom: '1.4rem' }}>
+            <strong style={{ color: 'var(--ac)', display: 'block', marginBottom: '0.35rem' }}>
+              AI Quick Summary
+            </strong>
+            <div style={{ whiteSpace: 'pre-wrap', lineHeight: 1.6 }}>{aiSummary}</div>
+          </div>
+        )}
 
         {activeStory.k && (
           <div className="warn">
@@ -124,6 +178,7 @@ export default function NewsSection({ onNavClick, activeStoryId, onSelectStory }
   return (
     <section className="sec" id="news" aria-labelledby="nh">
       <div className="w">
+        <span className="tag" style={{ marginBottom: '0.45rem' }}>Education Desk</span>
         <h2 className="sh" id="nh">Latest news</h2>
         <p className="sub">What’s happening in education and across Kenya. Browse by category.</p>
 

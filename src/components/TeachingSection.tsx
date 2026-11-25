@@ -28,6 +28,33 @@ export default function TeachingSection({ onNavClick }: TeachingSectionProps) {
   const [schemeSubject, setSchemeSubject] = useState('Mathematics');
   const [schemeTerm, setSchemeTerm] = useState('Term 1');
   const [schemeWeeks, setSchemeWeeks] = useState(13);
+  const [schemeStrand, setSchemeStrand] = useState('Algebraic Expressions & Linear Equations');
+  const [aiSchemeOutput, setAiSchemeOutput] = useState<string | null>(null);
+  const [aiSchemeLoading, setAiSchemeLoading] = useState(false);
+
+  const handleGenerateAIScheme = async () => {
+    setAiSchemeLoading(true);
+    try {
+      const res = await fetch('/api/ai/assist', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          task: 'scheme',
+          grade: schemeGrade,
+          subject: schemeSubject,
+          term: schemeTerm,
+          strand: schemeStrand,
+        }),
+      });
+      const data = await res.json();
+      if (data.ok && data.text) {
+        setAiSchemeOutput(data.text);
+      }
+    } catch {
+    } finally {
+      setAiSchemeLoading(false);
+    }
+  };
 
   const handleGenerateTimetable = () => {
     const classes = classesStr.split(',').map(c => c.trim()).filter(Boolean);
@@ -235,9 +262,33 @@ export default function TeachingSection({ onNavClick }: TeachingSectionProps) {
               onChange={(e) => setSchemeWeeks(Number(e.target.value))}
             />
 
-            <button className="gb" onClick={handleDownloadScheme} style={{ marginTop: '0.8rem' }}>
-              Download scheme (.doc)
-            </button>
+            <label htmlFor="sstrand">Strand / Topic (for AI Outline)</label>
+            <input
+              type="text"
+              id="sstrand"
+              value={schemeStrand}
+              onChange={(e) => setSchemeStrand(e.target.value)}
+              placeholder="e.g. Fractions, Cell Structure, Persuasive Writing"
+            />
+
+            <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginTop: '0.8rem' }}>
+              <button className="gb" onClick={handleDownloadScheme}>
+                Download scheme (.doc)
+              </button>
+              <button
+                type="button"
+                className="gb o"
+                onClick={handleGenerateAIScheme}
+                disabled={aiSchemeLoading}
+              >
+                {aiSchemeLoading ? 'Generating…' : 'Generate AI CBC Outline'}
+              </button>
+            </div>
+            {aiSchemeOutput && (
+              <div style={{ marginTop: '0.9rem', background: 'rgba(0,0,0,0.35)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '10px', padding: '0.9rem', whiteSpace: 'pre-wrap', fontSize: '0.88rem', lineHeight: 1.55, maxHeight: '280px', overflowY: 'auto' }}>
+                {aiSchemeOutput}
+              </div>
+            )}
             <p style={{ fontSize: '0.85rem', marginTop: '0.6rem', opacity: 0.85 }}>
               Includes standard 10-column CBC scheme layout ready to fill from KICD curriculum designs.
             </p>

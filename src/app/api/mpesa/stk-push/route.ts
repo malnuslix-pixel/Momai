@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ ok: false, error: 'Invalid plan selection' }, { status: 400 });
     }
 
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://mwalimufamily.co.ke';
+    const appUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_APP_URL || 'https://mwalimufamily.com';
     const callbackUrl = `${appUrl}/api/mpesa/callback`;
 
     const result = await initiateSTKPush({

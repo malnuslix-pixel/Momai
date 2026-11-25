@@ -125,21 +125,8 @@ export default function HomePage() {
         ) : (
           <>
             <Hero onNavClick={handleNavClick} />
-            <RoleChooser onNavClick={handleNavClick} />
             <SearchSection onNavClick={handleNavClick} />
-
-            {/* News Section */}
-            <NewsSection
-              onNavClick={handleNavClick}
-              activeStoryId={null}
-              onSelectStory={(id) => {
-                if (id) {
-                  window.location.hash = `#/${id}`;
-                  setActiveStoryId(id);
-                  window.scrollTo({ top: 0, behavior: 'smooth' });
-                }
-              }}
-            />
+            <RoleChooser onNavClick={handleNavClick} />
 
             {/* MAIN CORE HUBS & PORTALS DIRECT ACCESS */}
             <section className="sec alt" id="portals">
@@ -152,7 +139,7 @@ export default function HomePage() {
                   </p>
                 </div>
 
-                <div className="x2" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(270px, 1fr))', gap: '1.2rem' }}>
+                <div className="x2 x2-4">
                   <Link href="/learn" className="x2c">
                     <div className="hub-tag-icon"><BookOpen size={20} /></div>
                     <h3>Curriculum Library</h3>
@@ -243,6 +230,19 @@ export default function HomePage() {
                 </div>
               </div>
             </section>
+
+            {/* News Section */}
+            <NewsSection
+              onNavClick={handleNavClick}
+              activeStoryId={null}
+              onSelectStory={(id) => {
+                if (id) {
+                  window.location.hash = `#/${id}`;
+                  setActiveStoryId(id);
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+              }}
+            />
 
             {/* Educational YouTube Videos Section */}
             <VideosSection />

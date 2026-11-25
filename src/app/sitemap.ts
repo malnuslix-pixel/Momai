@@ -1,33 +1,38 @@
 import { MetadataRoute } from 'next';
 import { ARTICLES } from '@/lib/mwalimu-data';
+import { SITE_URL } from '@/lib/seo';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://mwalimufamily.co.ke';
   const now = new Date();
 
-  // Core Landing and Hub Pages
   const staticRoutes: MetadataRoute.Sitemap = [
-    { url: `${baseUrl}`, lastModified: now, changeFrequency: 'daily', priority: 1.0 },
-    { url: `${baseUrl}/news`, lastModified: now, changeFrequency: 'daily', priority: 0.9 },
-    { url: `${baseUrl}/learn`, lastModified: now, changeFrequency: 'weekly', priority: 0.9 },
-    { url: `${baseUrl}/tools`, lastModified: now, changeFrequency: 'weekly', priority: 0.9 },
-    { url: `${baseUrl}/exams`, lastModified: now, changeFrequency: 'daily', priority: 0.9 },
-    { url: `${baseUrl}/teach`, lastModified: now, changeFrequency: 'weekly', priority: 0.8 },
-    { url: `${baseUrl}/parents`, lastModified: now, changeFrequency: 'weekly', priority: 0.8 },
-    { url: `${baseUrl}/courses`, lastModified: now, changeFrequency: 'weekly', priority: 0.8 },
-    { url: `${baseUrl}/jobs`, lastModified: now, changeFrequency: 'daily', priority: 0.8 },
-    { url: `${baseUrl}/notices`, lastModified: now, changeFrequency: 'daily', priority: 0.8 },
-    { url: `${baseUrl}/pricing`, lastModified: now, changeFrequency: 'monthly', priority: 0.7 },
-    { url: `${baseUrl}/about`, lastModified: now, changeFrequency: 'monthly', priority: 0.6 },
-    { url: `${baseUrl}/privacy`, lastModified: now, changeFrequency: 'yearly', priority: 0.4 },
+    { url: `${SITE_URL}/`, lastModified: now, changeFrequency: 'daily', priority: 1.0 },
+    { url: `${SITE_URL}/news`, lastModified: now, changeFrequency: 'daily', priority: 0.95 },
+    { url: `${SITE_URL}/exams`, lastModified: now, changeFrequency: 'daily', priority: 0.95 },
+    { url: `${SITE_URL}/learn`, lastModified: now, changeFrequency: 'weekly', priority: 0.9 },
+    { url: `${SITE_URL}/tools`, lastModified: now, changeFrequency: 'weekly', priority: 0.9 },
+    { url: `${SITE_URL}/tutor`, lastModified: now, changeFrequency: 'weekly', priority: 0.9 },
+    { url: `${SITE_URL}/teach`, lastModified: now, changeFrequency: 'weekly', priority: 0.85 },
+    { url: `${SITE_URL}/parents`, lastModified: now, changeFrequency: 'weekly', priority: 0.85 },
+    { url: `${SITE_URL}/notices`, lastModified: now, changeFrequency: 'daily', priority: 0.85 },
+    { url: `${SITE_URL}/jobs`, lastModified: now, changeFrequency: 'daily', priority: 0.85 },
+    { url: `${SITE_URL}/tutoring`, lastModified: now, changeFrequency: 'weekly', priority: 0.8 },
+    { url: `${SITE_URL}/courses`, lastModified: now, changeFrequency: 'weekly', priority: 0.8 },
+    { url: `${SITE_URL}/games`, lastModified: now, changeFrequency: 'weekly', priority: 0.75 },
+    { url: `${SITE_URL}/leaderboard`, lastModified: now, changeFrequency: 'daily', priority: 0.75 },
+    { url: `${SITE_URL}/videos`, lastModified: now, changeFrequency: 'weekly', priority: 0.75 },
+    { url: `${SITE_URL}/help`, lastModified: now, changeFrequency: 'monthly', priority: 0.7 },
+    { url: `${SITE_URL}/pricing`, lastModified: now, changeFrequency: 'monthly', priority: 0.7 },
+    { url: `${SITE_URL}/advertise`, lastModified: now, changeFrequency: 'monthly', priority: 0.65 },
+    { url: `${SITE_URL}/about`, lastModified: now, changeFrequency: 'monthly', priority: 0.6 },
+    { url: `${SITE_URL}/privacy`, lastModified: now, changeFrequency: 'yearly', priority: 0.4 },
   ];
 
-  // Dynamic News Articles
   const articleRoutes: MetadataRoute.Sitemap = Object.keys(ARTICLES).map((id) => ({
-    url: `${baseUrl}/news/${id}`,
+    url: `${SITE_URL}/news/${id}`,
     lastModified: now,
     changeFrequency: 'weekly',
-    priority: 0.8,
+    priority: 0.85,
   }));
 
   return [...staticRoutes, ...articleRoutes];

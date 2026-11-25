@@ -61,6 +61,15 @@ export default function AdminPage() {
   const [bannerText, setBannerText] = useState(SEED_CONFIG.banner.text);
   const [bannerActive, setBannerActive] = useState(SEED_CONFIG.banner.active);
 
+  // AI Dashboard State
+  const [aiUploadText, setAiUploadText] = useState('');
+  const [aiUploadLoading, setAiUploadLoading] = useState(false);
+  const [aiDraftLoading, setAiDraftLoading] = useState(false);
+  const [aiBrief, setAiBrief] = useState<string | null>(null);
+  const [aiBriefLoading, setAiBriefLoading] = useState(false);
+  const [aiScreenings, setAiScreenings] = useState<Record<string, { riskLevel: string; summary: string; suggestedChecks: [boolean, boolean, boolean]; recommendation: string }>>({});
+  const [aiScreeningRef, setAiScreeningRef] = useState<string | null>(null);
+
   // Sync with hash if present
   useEffect(() => {
     // Verify server-side session via HTTP-only cookie
@@ -338,6 +347,165 @@ export default function AdminPage() {
     } catch {}
   };
 
+  // AI Dashboard Handlers
+  const runAIUploadExtract = async (textToExtract?: string, fileName?: string) => {
+    const payloadText = (textToExtract ?? aiUploadText).trim();
+    if (!payloadText) {
+      showToast('Upload a file or paste circular/job text first.');
+      return;
+    }
+    setAiUploadLoading(true);
+    try {
+      const res = await fetch('/api/admin/ai', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'extract_upload', text: payloadText, fileName }),
+      });
+      const data = await res.json();
+      if (data.ok && data.item) {
+        setNewItem((prev) => ({
+          ...prev,
+          k: data.item.k || prev.k,
+          t: data.item.t || prev.t,
+          who: data.item.who || prev.who,
+          loc: data.item.loc || prev.loc,
+          cat: data.item.cat || prev.cat,
+          body: data.item.body || prev.body,
+          exp: data.item.exp || prev.exp,
+        }));
+        showToast(`AI extracted fields (${data.provider}). Review & publish!`);
+      } else {
+        showToast(data.error || 'AI extraction failed.');
+      }
+    } catch {
+      showToast('Network error during AI extraction.');
+    } finally {
+      setAiUploadLoading(false);
+    }
+  };
+
+  const handleAIFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    try {
+      const content = await file.text();
+      setAiUploadText(content.slice(0, 6000));
+      await runAIUploadExtract(content.slice(0, 6000), file.name);
+    } catch {
+      showToast('Could not read file text. Paste the circular text instead.');
+    }
+  };
+
+  const handleAIDraftItem = async (lang: 'en' | 'sw' = 'en') => {
+    setAiDraftLoading(true);
+    try {
+      const res = await fetch('/api/admin/ai', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'draft_item', ...newItem, lang }),
+      });
+      const data = await res.json();
+      if (data.ok && data.text) {
+        setNewItem((prev) => ({ ...prev, body: data.text }));
+        showToast(`AI drafted listing (${lang.toUpperCase()}).`);
+      }
+    } catch {
+      showToast('Could not draft with AI.');
+    } finally {
+      setAiDraftLoading(false);
+    }
+  };
+
+  const handleAIScreenSubmission = async (sub: Submission) => {
+    setAiScreeningRef(sub.ref);
+    try {
+      const res = await fetch('/api/admin/ai', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'screen_submission', submission: sub }),
+      });
+      const data = await res.json();
+      if (data.ok && data.screening) {
+        setAiScreenings((prev) => ({ ...prev, [sub.ref]: data.screening }));
+        showToast(`AI screened ${sub.ref}: ${data.screening.riskLevel}`);
+      }
+    } catch {
+      showToast('AI screening failed.');
+    } finally {
+      setAiScreeningRef(null);
+    }
+  };
+
+  const handleApplyAIChecks = async (ref: string, suggested: [boolean, boolean, boolean]) => {
+    setSubmissions((prev) =>
+      prev.map((s) => (s.ref === ref ? { ...s, checks: [...suggested] as [boolean, boolean, boolean] } : s))
+    );
+    try {
+      await Promise.all(
+        suggested.map((val, idx) =>
+          fetch('/api/submissions', {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ ref, checkIndex: idx, checkValue: val }),
+          })
+        )
+      );
+      showToast(`Applied AI suggested checks to ${ref}.`);
+    } catch {}
+  };
+
+  const handleAIOpsBrief = async () => {
+    setAiBriefLoading(true);
+    try {
+      const expiredCount = items.filter(
+        (i) => i.st === 'published' && i.exp && new Date(i.exp + 'T00:00:00Z') < new Date()
+      ).length;
+      const res = await fetch('/api/admin/ai', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'ops_brief',
+          stats: {
+            waitingCount: waitingSubs.length,
+            lateCount: lateWaiting.length,
+            publishedCount: items.filter((i) => i.st === 'published').length,
+            expiredCount,
+            recentAudit: auditLogs.slice(0, 5),
+          },
+        }),
+      });
+      const data = await res.json();
+      if (data.ok && data.text) {
+        setAiBrief(data.text);
+      }
+    } catch {
+      showToast('Failed to generate AI editorial brief.');
+    } finally {
+      setAiBriefLoading(false);
+    }
+  };
+
+  const handleAIDraftBanner = async () => {
+    try {
+      const res = await fetch('/api/admin/ai', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'draft_item',
+          k: 'notice',
+          t: 'Urgent Public Advisory Banner',
+          notes: bannerText || 'Official KNEC exam dates and results scam warning',
+          lang: 'en',
+        }),
+      });
+      const data = await res.json();
+      if (data.ok && data.text) {
+        setBannerText(data.text);
+        showToast('AI polished emergency banner.');
+      }
+    } catch {}
+  };
+
   const handleVerifyAllChecks = async () => {
     const today = new Date().toISOString().slice(0, 10);
     setChecks((prev) => prev.map((c) => ({ ...c, last: today })));
@@ -465,7 +633,7 @@ export default function AdminPage() {
                 autoComplete="username"
                 value={authEmail}
                 onChange={(e) => setAuthEmail(e.target.value)}
-                placeholder="admin@mwalimufamily.co.ke"
+                placeholder="admin@mwalimufamily.com"
                 style={{
                   width: '100%',
                   padding: '0.75rem 0.9rem',
@@ -753,6 +921,24 @@ export default function AdminPage() {
 
             {/* Recent Activity */}
             <div className="card">
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '0.6rem' }}>
+                <h2 style={{ margin: 0 }}>AI Editorial &amp; Operations Brief</h2>
+                <button className="b s" onClick={handleAIOpsBrief} disabled={aiBriefLoading}>
+                  {aiBriefLoading ? 'Analyzing…' : 'Generate AI Brief'}
+                </button>
+              </div>
+              {aiBrief ? (
+                <div style={{ background: 'var(--chip)', padding: '0.9rem', borderRadius: '8px', whiteSpace: 'pre-wrap', lineHeight: 1.6, fontSize: '0.92rem' }}>
+                  {aiBrief}
+                </div>
+              ) : (
+                <p className="mu" style={{ margin: 0 }}>
+                  Click &ldquo;Generate AI Brief&rdquo; to summarize inbox SLA status, expiring notices, and editorial priorities.
+                </p>
+              )}
+            </div>
+
+            <div className="card">
               <h2>Recent activity</h2>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                 {auditLogs.slice(0, 6).map((log, i) => (
@@ -837,6 +1023,37 @@ export default function AdminPage() {
               </div>
             </div>
 
+            {/* AI Document Upload & Circular Extractor */}
+            <div className="card" style={{ borderLeft: '4px solid #f4a261' }}>
+              <h2>AI Document Upload &amp; Circular Parser</h2>
+              <p className="mu" style={{ marginBottom: '0.8rem' }}>
+                Upload a text/markdown/CSV circular or paste a school job advert / MoE memo. AI will automatically extract the fields below.
+              </p>
+              <div style={{ display: 'flex', gap: '0.6rem', flexWrap: 'wrap', alignItems: 'center', marginBottom: '0.7rem' }}>
+                <input
+                  type="file"
+                  accept=".txt,.md,.csv,.json,.doc,.html"
+                  onChange={handleAIFileSelect}
+                  aria-label="Upload document for AI extraction"
+                />
+                <button
+                  type="button"
+                  className="b s"
+                  onClick={() => runAIUploadExtract()}
+                  disabled={aiUploadLoading}
+                >
+                  {aiUploadLoading ? 'Extracting…' : 'Extract Fields with AI'}
+                </button>
+              </div>
+              <textarea
+                rows={3}
+                value={aiUploadText}
+                onChange={(e) => setAiUploadText(e.target.value)}
+                placeholder="Or paste circular, memo, or job vacancy text here..."
+                style={{ width: '100%' }}
+              />
+            </div>
+
             {/* Add Item Form */}
             <div className="card">
               <h2>Add an item</h2>
@@ -906,7 +1123,27 @@ export default function AdminPage() {
                 </div>
 
                 <div style={{ marginBottom: '0.8rem' }}>
-                  <label>Description / Listing Details</label>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.4rem', marginBottom: '0.35rem' }}>
+                    <label style={{ margin: 0 }}>Description / Listing Details</label>
+                    <div style={{ display: 'flex', gap: '0.4rem' }}>
+                      <button
+                        type="button"
+                        className="b s"
+                        onClick={() => handleAIDraftItem('en')}
+                        disabled={aiDraftLoading}
+                      >
+                        {aiDraftLoading ? 'Drafting…' : 'Draft / Polish EN'}
+                      </button>
+                      <button
+                        type="button"
+                        className="b s"
+                        onClick={() => handleAIDraftItem('sw')}
+                        disabled={aiDraftLoading}
+                      >
+                        🌍 Polish SW
+                      </button>
+                    </div>
+                  </div>
                   <textarea
                     rows={3}
                     value={newItem.body}
@@ -1048,7 +1285,7 @@ export default function AdminPage() {
                         ))}
                       </div>
 
-                      <div style={{ marginTop: '0.8rem', display: 'flex', gap: '0.5rem' }}>
+                      <div style={{ marginTop: '0.8rem', display: 'flex', gap: '0.5rem', flexWrap: 'wrap', alignItems: 'center' }}>
                         <button
                           className="b"
                           disabled={!allChecked}
@@ -1062,7 +1299,31 @@ export default function AdminPage() {
                         >
                           Reject
                         </button>
+                        <button
+                          type="button"
+                          className="b s"
+                          onClick={() => handleAIScreenSubmission(sub)}
+                          disabled={aiScreeningRef === sub.ref}
+                        >
+                          {aiScreeningRef === sub.ref ? 'Screening…' : '🤖 AI Pre-Screen'}
+                        </button>
                       </div>
+
+                      {aiScreenings[sub.ref] && (
+                        <div style={{ marginTop: '0.75rem', padding: '0.75rem', borderRadius: '8px', background: 'var(--chip)', borderLeft: `4px solid ${aiScreenings[sub.ref].riskLevel === 'High Risk' ? 'var(--bad)' : aiScreenings[sub.ref].riskLevel === 'Low Risk' ? 'var(--ok)' : '#f4a261'}`, fontSize: '0.88rem' }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.4rem' }}>
+                            <b>AI Assessment: {aiScreenings[sub.ref].riskLevel} ({aiScreenings[sub.ref].recommendation})</b>
+                            <button
+                              type="button"
+                              className="b s"
+                              onClick={() => handleApplyAIChecks(sub.ref, aiScreenings[sub.ref].suggestedChecks)}
+                            >
+                              Apply Suggested Checks
+                            </button>
+                          </div>
+                          <p className="mu" style={{ margin: '0.35rem 0 0' }}>{aiScreenings[sub.ref].summary}</p>
+                        </div>
+                      )}
                     </>
                   )}
                 </div>
@@ -1400,9 +1661,14 @@ export default function AdminPage() {
                   />
                   <b>Show banner on public site</b>
                 </label>
-                <button className="b" onClick={handleSaveBanner}>
-                  Save Banner
-                </button>
+                <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                  <button type="button" className="b s" onClick={handleAIDraftBanner}>
+                    Polish with AI
+                  </button>
+                  <button className="b" onClick={handleSaveBanner}>
+                    Save Banner
+                  </button>
+                </div>
               </div>
 
               {bannerActive && (

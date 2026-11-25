@@ -10,41 +10,26 @@ export const ADMIN_COOKIE_NAME = 'mf_admin_session';
  * Strictly uses server-side environment variables to prevent client exposure.
  */
 export function getAdminSecretKey(): string {
-  const secret =
-    process.env.ADMIN_SECRET_KEY ||
-    process.env.NEXT_PUBLIC_ADMIN_SECRET_KEY ||
-    'Mwalimu@2025';
-  return secret.trim();
+  return (process.env.ADMIN_SECRET_KEY || '').trim();
 }
 
 /**
- * Validates a user-provided password against server-configured admin secrets.
- * Supports primary configured secret, standard fallback keys, and constant-time comparison.
+ * Validates a user-provided password against the server-configured ADMIN_SECRET_KEY
+ * using constant-time comparison. Fails closed if ADMIN_SECRET_KEY is not set.
  */
 export function verifyAdminPassword(candidate: string): boolean {
   if (!candidate || typeof candidate !== 'string') return false;
+  const secret = getAdminSecretKey();
+  if (!secret) return false;
+
   const trimmedCandidate = candidate.trim();
+  if (trimmedCandidate.length !== secret.length) return false;
 
-  // Candidate valid keys list
-  const validKeys: string[] = [
-    process.env.ADMIN_SECRET_KEY,
-    process.env.NEXT_PUBLIC_ADMIN_SECRET_KEY,
-    'Mwalimu@2025',
-    'Mwalimu@2026!',
-    'Mwalimu@2026',
-    process.env.SUPABASE_SERVICE_ROLE_KEY,
-  ]
-    .filter((k): k is string => Boolean(k && typeof k === 'string'))
-    .map((k) => k.trim());
-
-  return validKeys.some((validSecret) => {
-    if (trimmedCandidate.length !== validSecret.length) return false;
-    let mismatch = 0;
-    for (let i = 0; i < trimmedCandidate.length; i++) {
-      mismatch |= trimmedCandidate.charCodeAt(i) ^ validSecret.charCodeAt(i);
-    }
-    return mismatch === 0;
-  });
+  let mismatch = 0;
+  for (let i = 0; i < trimmedCandidate.length; i++) {
+    mismatch |= trimmedCandidate.charCodeAt(i) ^ secret.charCodeAt(i);
+  }
+  return mismatch === 0;
 }
 
 /**
@@ -53,6 +38,9 @@ export function verifyAdminPassword(candidate: string): boolean {
  */
 export async function createAdminSessionToken(durationSeconds = 86400): Promise<string> {
   const secret = getAdminSecretKey();
+  if (!secret) {
+    throw new Error('ADMIN_SECRET_KEY is not configured');
+  }
   const expiresAt = Date.now() + durationSeconds * 1000;
   const payload = `mf_admin:${expiresAt}`;
   
@@ -96,6 +84,7 @@ export async function verifyAdminSessionToken(token: string | undefined | null):
 
   try {
     const secret = getAdminSecretKey();
+    if (!secret) return false;
     const payload = `${prefix}:${expStr}`;
     const encoder = new TextEncoder();
     const keyData = encoder.encode(secret);

@@ -5,7 +5,7 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { FeedItem, Submission, Subscriber, SiteFlags, SiteConfig, AuditLogEntry, VerificationCheck } from './types';
 
-const DEFAULT_SUPABASE_URL = 'https://mcavjbrvtqxokecpiqln.supabase.co';
+const DEFAULT_SUPABASE_URL = 'https://placeholder.supabase.co';
 const DUMMY_BUILD_KEY = 'placeholder-anon-key-build-only';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || DEFAULT_SUPABASE_URL;
@@ -20,7 +20,8 @@ const supabaseServiceKey =
 export const isSupabaseConfigured = Boolean(
   supabaseUrl &&
   supabaseAnonKey &&
-  !supabaseUrl.includes('your-project')
+  !supabaseUrl.includes('your-project') &&
+  !supabaseUrl.includes('placeholder')
 );
 
 // Public client for client-side and read operations (safe dummy fallback prevents static collection build crash)

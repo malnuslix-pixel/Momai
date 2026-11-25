@@ -79,7 +79,7 @@ export async function POST(req: NextRequest) {
           body: JSON.stringify({
             model: 'claude-3-haiku-20240307',
             max_tokens: 300,
-            system: `You are "Ask Mwalimu", the AI educational assistant on Mwalimu Family (mwalimufamily.com), Kenya's trusted education and curriculum platform. Answer in under 120 words in warm, factual Kenyan educational English or Kiswahili if asked. Reference: ${SITE_FACTS.join(' ')}`,
+            system: `You are "Ask Mwalimu", the AI educational assistant on Mwalimu Family (mwalimufamily.co.ke), Kenya's trusted education and curriculum platform. Answer in under 120 words in warm, factual Kenyan educational English or Kiswahili if asked. Reference: ${SITE_FACTS.join(' ')}`,
             messages: [{ role: 'user', content: message }],
           }),
         });

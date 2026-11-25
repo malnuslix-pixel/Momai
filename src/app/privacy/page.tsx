@@ -131,7 +131,7 @@ export default function PrivacyPage() {
             </tr>
           </tbody>
         </table>
-        <p>Please do not enter exam index numbers, ID numbers or learners' names in Ask Mwalimu or in free-text fields.</p>
+        <p>Please do not enter exam index numbers, ID numbers or learners&apos; names in Ask Mwalimu or in free-text fields.</p>
 
         <h2>Who we share it with</h2>
         <p>

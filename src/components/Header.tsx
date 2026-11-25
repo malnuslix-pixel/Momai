@@ -13,20 +13,8 @@ export default function Header({ onNavClick, activeNav = 'home' }: HeaderProps) 
   const [menuOpen, setMenuOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isLite, setIsLite] = useState(false);
   const [fontSizeIdx, setFontSizeIdx] = useState(0);
   const [lang, setLang] = useLanguage();
-
-  // Sync Lite mode from localStorage / saveData on mount
-  useEffect(() => {
-    try {
-      const saved = localStorage.getItem('lite');
-      const isDataSaver = !!(navigator as any).connection?.saveData;
-      const on = saved === '1' || (saved === null && isDataSaver);
-      setIsLite(on);
-      document.documentElement.classList.toggle('lite', on);
-    } catch {}
-  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -47,15 +35,6 @@ export default function Header({ onNavClick, activeNav = 'home' }: HeaderProps) 
     document.addEventListener('click', handleOutsideClick);
     return () => document.removeEventListener('click', handleOutsideClick);
   }, []);
-
-  const toggleLite = () => {
-    const next = !isLite;
-    setIsLite(next);
-    document.documentElement.classList.toggle('lite', next);
-    try {
-      localStorage.setItem('lite', next ? '1' : '0');
-    } catch {}
-  };
 
   const cycleFontSize = () => {
     const sizes = [16, 18, 20];
@@ -93,9 +72,6 @@ export default function Header({ onNavClick, activeNav = 'home' }: HeaderProps) 
         </Link>
 
         <div className="ctl">
-          <button onClick={toggleLite} title="Low-data mode: no heavy animation">
-            {isLite ? 'Full' : 'Lite'}
-          </button>
           <button onClick={cycleFontSize} aria-label="Change text size">
             A+
           </button>

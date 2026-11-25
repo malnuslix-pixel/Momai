@@ -8,33 +8,19 @@ export default function ServiceWorkerManager() {
       return;
     }
 
-    const isLocalhost = Boolean(
-      window.location.hostname === 'localhost' ||
-      window.location.hostname === '127.0.0.1' ||
-      window.location.hostname === '[::1]' ||
-      window.location.port !== ''
-    );
-
-    if (isLocalhost) {
-      // In local development: Unregister any service workers to prevent stale chunk caching
-      navigator.serviceWorker.getRegistrations().then((registrations) => {
-        for (const registration of registrations) {
-          registration.unregister();
-        }
-      }).catch(() => {});
-
-      if ('caches' in window) {
-        caches.keys().then((keys) => {
-          for (const key of keys) {
-            caches.delete(key);
-          }
-        }).catch(() => {});
+    // Permanently unregister any registered service workers across all scopes
+    navigator.serviceWorker.getRegistrations().then((registrations) => {
+      for (const registration of registrations) {
+        registration.unregister();
       }
-    } else if (process.env.NODE_ENV === 'production') {
-      // In production: Register PWA service worker with automatic update check
-      navigator.serviceWorker.register('/sw.js').then((registration) => {
-        // Check for updates on page load
-        registration.update().catch(() => {});
+    }).catch(() => {});
+
+    // Clean up any remaining cache storage
+    if ('caches' in window) {
+      caches.keys().then((keys) => {
+        for (const key of keys) {
+          caches.delete(key);
+        }
       }).catch(() => {});
     }
   }, []);

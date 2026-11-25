@@ -28,7 +28,7 @@ export default function Hero({ onNavClick }: HeroProps) {
             const p = Math.min(1, Math.max(0, -r.top / maxScroll));
             hero.style.setProperty('--p', p.toFixed(3));
             // Seamless proportional distribution across the 3 scenes without a dead scroll zone
-            const idx = p < 0.36 ? 0 : p < 0.72 ? 1 : 2;
+            const idx = p < 0.34 ? 0 : p < 0.68 ? 1 : 2;
             setActiveScene(idx);
           }
         }
@@ -48,8 +48,36 @@ export default function Hero({ onNavClick }: HeroProps) {
   return (
     <section className="hero" id="home" ref={heroRef} aria-label="Introduction">
       <div className="stage">
-        {/* Ambient atmospheric SVG elements */}
-        <div className="sun" aria-hidden="true" />
+        {/* Ambient atmospheric Sun SVG & orbital horizon ring */}
+        <div className="sun" aria-hidden="true">
+          <svg viewBox="0 0 400 400" className="sun-svg" focusable="false">
+            <defs>
+              <radialGradient id="mf-sun-grad" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stopColor="#ffd166" stopOpacity="0.48" />
+                <stop offset="55%" stopColor="#f4a261" stopOpacity="0.28" />
+                <stop offset="100%" stopColor="#f4a261" stopOpacity="0" />
+              </radialGradient>
+            </defs>
+            <circle cx="200" cy="200" r="190" fill="url(#mf-sun-grad)" />
+            <circle
+              cx="200"
+              cy="200"
+              r="168"
+              fill="none"
+              stroke="rgba(244, 162, 97, 0.38)"
+              strokeWidth="2"
+              strokeDasharray="8 16"
+            />
+            <circle
+              cx="200"
+              cy="200"
+              r="122"
+              fill="rgba(244, 162, 97, 0.18)"
+              stroke="rgba(255, 209, 102, 0.36)"
+              strokeWidth="1.5"
+            />
+          </svg>
+        </div>
         <div className="ring" aria-hidden="true" />
 
         <div className="w" style={{ position: 'relative', width: '100%' }}>

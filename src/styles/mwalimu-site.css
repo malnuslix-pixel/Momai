@@ -978,9 +978,9 @@ nav a.cta {
   color: #22c55e;
 }
 
-/* 3. HERO — MOBILE-FIRST 3-SCENE CINEMATIC SCROLLING (ZERO EMPTY VOIDS) */
+/* 3. HERO — MOBILE-FIRST 3-SCENE CINEMATIC SCROLLING (INITIAL HORIZON SUNRISE) */
 .hero {
-  height: 145vh;
+  height: 195vh;
   background: #1a3d1b;
   position: relative;
 }
@@ -991,7 +991,7 @@ nav a.cta {
   height: 100vh;
   height: 100dvh;
   overflow: hidden;
-  background: linear-gradient(160deg, #122c14 0%, #1e4920 55%, #377039 100%);
+  background: linear-gradient(160deg, #1a3d1b, #2c5f2d 70%, #4a8c4b);
   color: #fff;
   display: grid;
   grid-template-rows: 1fr auto;
@@ -1022,27 +1022,39 @@ nav a.cta {
 .sun {
   position: absolute;
   left: 50%;
-  top: 44%;
-  width: 82vmin;
-  height: 82vmin;
+  bottom: -38vmin;
+  top: auto;
+  width: 78vmin;
+  height: 78vmin;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(244, 162, 97, 0.38) 0%, rgba(244, 162, 97, 0.12) 58%, transparent 100%);
-  transform: translate(-50%, calc(-50% + var(--p, 0) * -18vmin)) scale(calc(1 + var(--p, 0) * 0.38));
+  background: rgba(244, 162, 97, 0.3);
+  transform: translate(-50%, calc(var(--p, 0) * -46vmin)) scale(calc(1 + var(--p, 0) * 0.5));
   pointer-events: none;
+  will-change: transform;
+  z-index: 0;
+}
+
+.sun-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  transform: rotate(calc(var(--p, 0) * 45deg));
   will-change: transform;
 }
 
 .ring {
   position: absolute;
   left: 50%;
-  top: 44%;
+  bottom: -52vmin;
+  top: auto;
   width: 104vmin;
   height: 104vmin;
   border-radius: 50%;
-  border: 2px solid rgba(244, 162, 97, 0.26);
-  transform: translate(-50%, calc(-50% + var(--p, 0) * -11vmin)) scale(calc(1 + var(--p, 0) * 0.16));
+  border: 2px solid rgba(244, 162, 97, 0.35);
+  transform: translate(-50%, calc(var(--p, 0) * -24vmin)) scale(calc(1 + var(--p, 0) * 0.08));
   pointer-events: none;
   will-change: transform;
+  z-index: 0;
 }
 
 .scenes {
@@ -1052,6 +1064,7 @@ nav a.cta {
   height: 100%;
   min-width: 0;
   min-height: 0;
+  z-index: 2;
 }
 
 .scene {
@@ -1063,8 +1076,8 @@ nav a.cta {
   align-items: flex-start;
   opacity: 0;
   visibility: hidden;
-  transform: translateY(20px);
-  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.4s;
+  transform: translateY(24px);
+  transition: opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1), transform 0.55s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.55s;
   pointer-events: none;
   padding: 0.5rem 0;
   box-sizing: border-box;
@@ -3617,9 +3630,9 @@ section.mb .sh, section.mb .sub, section.mb .pbn h1, section.mb .pbn p, section.
     color: #1a1a1a;
   }
 
-  /* Desktop Hero — cinematic scroll, balanced vertical centering, zero empty voids */
+  /* Desktop Hero — cinematic scroll, balanced vertical centering, exact bottom-horizon sunrise */
   .hero {
-    height: 185vh !important;
+    height: 240vh !important;
   }
 
   .stage {
@@ -3647,7 +3660,7 @@ section.mb .sh, section.mb .sub, section.mb .pbn h1, section.mb .pbn p, section.
   }
 
   .scenes {
-    height: 52vh !important;
+    height: 56vh !important;
     min-height: 360px !important;
     position: relative !important;
     width: 100% !important;
@@ -3664,7 +3677,7 @@ section.mb .sh, section.mb .sub, section.mb .pbn h1, section.mb .pbn p, section.
     opacity: 0 !important;
     visibility: hidden !important;
     transform: translateY(28px) !important;
-    transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1), transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.45s !important;
+    transition: opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1), transform 0.55s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.55s !important;
     pointer-events: none !important;
     padding: 0 !important;
   }
@@ -3711,17 +3724,19 @@ section.mb .sh, section.mb .sub, section.mb .pbn h1, section.mb .pbn p, section.
   }
 
   .sun {
-    left: 65% !important;
-    top: 48% !important;
+    left: 50% !important;
+    bottom: -38vmin !important;
+    top: auto !important;
     width: 78vmin !important;
     height: 78vmin !important;
   }
 
   .ring {
-    left: 65% !important;
-    top: 48% !important;
-    width: 98vmin !important;
-    height: 98vmin !important;
+    left: 50% !important;
+    bottom: -52vmin !important;
+    top: auto !important;
+    width: 104vmin !important;
+    height: 104vmin !important;
   }
 
   .bt, .mfw {
@@ -3888,7 +3903,11 @@ section.mb .sh, section.mb .sub, section.mb .pbn h1, section.mb .pbn p, section.
   }
 
   .sun, .ring {
-    display: none !important;
+    transform: translateX(-50%) !important;
+  }
+
+  .sun-svg {
+    transform: none !important;
   }
 
   .cine::before, .mgx, section.mb::after, .shp {
@@ -3923,4 +3942,199 @@ section.mb .sh, section.mb .sub, section.mb .pbn h1, section.mb .pbn p, section.
   .sec {
     padding: 1rem 0 !important;
   }
+}
+
+/* ==============================================================================
+   COURSES CARDS & LESSON VISIBILITY (HIGH-CONTRAST WHITE CARD RESET)
+   ============================================================================== */
+.course-progress-summary {
+  font-weight: 600;
+  color: #86efac;
+  margin-bottom: 1rem;
+  font-size: 0.98rem;
+}
+
+.course-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 310px), 1fr));
+  gap: 1.4rem;
+}
+
+.course-card {
+  background: #ffffff;
+  color: #1f2937;
+  border-radius: 18px;
+  padding: 1.5rem;
+  border: 1px solid #d5dfd5;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.22);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.course-card-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.course-card .tag {
+  background: #fef3c7;
+  color: #92400e;
+  border: 1px solid #f59e0b;
+}
+
+.course-duration {
+  color: #374151;
+  font-weight: 600;
+  font-size: 0.82rem;
+}
+
+.course-card h3 {
+  color: #143215;
+  font-size: 1.32rem;
+  margin: 0.4rem 0;
+  line-height: 1.25;
+}
+
+.course-desc {
+  color: #1f2937;
+  font-size: 0.94rem;
+  line-height: 1.55;
+  margin-bottom: 0.85rem;
+}
+
+.course-kenya {
+  font-size: 0.86rem;
+  color: #143215;
+  background: #edf5ed;
+  border: 1px solid #c6dcc7;
+  padding: 0.55rem 0.75rem;
+  border-radius: 10px;
+  margin-bottom: 0.9rem;
+  line-height: 1.45;
+}
+
+.course-kenya b {
+  color: #14532d;
+}
+
+.course-progress-track {
+  background: #dce3dc;
+  height: 8px;
+  border-radius: 999px;
+  overflow: hidden;
+  margin: 0.6rem 0 0.4rem;
+}
+
+.course-progress-fill {
+  background: #2c5f2d;
+  height: 100%;
+  transition: width 0.3s ease;
+}
+
+.course-progress-text {
+  color: #374151;
+  font-weight: 600;
+  font-size: 0.84rem;
+  display: block;
+}
+
+.course-lessons {
+  margin-top: 0.9rem;
+  border-top: 1px solid #e2e8e2;
+  padding-top: 0.75rem;
+}
+
+.course-lessons-toggle {
+  cursor: pointer;
+  font-weight: 700;
+  color: #14532d;
+  background: #eef6ee;
+  border: 1px solid #bfd7c0;
+  border-radius: 10px;
+  padding: 0.55rem 0.8rem;
+  font-size: 0.9rem;
+  list-style-position: inside;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.course-lessons-toggle:hover {
+  background: #dfeee0;
+  border-color: #2c5f2d;
+}
+
+.course-lessons-list {
+  margin-top: 0.75rem;
+  display: grid;
+  gap: 0.65rem;
+}
+
+.course-lesson-item {
+  display: flex;
+  gap: 0.65rem;
+  align-items: flex-start;
+  cursor: pointer;
+  padding: 0.65rem 0.75rem;
+  border-radius: 10px;
+  background: #f7faf7;
+  border: 1px solid #d9e4d9;
+  color: #111827;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.course-lesson-item:hover {
+  border-color: #2c5f2d;
+  background: #eff6ef;
+}
+
+.course-lesson-item.done {
+  background: #eef8ef;
+  border-color: #86c98a;
+}
+
+.course-lesson-checkbox {
+  margin-top: 0.2rem;
+  width: 17px;
+  height: 17px;
+  flex-shrink: 0;
+  accent-color: #2c5f2d;
+  cursor: pointer;
+}
+
+.course-lesson-title {
+  display: block;
+  color: #111827;
+  font-size: 0.92rem;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.course-lesson-item.done .course-lesson-title {
+  color: #166534;
+  text-decoration: line-through;
+}
+
+.course-lesson-content {
+  color: #334155;
+  font-size: 0.85rem;
+  margin-top: 0.2rem;
+  line-height: 1.48;
+}
+
+.course-card .course-wa-btn {
+  margin-top: 1.1rem;
+  text-align: center;
+  width: fit-content;
+  color: #143215;
+  border-color: #2c5f2d;
+  background: #f0f7f0;
+  font-weight: 700;
+}
+
+.course-card .course-wa-btn:hover {
+  background: #2c5f2d;
+  color: #ffffff;
 }

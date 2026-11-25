@@ -240,7 +240,7 @@ export default function CoursesAndGames({ mode = 'all' }: CoursesAndGamesProps) 
               : 'Free, self-paced skill guides for learners, parents and teachers. Tick off lessons as you go — your progress is securely saved on this device.'}
           </p>
 
-          <p style={{ fontWeight: 600, color: '#2c5f2d', marginBottom: '1rem' }}>
+          <p className="course-progress-summary">
             {lang === 'sw'
               ? `📊 Masomo ${totalCompletedLessons} kati ya ${totalPossibleLessons} yamekamilika kwenye kifaa hiki.`
               : `📊 ${totalCompletedLessons} of ${totalPossibleLessons} lessons completed on this device.`}
@@ -271,52 +271,54 @@ export default function CoursesAndGames({ mode = 'all' }: CoursesAndGamesProps) 
           </div>
 
           {/* Course Cards Grid */}
-          <div className="ex3" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '1.4rem' }}>
+          <div className="course-grid">
             {filteredCourses.map(course => {
               const doneList = completedLessons[course.id] || [];
               const pct = Math.round((doneList.length / course.lessons.length) * 100);
 
               return (
-                <div key={course.id} style={{ background: '#fff', borderRadius: '18px', padding: '1.5rem', border: '1px solid #e0ddd6', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                <div key={course.id} className="course-card">
                   <div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                    <div className="course-card-meta">
                       <span className="tag">{course.category} · {course.level}</span>
-                      <small style={{ color: '#777' }}>{course.duration}</small>
+                      <small className="course-duration">{course.duration}</small>
                     </div>
 
-                    <h3 style={{ fontSize: '1.3rem', margin: '0.4rem 0' }}>{course.title}</h3>
-                    <p style={{ fontSize: '0.92rem', color: '#555', marginBottom: '0.8rem' }}>{course.description}</p>
-                    <p style={{ fontSize: '0.84rem', color: '#1a3d1b', background: '#f0f5f0', padding: '0.4rem 0.6rem', borderRadius: '8px', marginBottom: '0.8rem' }}>
+                    <h3>{course.title}</h3>
+                    <p className="course-desc">{course.description}</p>
+                    <p className="course-kenya">
                       <b>🇰🇪 In Kenya:</b> {course.kenyaContext}
                     </p>
 
                     {/* Progress Bar */}
-                    <div style={{ background: '#e0ddd6', height: '6px', borderRadius: '4px', overflow: 'hidden', margin: '0.6rem 0' }}>
-                      <div style={{ width: `${pct}%`, background: '#2c5f2d', height: '100%', transition: 'width 0.3s' }} />
+                    <div className="course-progress-track">
+                      <div className="course-progress-fill" style={{ width: `${pct}%` }} />
                     </div>
-                    <small style={{ color: '#666' }}>{doneList.length} of {course.lessons.length} lessons done ({pct}%)</small>
+                    <small className="course-progress-text">
+                      {doneList.length} of {course.lessons.length} lessons done ({pct}%)
+                    </small>
 
                     {/* Expandable Lessons */}
-                    <details style={{ marginTop: '0.8rem', borderTop: '1px solid #eee', paddingTop: '0.6rem' }}>
-                      <summary style={{ cursor: 'pointer', fontWeight: 600, color: '#2c5f2d', fontSize: '0.9rem' }}>
-                        View 5 Lessons & Notes
+                    <details className="course-lessons">
+                      <summary className="course-lessons-toggle">
+                        View {course.lessons.length} Lessons &amp; Notes
                       </summary>
-                      <div style={{ marginTop: '0.6rem', display: 'grid', gap: '0.6rem' }}>
+                      <div className="course-lessons-list">
                         {course.lessons.map((lesson, lIdx) => {
                           const isDone = doneList.includes(lIdx);
                           return (
-                            <label key={lIdx} style={{ display: 'flex', gap: '0.6rem', alignItems: 'flex-start', cursor: 'pointer', fontSize: '0.88rem' }}>
+                            <label key={lIdx} className={`course-lesson-item ${isDone ? 'done' : ''}`}>
                               <input
                                 type="checkbox"
+                                className="course-lesson-checkbox"
                                 checked={isDone}
                                 onChange={() => toggleLesson(course.id, lIdx)}
-                                style={{ marginTop: '0.2rem' }}
                               />
                               <div>
-                                <b style={{ textDecoration: isDone ? 'line-through' : 'none' }}>
+                                <b className="course-lesson-title">
                                   Lesson {lIdx + 1}: {lesson.title}
                                 </b>
-                                <p style={{ fontSize: '0.82rem', color: '#666', marginTop: '0.15rem', lineHeight: 1.4 }}>
+                                <p className="course-lesson-content">
                                   {lesson.content}
                                 </p>
                               </div>
@@ -328,11 +330,10 @@ export default function CoursesAndGames({ mode = 'all' }: CoursesAndGamesProps) 
                   </div>
 
                   <a
-                    className="gb o"
+                    className="gb o course-wa-btn"
                     href={`https://wa.me/254715363944?text=${encodeURIComponent(`Hello Mwalimu Family, I have a question about the ${course.title} course.`)}`}
                     target="_blank"
                     rel="noopener"
-                    style={{ marginTop: '1rem', textAlign: 'center', width: 'fit-content' }}
                   >
                     Ask tutor on WhatsApp →
                   </a>
@@ -420,7 +421,7 @@ export default function CoursesAndGames({ mode = 'all' }: CoursesAndGamesProps) 
                     <option value="k">🗣️ {lang === 'sw' ? 'Kiswahili (Maswali 8)' : 'Kiswahili (8 Qs)'}</option>
                   </select>
 
-                  <div style={{ fontWeight: 700, color: '#2c5f2d', fontSize: '0.95rem' }}>
+                  <div style={{ fontWeight: 700, color: '#86efac', fontSize: '0.95rem' }}>
                     {lang === 'sw'
                       ? `Alama: ${quizScore} · Msururu: ${quizStreak} 🔥`
                       : `Score: ${quizScore} · Streak: ${quizStreak} 🔥`}
@@ -493,7 +494,7 @@ export default function CoursesAndGames({ mode = 'all' }: CoursesAndGamesProps) 
                             ? '#1a3d1b'
                             : 'rgba(255, 255, 255, 0.95)',
                         color: c.matched
-                          ? '#2c5f2d'
+                          ? '#86efac'
                           : c.flipped
                             ? '#ffd166'
                             : '#1a1a1a',
@@ -516,7 +517,7 @@ export default function CoursesAndGames({ mode = 'all' }: CoursesAndGamesProps) 
                 </div>
 
                 {matchesWon === 6 && (
-                  <p style={{ marginTop: '1.2rem', fontWeight: 700, color: '#2c5f2d', textAlign: 'center', fontSize: '1.1rem' }}>
+                  <p style={{ marginTop: '1.2rem', fontWeight: 700, color: '#86efac', textAlign: 'center', fontSize: '1.1rem' }}>
                     {lang === 'sw' ? '🏆 Hongera sana! Umelinganisha jozi zote kikamilifu!' : '🏆 Hongera! You solved all pairs!'}
                   </p>
                 )}
@@ -554,7 +555,7 @@ export default function CoursesAndGames({ mode = 'all' }: CoursesAndGamesProps) 
                         : 'How many problems can you solve in 60 seconds?'}
                     </p>
                     {speedScore > 0 && (
-                      <p style={{ fontWeight: 700, color: '#2c5f2d', fontSize: '1.2rem', marginBottom: '1rem' }}>
+                      <p style={{ fontWeight: 700, color: '#86efac', fontSize: '1.2rem', marginBottom: '1rem' }}>
                         {lang === 'sw' ? `Alama ya Mwisho: ${speedScore} sahihi! 🎉` : `Last Score: ${speedScore} correct! 🎉`}
                       </p>
                     )}
@@ -565,10 +566,10 @@ export default function CoursesAndGames({ mode = 'all' }: CoursesAndGamesProps) 
                 ) : (
                   <div>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.8rem', flexWrap: 'wrap', gap: '0.5rem' }}>
-                      <span style={{ fontSize: '1.2rem', fontWeight: 800, color: '#c0392b' }}>
+                      <span style={{ fontSize: '1.2rem', fontWeight: 800, color: '#fca5a5' }}>
                         {lang === 'sw' ? `⏳ Sekunde ${speedSeconds} zimebaki` : `⏳ ${speedSeconds}s left`}
                       </span>
-                      <span style={{ fontSize: '1.1rem', fontWeight: 700, color: '#2c5f2d' }}>
+                      <span style={{ fontSize: '1.1rem', fontWeight: 700, color: '#86efac' }}>
                         {lang === 'sw' ? `Alama: ${speedScore}` : `Score: ${speedScore}`}
                       </span>
                     </div>
@@ -606,7 +607,7 @@ export default function CoursesAndGames({ mode = 'all' }: CoursesAndGamesProps) 
                   {lang === 'sw' ? 'Panga herufi upya kufichua neno la kimasomo.' : 'Unscramble the letters to reveal the curriculum word.'}
                 </p>
 
-                <div style={{ font: '800 clamp(1.8rem, 5vw, 2.3rem) Fraunces, Georgia, serif', letterSpacing: '0.25em', color: '#1a3d1b', textAlign: 'center', margin: '1.2rem 0', wordBreak: 'break-all' }}>
+                <div style={{ font: '800 clamp(1.8rem, 5vw, 2.3rem) Fraunces, Georgia, serif', letterSpacing: '0.25em', color: '#ffd166', textAlign: 'center', margin: '1.2rem 0', wordBreak: 'break-all' }}>
                   {scrambledWord}
                 </div>
 

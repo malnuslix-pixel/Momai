@@ -147,7 +147,8 @@ header.site-header.sol, header:has(.nav).sol {
   justify-content: space-between;
   flex-wrap: wrap;
   padding: 0.55rem 0.85rem;
-  gap: 0.4rem;
+  row-gap: 0;
+  column-gap: 0.4rem;
   position: relative;
 }
 
@@ -1000,7 +1001,7 @@ nav a.cta {
   align-items: stretch;
   justify-items: stretch;
   box-sizing: border-box;
-  padding-top: calc(4rem + env(safe-area-inset-top, 0px));
+  padding-top: calc(3.4rem + env(safe-area-inset-top, 0px));
   padding-bottom: 0;
 }
 
@@ -1024,13 +1025,13 @@ nav a.cta {
 .sun {
   position: absolute;
   left: 50%;
-  bottom: -14vh;
-  bottom: -14dvh;
+  bottom: -6vh;
+  bottom: -6dvh;
   top: auto;
-  width: min(76vw, 44dvh);
-  height: min(76vw, 44dvh);
+  width: min(80vw, 45dvh);
+  height: min(80vw, 45dvh);
   border-radius: 50%;
-  transform: translate3d(-50%, calc(var(--p, 0) * -38dvh), 0) scale(calc(1 + var(--p, 0) * 0.28));
+  transform: translate3d(-50%, calc(var(--p, 0) * -34dvh), 0) scale(calc(1 + var(--p, 0) * 0.25));
   pointer-events: none;
   will-change: transform;
   z-index: 0;
@@ -1045,14 +1046,14 @@ nav a.cta {
 .ring {
   position: absolute;
   left: 50%;
-  bottom: -20vh;
-  bottom: -20dvh;
+  bottom: -13vh;
+  bottom: -13dvh;
   top: auto;
   width: min(94vw, 56dvh);
   height: min(94vw, 56dvh);
   border-radius: 50%;
   border: 2px solid rgba(244, 162, 97, 0.35);
-  transform: translate3d(-50%, calc(var(--p, 0) * -22dvh), 0) scale(calc(1 + var(--p, 0) * 0.12));
+  transform: translate3d(-50%, calc(var(--p, 0) * -20dvh), 0) scale(calc(1 + var(--p, 0) * 0.12));
   pointer-events: none;
   will-change: transform;
   z-index: 0;
@@ -1073,14 +1074,14 @@ nav a.cta {
   inset: 0;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: flex-start;
   opacity: 0;
   visibility: hidden;
   transform: translateY(16px);
   transition: opacity 0.38s cubic-bezier(0.22, 1, 0.36, 1), transform 0.38s cubic-bezier(0.22, 1, 0.36, 1), visibility 0.38s;
   pointer-events: none;
-  padding: 1rem 0 1.25rem;
+  padding: clamp(0.85rem, 2.5dvh, 1.5rem) 0 1.25rem;
   box-sizing: border-box;
   max-width: 100%;
 }

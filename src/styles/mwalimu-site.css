@@ -980,7 +980,8 @@ nav a.cta {
 
 /* 3. HERO — MOBILE-FIRST 3-SCENE CINEMATIC SCROLLING (INITIAL HORIZON SUNRISE) */
 .hero {
-  height: 195vh;
+  height: 220vh;
+  height: 220svh;
   background: #1a3d1b;
   position: relative;
 }
@@ -1017,18 +1018,19 @@ nav a.cta {
   padding: 0 1.15rem;
   box-sizing: border-box;
   overflow: hidden;
+  z-index: 2;
 }
 
 .sun {
   position: absolute;
   left: 50%;
-  bottom: -38vmin;
+  bottom: -14vh;
+  bottom: -14dvh;
   top: auto;
-  width: 78vmin;
-  height: 78vmin;
+  width: min(76vw, 44dvh);
+  height: min(76vw, 44dvh);
   border-radius: 50%;
-  background: rgba(244, 162, 97, 0.3);
-  transform: translate(-50%, calc(var(--p, 0) * -46vmin)) scale(calc(1 + var(--p, 0) * 0.5));
+  transform: translate3d(-50%, calc(var(--p, 0) * -38dvh), 0) scale(calc(1 + var(--p, 0) * 0.28));
   pointer-events: none;
   will-change: transform;
   z-index: 0;
@@ -1038,20 +1040,19 @@ nav a.cta {
   width: 100%;
   height: 100%;
   display: block;
-  transform: rotate(calc(var(--p, 0) * 45deg));
-  will-change: transform;
 }
 
 .ring {
   position: absolute;
   left: 50%;
-  bottom: -52vmin;
+  bottom: -20vh;
+  bottom: -20dvh;
   top: auto;
-  width: 104vmin;
-  height: 104vmin;
+  width: min(94vw, 56dvh);
+  height: min(94vw, 56dvh);
   border-radius: 50%;
   border: 2px solid rgba(244, 162, 97, 0.35);
-  transform: translate(-50%, calc(var(--p, 0) * -24vmin)) scale(calc(1 + var(--p, 0) * 0.08));
+  transform: translate3d(-50%, calc(var(--p, 0) * -22dvh), 0) scale(calc(1 + var(--p, 0) * 0.12));
   pointer-events: none;
   will-change: transform;
   z-index: 0;
@@ -1076,10 +1077,10 @@ nav a.cta {
   align-items: flex-start;
   opacity: 0;
   visibility: hidden;
-  transform: translateY(24px);
-  transition: opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1), transform 0.55s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.55s;
+  transform: translateY(16px);
+  transition: opacity 0.38s cubic-bezier(0.22, 1, 0.36, 1), transform 0.38s cubic-bezier(0.22, 1, 0.36, 1), visibility 0.38s;
   pointer-events: none;
-  padding: 0.5rem 0;
+  padding: 1rem 0 1.25rem;
   box-sizing: border-box;
   max-width: 100%;
 }
@@ -2512,7 +2513,7 @@ main {
   min-height: 72vh;
 }
 
-main > section:not([hidden]) {
+main > section:not(.hero):not([hidden]) {
   animation: pgin 0.55s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
@@ -3632,7 +3633,7 @@ section.mb .sh, section.mb .sub, section.mb .pbn h1, section.mb .pbn p, section.
 
   /* Desktop Hero — cinematic scroll, balanced vertical centering, exact bottom-horizon sunrise */
   .hero {
-    height: 240vh !important;
+    height: 260vh !important;
   }
 
   .stage {
@@ -3729,6 +3730,7 @@ section.mb .sh, section.mb .sub, section.mb .pbn h1, section.mb .pbn p, section.
     top: auto !important;
     width: 78vmin !important;
     height: 78vmin !important;
+    transform: translate3d(-50%, calc(var(--p, 0) * -46vmin), 0) scale(calc(1 + var(--p, 0) * 0.5)) !important;
   }
 
   .ring {
@@ -3737,6 +3739,7 @@ section.mb .sh, section.mb .sub, section.mb .pbn h1, section.mb .pbn p, section.
     top: auto !important;
     width: 104vmin !important;
     height: 104vmin !important;
+    transform: translate3d(-50%, calc(var(--p, 0) * -24vmin), 0) !important;
   }
 
   .bt, .mfw {

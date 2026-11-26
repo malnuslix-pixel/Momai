@@ -10,72 +10,65 @@ interface HeroProps {
 
 export default function Hero({ onNavClick }: HeroProps) {
   const heroRef = useRef<HTMLElement>(null);
+  const stageRef = useRef<HTMLDivElement>(null);
+  const lastSceneRef = useRef(0);
   const [activeScene, setActiveScene] = useState(0);
   const [lang] = useLanguage();
 
   // Cinematic scroll: hardware-accelerated scene transitions based on scroll progress
   useEffect(() => {
+    let rafId = 0;
     let ticking = false;
-    const handleScroll = () => {
-      if (ticking) return;
-      ticking = true;
-      requestAnimationFrame(() => {
-        const hero = heroRef.current;
-        if (hero) {
-          const r = hero.getBoundingClientRect();
-          const maxScroll = r.height - window.innerHeight;
-          if (maxScroll > 0) {
-            const p = Math.min(1, Math.max(0, -r.top / maxScroll));
-            hero.style.setProperty('--p', p.toFixed(3));
-            // Seamless proportional distribution across the 3 scenes without a dead scroll zone
-            const idx = p < 0.34 ? 0 : p < 0.68 ? 1 : 2;
+    const updateScroll = () => {
+      const hero = heroRef.current;
+      const stage = stageRef.current;
+      if (hero) {
+        const r = hero.getBoundingClientRect();
+        const stageHeight = stage?.offsetHeight || window.innerHeight;
+        const maxScroll = hero.offsetHeight - stageHeight;
+        if (maxScroll > 0) {
+          const p = Math.min(1, Math.max(0, -r.top / maxScroll));
+          hero.style.setProperty('--p', p.toFixed(3));
+          const idx = p < 0.33 ? 0 : p < 0.67 ? 1 : 2;
+          if (idx !== lastSceneRef.current) {
+            lastSceneRef.current = idx;
             setActiveScene(idx);
           }
         }
-        ticking = false;
-      });
+      }
+      ticking = false;
+    };
+
+    const handleScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      rafId = requestAnimationFrame(updateScroll);
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
     window.addEventListener('resize', handleScroll, { passive: true });
-    handleScroll();
+    updateScroll();
     return () => {
       window.removeEventListener('scroll', handleScroll);
       window.removeEventListener('resize', handleScroll);
+      if (rafId) cancelAnimationFrame(rafId);
     };
   }, []);
 
   return (
     <section className="hero" id="home" ref={heroRef} aria-label="Introduction">
-      <div className="stage">
-        {/* Ambient atmospheric Sun SVG & orbital horizon ring */}
+      <div className="stage" ref={stageRef}>
+        {/* Horizon Sunrise SVG & Orbital Ring */}
         <div className="sun" aria-hidden="true">
           <svg viewBox="0 0 400 400" className="sun-svg" focusable="false">
             <defs>
               <radialGradient id="mf-sun-grad" cx="50%" cy="50%" r="50%">
-                <stop offset="0%" stopColor="#ffd166" stopOpacity="0.48" />
-                <stop offset="55%" stopColor="#f4a261" stopOpacity="0.28" />
-                <stop offset="100%" stopColor="#f4a261" stopOpacity="0" />
+                <stop offset="0%" stopColor="#f4a261" stopOpacity="0.42" />
+                <stop offset="70%" stopColor="#f4a261" stopOpacity="0.3" />
+                <stop offset="100%" stopColor="#f4a261" stopOpacity="0.18" />
               </radialGradient>
             </defs>
-            <circle cx="200" cy="200" r="190" fill="url(#mf-sun-grad)" />
-            <circle
-              cx="200"
-              cy="200"
-              r="168"
-              fill="none"
-              stroke="rgba(244, 162, 97, 0.38)"
-              strokeWidth="2"
-              strokeDasharray="8 16"
-            />
-            <circle
-              cx="200"
-              cy="200"
-              r="122"
-              fill="rgba(244, 162, 97, 0.18)"
-              stroke="rgba(255, 209, 102, 0.36)"
-              strokeWidth="1.5"
-            />
+            <circle cx="200" cy="200" r="196" fill="url(#mf-sun-grad)" stroke="rgba(244, 162, 97, 0.28)" strokeWidth="2" />
           </svg>
         </div>
         <div className="ring" aria-hidden="true" />

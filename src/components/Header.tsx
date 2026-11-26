@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useLanguage } from '@/lib/language';
+import { useCms } from '@/lib/cms-context';
 
 interface HeaderProps {
   onNavClick?: (hash: string) => void;
@@ -15,6 +16,7 @@ export default function Header({ onNavClick, activeNav = 'home' }: HeaderProps) 
   const [isScrolled, setIsScrolled] = useState(false);
   const [fontSizeIdx, setFontSizeIdx] = useState(0);
   const [lang, setLang] = useLanguage();
+  const { cms } = useCms();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -68,7 +70,7 @@ export default function Header({ onNavClick, activeNav = 'home' }: HeaderProps) 
           className="logo"
           aria-label="Mwalimu Family home"
         >
-          <span aria-hidden="true">🏠</span> Mwalimu Family
+          <span aria-hidden="true">🏠</span> {cms.siteCopy.brandName}
         </Link>
 
         <div className="ctl">

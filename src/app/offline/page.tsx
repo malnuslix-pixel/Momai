@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { awardLearnerXP, flushPendingXP } from '@/lib/learner-profile';
 
 interface OfflineQuizItem {
   id: string;
@@ -65,8 +66,12 @@ export default function OfflinePage() {
 
   useEffect(() => {
     setIsOnline(navigator.onLine);
+    if (navigator.onLine) flushPendingXP();
 
-    const handleOnline = () => setIsOnline(true);
+    const handleOnline = () => {
+      setIsOnline(true);
+      flushPendingXP();
+    };
     const handleOffline = () => setIsOnline(false);
 
     window.addEventListener('online', handleOnline);
@@ -86,6 +91,9 @@ export default function OfflinePage() {
     setShowAnswer(true);
     if (index === currentQ.correctIndex) {
       setScore((s) => s + 1);
+      awardLearnerXP('correct_answer', 'offline');
+    } else {
+      awardLearnerXP('question_answered', 'offline');
     }
   };
 
@@ -95,6 +103,7 @@ export default function OfflinePage() {
       setSelectedOpt(null);
       setShowAnswer(false);
     } else {
+      awardLearnerXP('quiz_completed', 'offline');
       setCompleted(true);
     }
   };
@@ -389,7 +398,7 @@ export default function OfflinePage() {
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '0.8rem' }}>
             <Link
-              href="/#tools"
+              href="/tools"
               style={{
                 display: 'block',
                 padding: '0.9rem',
@@ -409,7 +418,7 @@ export default function OfflinePage() {
             </Link>
 
             <Link
-              href="/#tools"
+              href="/tools"
               style={{
                 display: 'block',
                 padding: '0.9rem',
@@ -429,7 +438,7 @@ export default function OfflinePage() {
             </Link>
 
             <Link
-              href="/#tools"
+              href="/tools"
               style={{
                 display: 'block',
                 padding: '0.9rem',
@@ -449,7 +458,7 @@ export default function OfflinePage() {
             </Link>
 
             <Link
-              href="/#tools"
+              href="/tools"
               style={{
                 display: 'block',
                 padding: '0.9rem',

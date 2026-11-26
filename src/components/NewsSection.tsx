@@ -1,8 +1,10 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
-import { ARTICLES, Article } from '@/lib/mwalimu-data';
+import { Article } from '@/lib/mwalimu-data';
+import { useLanguage } from '@/lib/language';
+import { useCms, useSectionCopy } from '@/lib/cms-context';
 
 interface NewsSectionProps {
   onNavClick: (hash: string) => void;
@@ -11,8 +13,11 @@ interface NewsSectionProps {
 }
 
 export default function NewsSection({ onNavClick, activeStoryId, onSelectStory }: NewsSectionProps) {
+  const [lang] = useLanguage();
+  const { cms } = useCms();
+  const copy = useSectionCopy('news', lang);
   const [search, setSearch] = useState('');
-  const [category, setCategory] = useState<'all' | 'Education' | 'Explainer'>('all');
+  const [category, setCategory] = useState<string>('all');
   const [aiSummary, setAiSummary] = useState<string | null>(null);
   const [aiSummarizing, setAiSummarizing] = useState(false);
 
@@ -39,8 +44,17 @@ export default function NewsSection({ onNavClick, activeStoryId, onSelectStory }
     }
   };
 
-  const storyList = Object.values(ARTICLES);
-  const activeStory = activeStoryId ? ARTICLES[activeStoryId] : null;
+  const storyList = cms.news.articles;
+  const articleMap = useMemo(() => {
+    const map: Record<string, Article> = {};
+    for (const a of storyList) map[a.id] = a;
+    return map;
+  }, [storyList]);
+  const categories = useMemo(
+    () => ['all', ...Array.from(new Set(storyList.map((a) => a.l).filter(Boolean)))],
+    [storyList]
+  );
+  const activeStory = activeStoryId ? articleMap[activeStoryId] || null : null;
 
   const filtered = storyList.filter((a) => {
     const matchCat = category === 'all' || a.l === category;
@@ -50,7 +64,7 @@ export default function NewsSection({ onNavClick, activeStoryId, onSelectStory }
 
   // If a story is open in reader view:
   if (activeStory) {
-    const shareUrl = typeof window !== 'undefined' ? `${window.location.origin}#/s${activeStory.id.slice(1)}` : '';
+    const shareUrl = typeof window !== 'undefined' ? `${window.location.origin}/news/${activeStory.id}` : '';
     const waUrl = `https://wa.me/?text=${encodeURIComponent(`${activeStory.t} ${shareUrl}`)}`;
 
     return (
@@ -150,7 +164,7 @@ export default function NewsSection({ onNavClick, activeStoryId, onSelectStory }
           <div style={{ marginTop: '2rem' }}>
             <h3 style={{ fontSize: '1.3rem', marginBottom: '0.8rem' }}>Related stories</h3>
             {activeStory.r.map((relId) => {
-              const rel = ARTICLES[relId];
+              const rel = articleMap[relId];
               if (!rel) return null;
               return (
                 <p key={relId}>
@@ -173,14 +187,14 @@ export default function NewsSection({ onNavClick, activeStoryId, onSelectStory }
     );
   }
 
-  const featured = ARTICLES.s1;
+  const featured = articleMap[cms.news.featuredId] || storyList[0];
 
   return (
     <section className="sec" id="news" aria-labelledby="nh">
       <div className="w">
-        <span className="tag" style={{ marginBottom: '0.45rem' }}>Education Desk</span>
-        <h2 className="sh" id="nh">Latest news</h2>
-        <p className="sub">What’s happening in education and across Kenya. Browse by category.</p>
+        <span className="tag" style={{ marginBottom: '0.45rem' }}>{copy.tag}</span>
+        <h2 className="sh" id="nh">{copy.title}</h2>
+        <p className="sub">{copy.subtitle}</p>
 
         <div className="sb">
           <input
@@ -193,7 +207,7 @@ export default function NewsSection({ onNavClick, activeStoryId, onSelectStory }
         </div>
 
         <div className="chips" role="group" aria-label="News categories">
-          {(['all', 'Education', 'Explainer'] as const).map((cat) => (
+          {categories.map((cat) => (
             <button
               key={cat}
               className={`chip ${category === cat ? 'on' : ''}`}
@@ -208,11 +222,11 @@ export default function NewsSection({ onNavClick, activeStoryId, onSelectStory }
         {featured && (!search || category === 'all' || category === featured.l) && (
           <article className="feat">
             <div>
-              <p className="meta">{featured.l} · {featured.d} · National examinations</p>
+              <p className="meta">{featured.l} · {featured.d} · National updates</p>
               <h3>{featured.t}</h3>
               <p style={{ margin: '1rem 0 1.4rem' }}>{featured.c[0]}</p>
               <Link
-                href="/news/s1"
+                href={`/news/${featured.id}`}
                 className="btn b1"
                 style={{ display: 'inline-flex', alignItems: 'center' }}
               >
@@ -220,10 +234,9 @@ export default function NewsSection({ onNavClick, activeStoryId, onSelectStory }
               </Link>
             </div>
             <div className="stats">
-              <div><b>1,048,355</b><span>KCSE candidates</span></div>
-              <div><b>10,693</b><span>examination centres</span></div>
-              <div><b>13,484</b><span>KJSEA examiners</span></div>
-              <div><b>24</b><span>KJSEA marking centres</span></div>
+              {cms.news.featuredStats.map((st, idx) => (
+                <div key={idx}><b>{st.value}</b><span>{st.label}</span></div>
+              ))}
             </div>
           </article>
         )}

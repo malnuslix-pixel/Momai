@@ -3,14 +3,18 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import '@/styles/control-room.css';
-import { FeedItem, Submission, SiteFlags, SiteConfig, VerificationCheck, AuditLogEntry } from '@/lib/types';
+import { FeedItem, Submission, SiteFlags, SiteConfig, VerificationCheck, AuditLogEntry, AssistantLog } from '@/lib/types';
 import { SEED_ITEMS, SEED_SUBMISSIONS, SEED_CONFIG, SEED_CHECKS, SEED_AUDIT } from '@/lib/supabase';
+import { CmsData, DEFAULT_CMS_DATA, mergeCmsData } from '@/lib/cms';
+import AdminCmsPanel from '@/components/admin/AdminCmsPanel';
+import AdminTitlesPanel from '@/components/admin/AdminTitlesPanel';
 
-type TabType = 'overview' | 'content' | 'inbox' | 'audience' | 'assistant' | 'health' | 'config' | 'ops';
+type TabType = 'overview' | 'content' | 'titles' | 'inbox' | 'audience' | 'assistant' | 'health' | 'config' | 'ops';
 
 const TABS: [TabType, string][] = [
   ['overview', 'Overview'],
-  ['content', 'Content'],
+  ['content', 'Content & CMS'],
+  ['titles', 'Site titles'],
   ['inbox', 'Inbox'],
   ['audience', 'Audience'],
   ['assistant', 'Assistant'],
@@ -69,6 +73,13 @@ export default function AdminPage() {
   const [aiBriefLoading, setAiBriefLoading] = useState(false);
   const [aiScreenings, setAiScreenings] = useState<Record<string, { riskLevel: string; summary: string; suggestedChecks: [boolean, boolean, boolean]; recommendation: string }>>({});
   const [aiScreeningRef, setAiScreeningRef] = useState<string | null>(null);
+  const [cmsData, setCmsData] = useState<CmsData>(DEFAULT_CMS_DATA);
+  const [contentSubTab, setContentSubTab] = useState<'jobs' | 'news' | 'courses' | 'learning' | 'games'>('jobs');
+  const [recentAssistantLogs, setRecentAssistantLogs] = useState<AssistantLog[]>([]);
+  const [aiReplies, setAiReplies] = useState<Record<string, string>>({});
+  const [aiReplyRef, setAiReplyRef] = useState<string | null>(null);
+  const [aiTrends, setAiTrends] = useState<string | null>(null);
+  const [aiTrendsLoading, setAiTrendsLoading] = useState(false);
 
   // Sync with hash if present
   useEffect(() => {
@@ -150,11 +161,12 @@ export default function AdminPage() {
   const loadData = async () => {
     try {
       setLoading(true);
-      const [itemsRes, subsRes, configRes, statsRes] = await Promise.allSettled([
+      const [itemsRes, subsRes, configRes, statsRes, cmsRes] = await Promise.allSettled([
         fetch('/api/items?all=true').then((r) => r.json()),
         fetch('/api/submissions?filter=all').then((r) => r.json()),
         fetch('/api/config').then((r) => r.json()),
         fetch('/api/stats').then((r) => r.json()),
+        fetch('/api/cms', { cache: 'no-store' }).then((r) => r.json()),
       ]);
 
       if (itemsRes.status === 'fulfilled' && itemsRes.value.ok && itemsRes.value.items) {
@@ -173,8 +185,14 @@ export default function AdminPage() {
           setChecks(configRes.value.checks);
         }
       }
-      if (statsRes.status === 'fulfilled' && statsRes.value.ok && statsRes.value.audit) {
-        setAuditLogs(statsRes.value.audit);
+      if (statsRes.status === 'fulfilled' && statsRes.value.ok) {
+        if (statsRes.value.audit) setAuditLogs(statsRes.value.audit);
+        if (Array.isArray(statsRes.value.recentAssistantLogs)) {
+          setRecentAssistantLogs(statsRes.value.recentAssistantLogs);
+        }
+      }
+      if (cmsRes.status === 'fulfilled' && cmsRes.value.ok && cmsRes.value.cms) {
+        setCmsData(mergeCmsData(cmsRes.value.cms));
       }
     } catch (e) {
       console.warn('Admin offline/local mode:', e);
@@ -519,6 +537,43 @@ export default function AdminPage() {
     } catch {}
   };
 
+  const handleAIDraftReply = async (sub: Submission) => {
+    setAiReplyRef(sub.ref);
+    try {
+      const res = await fetch('/api/admin/ai', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'draft_reply', submission: sub }),
+      });
+      const data = await res.json();
+      if (data.ok && data.text) {
+        setAiReplies((prev) => ({ ...prev, [sub.ref]: data.text }));
+        showToast(`AI drafted reply for ${sub.ref}.`);
+      }
+    } catch {
+      showToast('AI reply draft failed.');
+    } finally {
+      setAiReplyRef(null);
+    }
+  };
+
+  const handleAnalyzeAssistant = async () => {
+    setAiTrendsLoading(true);
+    try {
+      const res = await fetch('/api/admin/ai', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'analyze_assistant', logs: recentAssistantLogs }),
+      });
+      const data = await res.json();
+      if (data.ok && data.text) setAiTrends(data.text);
+    } catch {
+      showToast('Assistant trend analysis failed.');
+    } finally {
+      setAiTrendsLoading(false);
+    }
+  };
+
   // Calculations for Inbox
   const waitingSubs = submissions.filter((s) => s.st === 'new');
   const approvedSubs = submissions.filter((s) => s.st === 'approved');
@@ -531,35 +586,6 @@ export default function AdminPage() {
   // Filtered submissions list
   const filteredSubmissions = submissions.filter(
     (s) => inboxFilter === 'all' || s.st === inboxFilter
-  );
-
-  // Live feed.json preview
-  const liveFeedJson = JSON.stringify(
-    {
-      updated: new Date().toISOString().slice(0, 10),
-      jobs: items
-        .filter((i) => i.k === 'job' && i.st === 'published')
-        .map((i) => ({
-          t: i.t,
-          e: i.who || '',
-          l: i.loc || '',
-          c: i.cat || '',
-          d: i.body,
-          st: 'published',
-          exp: i.exp || '',
-        })),
-      notices: items
-        .filter((i) => i.k === 'notice' && i.st === 'published')
-        .map((i) => ({
-          k: i.cat || 'General',
-          d: new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }),
-          t: i.t,
-          b: i.body,
-          st: 'published',
-        })),
-    },
-    null,
-    2
   );
 
   if (isAuthenticated === null) {
@@ -953,10 +979,40 @@ export default function AdminPage() {
         )}
 
         {/* ========================================================================= */}
-        {/* TAB 2: CONTENT */}
+        {/* TAB 2: CONTENT & FULL CMS */}
         {/* ========================================================================= */}
         {tab === 'content' && (
           <div>
+            <div style={{ display: 'flex', gap: '0.45rem', flexWrap: 'wrap', marginBottom: '1rem' }}>
+              {(
+                [
+                  ['jobs', 'Jobs & Notices'],
+                  ['news', `📰 News (${cmsData.news.articles.length})`],
+                  ['courses', `🎓 Courses (${cmsData.courses.length})`],
+                  ['learning', `📚 Learning & Teaching (${cmsData.learning.materials.length + cmsData.teaching.length})`],
+                  ['games', '🎮 Games & Quizzes'],
+                ] as const
+              ).map(([k, lbl]) => (
+                <button
+                  key={k}
+                  type="button"
+                  className={`b ${contentSubTab === k ? '' : 's'}`}
+                  onClick={() => setContentSubTab(k)}
+                >
+                  {lbl}
+                </button>
+              ))}
+            </div>
+
+            {contentSubTab !== 'jobs' ? (
+              <AdminCmsPanel
+                cms={cmsData}
+                onCmsUpdated={setCmsData}
+                showToast={showToast}
+                subTab={contentSubTab}
+              />
+            ) : (
+            <>
             <div className="card">
               <h2>Jobs and notices</h2>
               <div className="sc">
@@ -1158,23 +1214,20 @@ export default function AdminPage() {
                 </button>
               </form>
             </div>
-
-            {/* Live Feed JSON Preview */}
-            <div className="card">
-              <h2>feed.json for the site</h2>
-              <pre
-                style={{
-                  background: 'var(--chip)',
-                  padding: '1rem',
-                  borderRadius: '8px',
-                  overflowX: 'auto',
-                  fontSize: '0.85rem',
-                }}
-              >
-                {liveFeedJson}
-              </pre>
-            </div>
+            </>
+            )}
           </div>
+        )}
+
+        {/* ========================================================================= */}
+        {/* TAB 2B: SITE TITLES & BRANDING */}
+        {/* ========================================================================= */}
+        {tab === 'titles' && (
+          <AdminTitlesPanel
+            cms={cmsData}
+            onCmsUpdated={setCmsData}
+            showToast={showToast}
+          />
         )}
 
         {/* ========================================================================= */}
@@ -1307,7 +1360,33 @@ export default function AdminPage() {
                         >
                           {aiScreeningRef === sub.ref ? 'Screening…' : '🤖 AI Pre-Screen'}
                         </button>
+                        <button
+                          type="button"
+                          className="b s"
+                          onClick={() => handleAIDraftReply(sub)}
+                          disabled={aiReplyRef === sub.ref}
+                        >
+                          {aiReplyRef === sub.ref ? 'Drafting…' : '✨ AI Draft Reply'}
+                        </button>
                       </div>
+
+                      {aiReplies[sub.ref] && (
+                        <div style={{ marginTop: '0.7rem', padding: '0.75rem', borderRadius: '8px', background: 'var(--chip)', fontSize: '0.88rem' }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.35rem', flexWrap: 'wrap', gap: '0.4rem' }}>
+                            <b>Suggested Reply ({sub.from_name})</b>
+                            <a
+                              className="b s"
+                              style={{ textDecoration: 'none' }}
+                              href={`https://wa.me/?text=${encodeURIComponent(aiReplies[sub.ref])}`}
+                              target="_blank"
+                              rel="noopener"
+                            >
+                              Send via WhatsApp →
+                            </a>
+                          </div>
+                          <p style={{ margin: 0, whiteSpace: 'pre-wrap' }}>{aiReplies[sub.ref]}</p>
+                        </div>
+                      )}
 
                       {aiScreenings[sub.ref] && (
                         <div style={{ marginTop: '0.75rem', padding: '0.75rem', borderRadius: '8px', background: 'var(--chip)', borderLeft: `4px solid ${aiScreenings[sub.ref].riskLevel === 'High Risk' ? 'var(--bad)' : aiScreenings[sub.ref].riskLevel === 'Low Risk' ? 'var(--ok)' : '#f4a261'}`, fontSize: '0.88rem' }}>
@@ -1529,6 +1608,32 @@ export default function AdminPage() {
                 </div>
               </div>
             </div>
+
+            <div className="card" style={{ borderLeft: '4px solid #f4a261' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '0.6rem' }}>
+                <h2 style={{ margin: 0 }}>Recent AI Conversations &amp; Topic Trends</h2>
+                <button type="button" className="b s" onClick={handleAnalyzeAssistant} disabled={aiTrendsLoading}>
+                  {aiTrendsLoading ? 'Analyzing…' : '✨ Analyze Questions with AI'}
+                </button>
+              </div>
+              {aiTrends && (
+                <div style={{ background: 'var(--chip)', padding: '0.85rem', borderRadius: '8px', marginBottom: '0.8rem', whiteSpace: 'pre-wrap', lineHeight: 1.55, fontSize: '0.9rem' }}>
+                  {aiTrends}
+                </div>
+              )}
+              {recentAssistantLogs.length > 0 ? (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.45rem' }}>
+                  {recentAssistantLogs.slice(0, 8).map((l, idx) => (
+                    <div key={l.id || idx} className="al" style={{ justifyContent: 'space-between', gap: '0.8rem' }}>
+                      <span><b>Q:</b> {l.question}</span>
+                      <span className="mu">{l.model || 'gemini'}</span>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="mu" style={{ margin: 0 }}>Live questions from Ask Mwalimu will stream here automatically.</p>
+              )}
+            </div>
           </div>
         )}
 
@@ -1708,13 +1813,19 @@ export default function AdminPage() {
               </div>
 
               <div className="card">
-                <h2>Deployment Checklist</h2>
-                <ol className="mu" style={{ paddingLeft: '1.2rem', lineHeight: 1.7 }}>
-                  <li>Confirm <code>ADMIN_SECRET_KEY</code> is set in environment variables.</li>
-                  <li>Verify that database RLS policies allow public insertions on submissions and subscribers.</li>
-                  <li>Deploy the application to your hosting provider.</li>
-                  <li>Test all public forms and admin actions post-deploy.</li>
-                </ol>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.6rem' }}>
+                  <h2 style={{ margin: 0 }}>✨ AI Operations &amp; Audit Summary</h2>
+                  <button className="b s" onClick={handleAIOpsBrief} disabled={aiBriefLoading}>
+                    {aiBriefLoading ? 'Analyzing…' : 'Refresh AI Digest'}
+                  </button>
+                </div>
+                {aiBrief ? (
+                  <p style={{ whiteSpace: 'pre-wrap', lineHeight: 1.6, margin: 0 }}>{aiBrief}</p>
+                ) : (
+                  <p className="mu" style={{ margin: 0 }}>
+                    Click &ldquo;Refresh AI Digest&rdquo; to audit active queues, CMS counts ({cmsData.news.articles.length} news, {cmsData.courses.length} courses, {cmsData.learning.materials.length + cmsData.teaching.length} packs), and SLA targets.
+                  </p>
+                )}
               </div>
             </div>
           </div>

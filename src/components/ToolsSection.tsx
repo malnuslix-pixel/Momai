@@ -9,10 +9,22 @@ import {
   downloadRevisionDoc,
   downloadClassMarksDoc
 } from '@/lib/mwalimu-data';
+import { awardLearnerXP } from '@/lib/learner-profile';
+import { useLanguage } from '@/lib/language';
+import { useSectionCopy } from '@/lib/cms-context';
 
 export default function ToolsSection() {
+  const [lang] = useLanguage();
+  const copy = useSectionCopy('tools', lang);
   const [filterCategory, setFilterCategory] = useState<string>('All');
   const [searchQuery, setSearchQuery] = useState('');
+
+  const matchesTool = (cats: string[], keywords: string) => {
+    const catOk = filterCategory === 'All' || cats.includes(filterCategory);
+    const q = searchQuery.trim().toLowerCase();
+    const searchOk = !q || keywords.toLowerCase().includes(q);
+    return catOk && searchOk;
+  };
 
   // 1. KCSE Mean Grade Calculator
   const [kcseGrades, setKcseGrades] = useState<number[]>([12, 11, 10, 9, 8, 7, 7]);
@@ -334,6 +346,34 @@ export default function ToolsSection() {
   const [pathwayStep, setPathwayStep] = useState(0);
   const [pathwayScores, setPathwayScores] = useState([0, 0, 0]); // [STEM, Social, Arts]
   const [pathwayResult, setPathwayResult] = useState<string | null>(null);
+  const [pathwayAiAdvice, setPathwayAiAdvice] = useState<string | null>(null);
+  const [pathwayAiLoading, setPathwayAiLoading] = useState(false);
+
+  const handleExplainPathwayAI = async () => {
+    if (!pathwayResult) return;
+    setPathwayAiLoading(true);
+    try {
+      const res = await fetch('/api/ai/assist', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          task: 'pathway',
+          stemScore: pathwayScores[0],
+          socialScore: pathwayScores[1],
+          artsScore: pathwayScores[2],
+          recommended: pathwayResult,
+        }),
+      });
+      const data = await res.json();
+      if (data?.ok && data.text) {
+        setPathwayAiAdvice(data.text);
+        awardLearnerXP('tool_used', 'tool');
+      }
+    } catch {}
+    finally {
+      setPathwayAiLoading(false);
+    }
+  };
 
   const handlePathwayAnswer = (optIdx: number) => {
     const nextScores = [...pathwayScores];
@@ -346,6 +386,7 @@ export default function ToolsSection() {
       const maxIdx = nextScores.indexOf(Math.max(...nextScores));
       const names = ['🔬 STEM Pathway', '📚 Social Sciences Pathway', '🎨 Arts & Sports Science Pathway'];
       setPathwayResult(names[maxIdx]);
+      awardLearnerXP('tool_used', 'tool');
     }
   };
 
@@ -353,12 +394,31 @@ export default function ToolsSection() {
     setPathwayStep(0);
     setPathwayScores([0, 0, 0]);
     setPathwayResult(null);
+    setPathwayAiAdvice(null);
   };
+
+  const hasAnyToolMatch = [
+    matchesTool(['Calculators', 'Learners'], 'kjsea kcse kuccps points cluster calculator grade mean'),
+    matchesTool(['Teachers'], 'report form comments remarks single'),
+    matchesTool(['Teachers'], 'bulk report comments batch'),
+    matchesTool(['Learners', 'Teachers'], 'word counter essay insha characters sentences'),
+    matchesTool(['Teachers', 'Planning'], 'attendance rate calculator days present absent'),
+    matchesTool(['Teachers'], 'classroom group maker random student groups'),
+    matchesTool(['Teachers'], 'competency rubric builder cbc assessment word'),
+    matchesTool(['Calculators', 'Planning'], 'secondary school fees planner term budget'),
+    matchesTool(['Calculators', 'Teachers'], 'score cbc performance level converter ee1 me1'),
+    matchesTool(['Learners'], 'pomodoro study focus timer clock'),
+    matchesTool(['Planning', 'Learners'], 'weekly revision timetable maker exam schedule'),
+    matchesTool(['Teachers'], 'class marks ranking grade mean'),
+    matchesTool(['Learners'], 'interactive revision flashcards maths science kiswahili'),
+    matchesTool(['Learners', 'Planning'], 'grade 10 pathway starter senior school stem'),
+  ].some(Boolean);
 
   return (
     <section className="sec" id="tools" aria-labelledby="oh">
       <div className="w">
-        <h2 className="sh rv" id="oh">Tools that save time</h2>
+        <h2 className="sh rv" id="oh">{copy.title}</h2>
+        <p className="sub rv">{copy.subtitle}</p>
         <div className="warn">
           <h3 style={{ color: 'var(--hd)' }}>How these tools work</h3>
           <ul className="kf">
@@ -366,6 +426,24 @@ export default function ToolsSection() {
             <li>Calculators provide planning estimates. Confirm official figures with KNEC, KUCCPS or MoE.</li>
             <li>Document generators produce clean, editable Microsoft Word (.doc) files ready to print.</li>
           </ul>
+        </div>
+
+        {/* Tool Search + Category Chips */}
+        <div style={{ display: 'flex', gap: '0.8rem', flexWrap: 'wrap', alignItems: 'center', marginBottom: '1rem' }}>
+          <input
+            className="sel"
+            type="search"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search tools, e.g. KUCCPS, rubric, timer, fees..."
+            aria-label="Search classroom tools"
+            style={{ width: 'auto', minWidth: '250px', flex: '1 1 250px', maxWidth: '420px' }}
+          />
+          {searchQuery && (
+            <button type="button" className="gb o" onClick={() => setSearchQuery('')} style={{ margin: 0 }}>
+              Clear
+            </button>
+          )}
         </div>
 
         {/* Filter Category Chips */}
@@ -381,10 +459,14 @@ export default function ToolsSection() {
           ))}
         </div>
 
+        {!hasAnyToolMatch && (
+          <p className="empty">No tools match &ldquo;{searchQuery}&rdquo;. Clear the search or select &ldquo;All&rdquo;.</p>
+        )}
+
         <div className="cg" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(min(320px, 100%), 1fr))', gap: '1.4rem' }}>
           
-          {/* FLAGSHIP MODULAR KENYAN CALCULATORS - PATHWAY CALCULATOR IN POSITION #1 */}
-          {(filterCategory === 'All' || filterCategory === 'Calculators' || filterCategory === 'Learners') && (
+          {/* FLAGSHIP MODULAR KENYAN CALCULATORS */}
+          {matchesTool(['Calculators', 'Learners'], 'kjsea kcse kuccps points cluster calculator grade mean') && (
             <>
               <div style={{ gridColumn: '1 / -1' }}>
                 <KjseaCalculator />
@@ -399,7 +481,7 @@ export default function ToolsSection() {
           )}
 
           {/* TOOL 4: Report-form Comments Generator */}
-          {(filterCategory === 'All' || filterCategory === 'Teachers') && (
+          {matchesTool(['Teachers'], 'report form comments remarks single') && (
             <div className="card">
               <h3>Report-form comments</h3>
               <label>Learner name:</label>
@@ -414,7 +496,7 @@ export default function ToolsSection() {
                 <option value="Below expectation">Below expectation</option>
               </select>
               <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginTop: '0.4rem' }}>
-                <button className="gb" onClick={generateComment}>Generate</button>
+                <button className="gb" onClick={() => { generateComment(); awardLearnerXP('tool_used', 'tool'); }}>Generate</button>
                 <button type="button" className="gb o" style={{ color: 'var(--gl)', borderColor: 'var(--gl)' }} onClick={generateAIComment} disabled={aiCommentLoading}>
                   {aiCommentLoading ? 'Writing…' : 'AI Remark'}
                 </button>
@@ -425,7 +507,7 @@ export default function ToolsSection() {
                 )}
               </div>
               {generatedComment && (
-                <p style={{ marginTop: '0.6rem', padding: '0.6rem', background: 'rgba(74,140,75,0.1)', borderRadius: '8px', fontSize: '0.92rem' }}>
+                <p style={{ marginTop: '0.6rem', padding: '0.7rem', background: 'rgba(134, 239, 172, 0.14)', border: '1px solid rgba(134, 239, 172, 0.3)', borderRadius: '8px', fontSize: '0.92rem', color: '#f3f5f3' }}>
                   {generatedComment}
                 </p>
               )}
@@ -433,7 +515,7 @@ export default function ToolsSection() {
           )}
 
           {/* TOOL 5: Bulk Report Comments Generator */}
-          {(filterCategory === 'All' || filterCategory === 'Teachers') && (
+          {matchesTool(['Teachers'], 'bulk report comments batch') && (
             <div className="card">
               <h3>Bulk report comments</h3>
               <label>One learner per line (Name, strength):</label>
@@ -459,7 +541,7 @@ export default function ToolsSection() {
                 )}
               </div>
               {bulkOutput && (
-                <div style={{ marginTop: '0.6rem', maxHeight: '160px', overflowY: 'auto', background: 'rgba(74,140,75,0.08)', padding: '0.6rem', borderRadius: '8px', fontSize: '0.85rem', whiteSpace: 'pre-wrap' }}>
+                <div style={{ marginTop: '0.6rem', maxHeight: '160px', overflowY: 'auto', background: 'rgba(0,0,0,0.28)', border: '1px solid rgba(255,255,255,0.16)', padding: '0.7rem', borderRadius: '8px', fontSize: '0.85rem', whiteSpace: 'pre-wrap', color: '#f3f5f3' }}>
                   {bulkOutput}
                 </div>
               )}
@@ -467,7 +549,7 @@ export default function ToolsSection() {
           )}
 
           {/* TOOL 6: Word Counter */}
-          {(filterCategory === 'All' || filterCategory === 'Learners' || filterCategory === 'Teachers') && (
+          {matchesTool(['Learners', 'Teachers'], 'word counter essay insha characters sentences') && (
             <div className="card">
               <h3>Word counter (Essays & Insha)</h3>
               <label>Paste your composition, essay or lesson notes:</label>
@@ -476,9 +558,9 @@ export default function ToolsSection() {
                 rows={5}
                 value={wordText}
                 onChange={(e) => setWordText(e.target.value)}
-                placeholder="Andika insha au insha hapa..."
+                placeholder="Andika insha au composition hapa..."
               />
-              <div style={{ display: 'flex', gap: '1rem', marginTop: '0.6rem', fontWeight: 700, color: '#2c5f2d', flexWrap: 'wrap' }}>
+              <div style={{ display: 'flex', gap: '1rem', marginTop: '0.6rem', fontWeight: 700, color: '#86efac', flexWrap: 'wrap' }}>
                 <span>Words: {wordCount}</span>
                 <span>Characters: {charCount}</span>
                 <span>Sentences: {sentenceCount}</span>
@@ -487,7 +569,7 @@ export default function ToolsSection() {
           )}
 
           {/* TOOL 7: Attendance Calculator */}
-          {(filterCategory === 'All' || filterCategory === 'Teachers' || filterCategory === 'Planning') && (
+          {matchesTool(['Teachers', 'Planning'], 'attendance rate calculator days present absent') && (
             <div className="card">
               <h3>Attendance rate calculator</h3>
               <label>Days present:</label>
@@ -495,12 +577,12 @@ export default function ToolsSection() {
               <label>Days absent:</label>
               <input className="sel" type="number" min={0} value={daysAbsent} onChange={(e) => setDaysAbsent(Number(e.target.value))} />
               <button className="gb" onClick={calculateAttendance}>Calculate Rate</button>
-              {attendanceResult && <p style={{ fontWeight: 700, color: '#2c5f2d', marginTop: '0.5rem' }}>{attendanceResult}</p>}
+              {attendanceResult && <p style={{ fontWeight: 700, color: '#86efac', marginTop: '0.5rem' }}>{attendanceResult}</p>}
             </div>
           )}
 
           {/* TOOL 8: Group Maker */}
-          {(filterCategory === 'All' || filterCategory === 'Teachers') && (
+          {matchesTool(['Teachers'], 'classroom group maker random student groups') && (
             <div className="card">
               <h3>Classroom group maker</h3>
               <label>One student name per line:</label>
@@ -516,8 +598,8 @@ export default function ToolsSection() {
               {generatedGroups.length > 0 && (
                 <div style={{ marginTop: '0.6rem', maxHeight: '180px', overflowY: 'auto' }}>
                   {generatedGroups.map((grp, gIdx) => (
-                    <div key={gIdx} style={{ padding: '0.4rem', borderBottom: '1px solid #eee', fontSize: '0.88rem' }}>
-                      <b>Group {gIdx + 1}:</b> {grp.join(', ')}
+                    <div key={gIdx} style={{ padding: '0.4rem', borderBottom: '1px solid var(--ln)', fontSize: '0.88rem', color: '#f3f5f3' }}>
+                      <b style={{ color: '#ffd166' }}>Group {gIdx + 1}:</b> {grp.join(', ')}
                     </div>
                   ))}
                 </div>
@@ -526,14 +608,14 @@ export default function ToolsSection() {
           )}
 
           {/* TOOL 9: Rubric Builder */}
-          {(filterCategory === 'All' || filterCategory === 'Teachers') && (
+          {matchesTool(['Teachers'], 'competency rubric builder cbc assessment word') && (
             <div className="card">
               <h3>Competency rubric builder</h3>
               <label>Assessment task or project:</label>
               <input className="sel" type="text" value={rubricTask} onChange={(e) => setRubricTask(e.target.value)} />
               <label>Criteria (comma separated):</label>
               <input className="sel" type="text" value={rubricCriteria} onChange={(e) => setRubricCriteria(e.target.value)} />
-              <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.4rem' }}>
+              <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.4rem', flexWrap: 'wrap' }}>
                 <button className="gb" onClick={() => setRubricGenerated(true)}>Build Rubric</button>
                 {rubricGenerated && (
                   <button className="gb o" onClick={() => downloadCustomRubricDoc(rubricTask, rubricCriteria)}>
@@ -542,7 +624,7 @@ export default function ToolsSection() {
                 )}
               </div>
               {rubricGenerated && (
-                <p style={{ fontSize: '0.85rem', color: '#2c5f2d', fontWeight: 600, marginTop: '0.5rem' }}>
+                <p style={{ fontSize: '0.88rem', color: '#86efac', fontWeight: 600, marginTop: '0.5rem' }}>
                   ✓ 4-Level rubric ready for {rubricTask}. Download Word file to print.
                 </p>
               )}
@@ -550,7 +632,7 @@ export default function ToolsSection() {
           )}
 
           {/* TOOL 10: School Fees Planner */}
-          {(filterCategory === 'All' || filterCategory === 'Calculators' || filterCategory === 'Planning') && (
+          {matchesTool(['Calculators', 'Planning'], 'secondary school fees planner term budget') && (
             <div className="card">
               <h3>Secondary school fees planner</h3>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.4rem' }}>
@@ -573,13 +655,13 @@ export default function ToolsSection() {
               </div>
               <label style={{ marginTop: '0.4rem' }}>Weeks until payment is due:</label>
               <input className="sel" type="number" min={1} value={feeWeeks} onChange={(e) => setFeeWeeks(Number(e.target.value))} />
-              <button className="gb" onClick={calculateFees}>Calculate Budget</button>
-              {feeResult && <p style={{ fontWeight: 700, color: '#2c5f2d', marginTop: '0.5rem' }}>{feeResult}</p>}
+              <button className="gb" onClick={() => { calculateFees(); awardLearnerXP('tool_used', 'tool'); }}>Calculate Budget</button>
+              {feeResult && <p style={{ fontWeight: 700, color: '#86efac', marginTop: '0.5rem' }}>{feeResult}</p>}
             </div>
           )}
 
           {/* TOOL 11: Score to Performance Level */}
-          {(filterCategory === 'All' || filterCategory === 'Calculators' || filterCategory === 'Teachers') && (
+          {matchesTool(['Calculators', 'Teachers'], 'score cbc performance level converter ee1 me1') && (
             <div className="card">
               <h3>Score to CBC performance level</h3>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
@@ -592,16 +674,16 @@ export default function ToolsSection() {
                   <input className="sel" type="number" min={1} value={scoreOutVal} onChange={(e) => setScoreOutVal(Number(e.target.value))} />
                 </div>
               </div>
-              <button className="gb" onClick={calculatePerformanceLevel}>Convert</button>
-              {perfResult && <p style={{ fontWeight: 700, color: '#2c5f2d', marginTop: '0.5rem' }}>{perfResult}</p>}
-              <p style={{ fontSize: '0.8rem', color: '#777', marginTop: '0.4rem' }}>
+              <button className="gb" onClick={() => { calculatePerformanceLevel(); awardLearnerXP('tool_used', 'tool'); }}>Convert</button>
+              {perfResult && <p style={{ fontWeight: 700, color: '#86efac', marginTop: '0.5rem' }}>{perfResult}</p>}
+              <p style={{ fontSize: '0.82rem', color: 'var(--mu)', marginTop: '0.4rem' }}>
                 Bands: EE1 (85%+), EE2 (75-84%), ME1 (65-74%), ME2 (50-64%), AE1 (40-49%), AE2 (30-39%), BE1 (20-29%), BE2 (below 20%).
               </p>
             </div>
           )}
 
           {/* TOOL 12: Focus Timer */}
-          {(filterCategory === 'All' || filterCategory === 'Learners') && (
+          {matchesTool(['Learners'], 'pomodoro study focus timer clock') && (
             <div className="card">
               <h3>Pomodoro study focus timer</h3>
               <select className="sel" value={timerType} onChange={(e) => handleTimerPreset(e.target.value)}>
@@ -609,7 +691,7 @@ export default function ToolsSection() {
                 <option value="40,10">40 minutes study, 10 min break</option>
                 <option value="50,10">50 minutes study, 10 min break</option>
               </select>
-              <p style={{ font: '800 2.2rem Fraunces, serif', margin: '0.6rem 0', color: '#2c5f2d' }}>
+              <p style={{ font: '800 2.4rem Fraunces, serif', margin: '0.6rem 0', color: '#ffd166' }}>
                 {formatTimer(timerSeconds)}
               </p>
               <div style={{ display: 'flex', gap: '0.5rem' }}>
@@ -624,7 +706,7 @@ export default function ToolsSection() {
           )}
 
           {/* TOOL 13: Revision Timetable Maker */}
-          {(filterCategory === 'All' || filterCategory === 'Planning' || filterCategory === 'Learners') && (
+          {matchesTool(['Planning', 'Learners'], 'weekly revision timetable maker exam schedule') && (
             <div className="card">
               <h3>Weekly revision timetable maker</h3>
               <label>Target exam date:</label>
@@ -638,7 +720,7 @@ export default function ToolsSection() {
                 <option value={3}>3 slots / day</option>
                 <option value={4}>4 slots / day</option>
               </select>
-              <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.4rem' }}>
+              <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.4rem', flexWrap: 'wrap' }}>
                 <button className="gb" onClick={() => setRevTableBuilt(true)}>Build Plan</button>
                 {revTableBuilt && (
                   <button className="gb o" onClick={() => downloadRevisionDoc(revExamDate, revSubjects, revSlots)}>
@@ -647,7 +729,7 @@ export default function ToolsSection() {
                 )}
               </div>
               {revTableBuilt && (
-                <p style={{ fontSize: '0.85rem', color: '#2c5f2d', fontWeight: 600, marginTop: '0.5rem' }}>
+                <p style={{ fontSize: '0.88rem', color: '#86efac', fontWeight: 600, marginTop: '0.5rem' }}>
                   ✓ 7-Day timetable generated. Download Word document to print and post on your desk.
                 </p>
               )}
@@ -655,7 +737,7 @@ export default function ToolsSection() {
           )}
 
           {/* TOOL 14: Class Marks and Ranking */}
-          {(filterCategory === 'All' || filterCategory === 'Teachers') && (
+          {matchesTool(['Teachers'], 'class marks ranking grade mean') && (
             <div className="card">
               <h3>Class marks and ranking</h3>
               <label>One learner per line (Name, mark, mark, mark):</label>
@@ -665,7 +747,7 @@ export default function ToolsSection() {
                 value={marksInput}
                 onChange={(e) => setMarksInput(e.target.value)}
               />
-              <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.4rem' }}>
+              <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.4rem', flexWrap: 'wrap' }}>
                 <button className="gb" onClick={calculateRanking}>Rank Learners</button>
                 {classRanking.length > 0 && (
                   <button className="gb o" onClick={() => downloadClassMarksDoc(classRanking)}>
@@ -675,22 +757,22 @@ export default function ToolsSection() {
               </div>
               {classRanking.length > 0 && (
                 <div style={{ marginTop: '0.6rem', maxHeight: '160px', overflowY: 'auto' }}>
-                  <table style={{ width: '100%', fontSize: '0.82rem', borderCollapse: 'collapse' }}>
+                  <table style={{ width: '100%', fontSize: '0.84rem', borderCollapse: 'collapse', color: '#f3f5f3' }}>
                     <thead>
-                      <tr style={{ background: '#f0f4f0' }}>
-                        <th style={{ padding: '4px' }}>#</th>
-                        <th style={{ padding: '4px' }}>Name</th>
-                        <th style={{ padding: '4px' }}>Total</th>
-                        <th style={{ padding: '4px' }}>Mean</th>
+                      <tr style={{ background: 'rgba(255,255,255,0.14)', color: '#ffffff' }}>
+                        <th style={{ padding: '6px' }}>#</th>
+                        <th style={{ padding: '6px' }}>Name</th>
+                        <th style={{ padding: '6px' }}>Total</th>
+                        <th style={{ padding: '6px' }}>Mean</th>
                       </tr>
                     </thead>
                     <tbody>
                       {classRanking.map((s, idx) => (
-                        <tr key={idx} style={{ borderBottom: '1px solid #eee' }}>
-                          <td style={{ textAlign: 'center', padding: '4px' }}>{s.rank}</td>
-                          <td style={{ padding: '4px' }}>{s.name}</td>
-                          <td style={{ textAlign: 'center', padding: '4px' }}>{s.total}</td>
-                          <td style={{ textAlign: 'center', padding: '4px', fontWeight: 'bold' }}>{s.mean.toFixed(1)}%</td>
+                        <tr key={idx} style={{ borderBottom: '1px solid var(--ln)' }}>
+                          <td style={{ textAlign: 'center', padding: '6px' }}>{s.rank}</td>
+                          <td style={{ padding: '6px' }}>{s.name}</td>
+                          <td style={{ textAlign: 'center', padding: '6px' }}>{s.total}</td>
+                          <td style={{ textAlign: 'center', padding: '6px', fontWeight: 'bold', color: '#86efac' }}>{s.mean.toFixed(1)}%</td>
                         </tr>
                       ))}
                     </tbody>
@@ -701,7 +783,7 @@ export default function ToolsSection() {
           )}
 
           {/* TOOL 15: Flashcards */}
-          {(filterCategory === 'All' || filterCategory === 'Learners') && (
+          {matchesTool(['Learners'], 'interactive revision flashcards maths science kiswahili') && (
             <div className="card">
               <h3>Interactive revision flashcards</h3>
               <select className="sel" value={deck} onChange={(e) => { setDeck(e.target.value as any); setCardIdx(0); setFlipped(false); }}>
@@ -713,10 +795,11 @@ export default function ToolsSection() {
               <div
                 className="fc"
                 onClick={() => setFlipped(!flipped)}
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setFlipped(!flipped); } }}
                 tabIndex={0}
                 role="button"
                 style={{
-                  minHeight: '110px',
+                  minHeight: '115px',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -726,9 +809,10 @@ export default function ToolsSection() {
                   padding: '1rem',
                   margin: '0.8rem 0',
                   cursor: 'pointer',
-                  fontWeight: 600,
-                  fontSize: '1.05rem',
-                  background: flipped ? '#eaf5eb' : '#fff',
+                  fontWeight: 700,
+                  fontSize: '1.06rem',
+                  background: flipped ? '#dcfce7' : '#ffffff',
+                  color: '#143215',
                   transition: 'background 0.2s'
                 }}
               >
@@ -736,7 +820,7 @@ export default function ToolsSection() {
               </div>
 
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span style={{ fontSize: '0.82rem', color: '#666' }}>Card { (cardIdx % activeCards.length) + 1 } of {activeCards.length} · Tap to flip</span>
+                <span style={{ fontSize: '0.84rem', color: 'var(--mu)' }}>Card {(cardIdx % activeCards.length) + 1} of {activeCards.length} · Tap to flip</span>
                 <button
                   className="gb o"
                   onClick={() => { setCardIdx(c => c + 1); setFlipped(false); }}
@@ -749,25 +833,35 @@ export default function ToolsSection() {
           )}
 
           {/* TOOL 16: Pathway Conversation Starter */}
-          {(filterCategory === 'All' || filterCategory === 'Learners' || filterCategory === 'Planning') && (
+          {matchesTool(['Learners', 'Planning'], 'grade 10 pathway starter senior school stem') && (
             <div className="card">
               <h3>Grade 10 pathway starter</h3>
               {pathwayResult ? (
                 <div>
-                  <p style={{ font: '800 1.35rem Fraunces, serif', color: '#2c5f2d', margin: '0.6rem 0' }}>
+                  <p style={{ font: '800 1.35rem Fraunces, serif', color: '#ffd166', margin: '0.6rem 0' }}>
                     Leaning towards: {pathwayResult}
                   </p>
-                  <p style={{ fontSize: '0.85rem', color: '#666', lineHeight: 1.5 }}>
+                  <p style={{ fontSize: '0.88rem', color: 'var(--mu)', lineHeight: 1.55 }}>
                     This is an advisory conversation starter based on your answers. Review Ministry of Education and Junior School teacher assessments for official placement.
                   </p>
-                  <button className="gb" onClick={resetPathway} style={{ marginTop: '0.6rem' }}>
-                    Retake Quiz
-                  </button>
+                  <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginTop: '0.75rem' }}>
+                    <button className="gb" onClick={handleExplainPathwayAI} disabled={pathwayAiLoading}>
+                      {pathwayAiLoading ? 'Analyzing…' : 'Get AI Subject Guide'}
+                    </button>
+                    <button className="gb o" onClick={resetPathway}>
+                      Retake Quiz
+                    </button>
+                  </div>
+                  {pathwayAiAdvice && (
+                    <div style={{ marginTop: '0.75rem', padding: '0.8rem', borderRadius: '10px', background: 'rgba(0,0,0,0.32)', border: '1px solid rgba(255,255,255,0.18)', fontSize: '0.88rem', color: '#f3f5f3', whiteSpace: 'pre-wrap', lineHeight: 1.55 }}>
+                      {pathwayAiAdvice}
+                    </div>
+                  )}
                 </div>
               ) : (
                 <div>
-                  <p style={{ fontSize: '0.82rem', color: '#666' }}>Question {pathwayStep + 1} of {PATHWAY_QUESTIONS.length}:</p>
-                  <p style={{ fontWeight: 600, fontSize: '0.98rem', margin: '0.4rem 0 0.8rem' }}>
+                  <p style={{ fontSize: '0.84rem', color: 'var(--mu)' }}>Question {pathwayStep + 1} of {PATHWAY_QUESTIONS.length}:</p>
+                  <p style={{ fontWeight: 600, fontSize: '0.98rem', margin: '0.4rem 0 0.8rem', color: '#ffffff' }}>
                     {PATHWAY_QUESTIONS[pathwayStep].q}
                   </p>
                   <div style={{ display: 'grid', gap: '0.4rem' }}>

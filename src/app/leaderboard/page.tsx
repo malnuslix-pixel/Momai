@@ -1,42 +1,94 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
-import { ALL_BADGES, getLevelName, getStreakEmoji } from '@/lib/gamification';
+import { ALL_BADGES, getLevelName, getStreakEmoji, getXPProgress } from '@/lib/gamification';
+import {
+  LearnerProfile,
+  getLearnerProfile,
+  updateLearnerIdentity,
+  flushPendingXP,
+} from '@/lib/learner-profile';
 
 interface LeaderEntry {
   rank: number;
+  user_id?: string;
   display_name: string;
   county: string;
   school?: string;
   total_xp: number;
   level: number;
   streak: number;
+  isMe?: boolean;
 }
+
+const KENYA_COUNTIES = [
+  'Nairobi', 'Kiambu', 'Mombasa', 'Kisumu', 'Nakuru', 'Uasin Gishu',
+  'Machakos', 'Nyeri', 'Kajiado', 'Kilifi', 'Meru', 'Kakamega', 'Kisii', 'Kenya',
+];
 
 export default function LeaderboardPage() {
   const [leaderboard, setLeaderboard] = useState<LeaderEntry[]>([]);
   const [period, setPeriod] = useState<'weekly' | 'monthly' | 'alltime'>('weekly');
   const [activeTab, setActiveTab] = useState<'leaderboard' | 'badges'>('leaderboard');
   const [loading, setLoading] = useState(true);
+  const [profile, setProfile] = useState<LearnerProfile | null>(null);
+  const [editName, setEditName] = useState('');
+  const [editCounty, setEditCounty] = useState('Nairobi');
+  const [profileSaved, setProfileSaved] = useState(false);
 
-  useEffect(() => {
-    fetchLeaderboard();
-  }, [period]);
-
-  const fetchLeaderboard = async () => {
+  const fetchLeaderboard = useCallback(async () => {
     setLoading(true);
     try {
+      await flushPendingXP();
+      const currentProfile = getLearnerProfile();
+      setProfile(currentProfile);
+      setEditName(currentProfile.displayName);
+      setEditCounty(currentProfile.county);
+
       const res = await fetch(`/api/gamification?action=leaderboard&period=${period}&limit=20`);
       const data = await res.json();
-      if (data.ok && data.leaderboard) {
-        setLeaderboard(data.leaderboard);
+      if (data.ok && Array.isArray(data.leaderboard)) {
+        const list: LeaderEntry[] = data.leaderboard.map((e: any) => ({
+          ...e,
+          isMe: e.user_id && e.user_id === currentProfile.id,
+        }));
+
+        if (currentProfile.xp > 0 && !list.some((e) => e.isMe)) {
+          list.push({
+            rank: 0,
+            user_id: currentProfile.id,
+            display_name: `${currentProfile.displayName} (You)`,
+            county: currentProfile.county,
+            total_xp: currentProfile.xp,
+            level: currentProfile.level,
+            streak: currentProfile.streak,
+            isMe: true,
+          });
+          list.sort((a, b) => b.total_xp - a.total_xp);
+          list.forEach((e, idx) => { e.rank = idx + 1; });
+        }
+
+        setLeaderboard(list);
       }
     } catch {
       // Keep resilient default
     } finally {
       setLoading(false);
     }
+  }, [period]);
+
+  useEffect(() => {
+    fetchLeaderboard();
+  }, [fetchLeaderboard]);
+
+  const handleSaveProfile = (e: React.FormEvent) => {
+    e.preventDefault();
+    const updated = updateLearnerIdentity(editName, editCounty);
+    setProfile(updated);
+    setProfileSaved(true);
+    setTimeout(() => setProfileSaved(false), 2000);
+    fetchLeaderboard();
   };
 
   const getRankStyle = (rank: number) => {
@@ -139,6 +191,72 @@ export default function LeaderboardPage() {
 
       {/* Main Container */}
       <div style={{ maxWidth: '720px', margin: '0 auto', padding: '1.2rem' }}>
+        {profile && (() => {
+          const xpProg = getXPProgress(profile.xp);
+          return (
+            <div style={{
+              background: '#ffffff',
+              borderRadius: '16px',
+              border: '1px solid #d5dfd5',
+              padding: '1.1rem 1.25rem',
+              marginBottom: '1.2rem',
+              boxShadow: '0 4px 14px rgba(0,0,0,0.05)',
+            }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.6rem', marginBottom: '0.6rem' }}>
+                <div>
+                  <span style={{ fontSize: '0.78rem', fontWeight: 700, color: '#2c5f2d', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                    Your Learner Profile
+                  </span>
+                  <h2 style={{ margin: '0.15rem 0', fontSize: '1.2rem', color: '#143215' }}>
+                    {profile.displayName} · Level {profile.level} ({getLevelName(profile.level)})
+                  </h2>
+                </div>
+                <div style={{ textAlign: 'right' }}>
+                  <div style={{ fontWeight: 800, fontSize: '1.25rem', color: '#2c5f2d', fontFamily: 'Fraunces, Georgia, serif' }}>
+                    {profile.xp.toLocaleString()} XP
+                  </div>
+                  <div style={{ fontSize: '0.8rem', color: '#555' }}>
+                    {getStreakEmoji(profile.streak)} {profile.streak}d streak · {profile.unlockedBadges.length}/{ALL_BADGES.length} badges
+                  </div>
+                </div>
+              </div>
+
+              <div style={{ background: '#e5ece5', height: '8px', borderRadius: '999px', overflow: 'hidden', marginBottom: '0.45rem' }}>
+                <div style={{ width: `${xpProg.progress}%`, background: '#2c5f2d', height: '100%', transition: 'width 0.3s' }} />
+              </div>
+              <div style={{ fontSize: '0.78rem', color: '#555', marginBottom: '0.85rem' }}>
+                {xpProg.current} / {xpProg.needed} XP to Level {profile.level + 1}
+              </div>
+
+              <form onSubmit={handleSaveProfile} style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', alignItems: 'center' }}>
+                <input
+                  type="text"
+                  value={editName}
+                  onChange={(e) => setEditName(e.target.value)}
+                  placeholder="Your display name"
+                  aria-label="Learner display name"
+                  style={{ flex: '1 1 160px', padding: '0.45rem 0.7rem', borderRadius: '8px', border: '1px solid #cbd5cb', background: '#f8faf8', color: '#111827', fontSize: '0.88rem' }}
+                />
+                <select
+                  value={editCounty}
+                  onChange={(e) => setEditCounty(e.target.value)}
+                  aria-label="County"
+                  style={{ flex: '0 1 150px', padding: '0.45rem 0.65rem', borderRadius: '8px', border: '1px solid #cbd5cb', background: '#f8faf8', color: '#111827', fontSize: '0.88rem' }}
+                >
+                  {KENYA_COUNTIES.map((c) => (
+                    <option key={c} value={c}>{c}</option>
+                  ))}
+                </select>
+                <button
+                  type="submit"
+                  style={{ padding: '0.48rem 0.95rem', borderRadius: '8px', border: 'none', background: '#2c5f2d', color: '#fff', fontWeight: 700, fontSize: '0.84rem', cursor: 'pointer' }}
+                >
+                  {profileSaved ? '✓ Saved' : 'Save Profile'}
+                </button>
+              </form>
+            </div>
+          );
+        })()}
         {activeTab === 'leaderboard' && (
           <>
             {/* Period Filters */}
@@ -295,27 +413,42 @@ export default function LeaderboardPage() {
             gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))',
             gap: '0.85rem',
           }}>
-            {ALL_BADGES.map((b) => (
-              <div
-                key={b.id}
-                style={{
-                  background: '#fff',
-                  border: '1px solid #e2ded5',
-                  borderRadius: '14px',
-                  padding: '1.2rem 0.8rem',
-                  textAlign: 'center',
-                  boxShadow: '0 2px 6px rgba(0,0,0,0.04)',
-                }}
-              >
-                <div style={{ fontSize: '2.5rem', marginBottom: '0.4rem' }}>{b.icon}</div>
-                <div style={{ fontWeight: 700, fontSize: '0.9rem', marginBottom: '0.2rem' }}>
-                  {b.name}
+            {ALL_BADGES.map((b) => {
+              const unlocked = profile?.unlockedBadges.includes(b.id);
+              return (
+                <div
+                  key={b.id}
+                  style={{
+                    background: unlocked ? '#ffffff' : '#f3f4f6',
+                    border: unlocked ? '2px solid #2c5f2d' : '1px solid #e2ded5',
+                    borderRadius: '14px',
+                    padding: '1.2rem 0.8rem',
+                    textAlign: 'center',
+                    opacity: unlocked ? 1 : 0.72,
+                    boxShadow: '0 2px 6px rgba(0,0,0,0.04)',
+                  }}
+                >
+                  <div style={{ fontSize: '2.5rem', marginBottom: '0.4rem', filter: unlocked ? 'none' : 'grayscale(100%)' }}>{b.icon}</div>
+                  <div style={{ fontWeight: 700, fontSize: '0.9rem', marginBottom: '0.2rem', color: '#143215' }}>
+                    {b.name}
+                  </div>
+                  <div style={{ fontSize: '0.78rem', color: '#555', lineHeight: 1.4, marginBottom: '0.4rem' }}>
+                    {b.description}
+                  </div>
+                  <span style={{
+                    display: 'inline-block',
+                    fontSize: '0.7rem',
+                    fontWeight: 700,
+                    padding: '0.15rem 0.5rem',
+                    borderRadius: '999px',
+                    background: unlocked ? '#dcfce7' : '#e5e7eb',
+                    color: unlocked ? '#166534' : '#4b5563',
+                  }}>
+                    {unlocked ? '✓ Unlocked' : 'Locked'}
+                  </span>
                 </div>
-                <div style={{ fontSize: '0.78rem', color: '#777', lineHeight: 1.4 }}>
-                  {b.description}
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
 

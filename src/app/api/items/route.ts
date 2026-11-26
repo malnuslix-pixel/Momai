@@ -9,6 +9,7 @@ export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
     const requestedAll = searchParams.get('all') === 'true';
+    const filterKind = searchParams.get('k');
     
     // Only verified administrators can request drafts and rejected items
     const isAdmin = requestedAll ? await verifyRequestAdmin(req) : false;
@@ -20,11 +21,17 @@ export async function GET(req: NextRequest) {
     if (!all) {
       query = query.eq('st', 'published');
     }
+    if (filterKind === 'job' || filterKind === 'notice') {
+      query = query.eq('k', filterKind);
+    }
 
     const { data, error } = await query;
 
     if (error || !data || data.length === 0) {
-      const items = all ? SEED_ITEMS : SEED_ITEMS.filter((i) => i.st === 'published');
+      let items = all ? SEED_ITEMS : SEED_ITEMS.filter((i) => i.st === 'published');
+      if (filterKind === 'job' || filterKind === 'notice') {
+        items = items.filter((i) => i.k === filterKind);
+      }
       return NextResponse.json({
         ok: true,
         items,
@@ -140,6 +147,9 @@ export async function PATCH(req: NextRequest) {
 
 export async function DELETE(req: NextRequest) {
   try {
+    if (!(await verifyRequestAdmin(req))) {
+      return NextResponse.json({ error: 'Unauthorized: Admin session required' }, { status: 401 });
+    }
     const { searchParams } = new URL(req.url);
     const id = searchParams.get('id');
 

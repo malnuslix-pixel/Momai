@@ -178,6 +178,50 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ ok: true, provider: ai.provider, text });
     }
 
+    if (task === 'explain_lesson') {
+      const courseTitle = clean(body.courseTitle, 140);
+      const lessonTitle = clean(body.lessonTitle, 140);
+      const lessonContent = clean(body.lessonContent, 1200);
+      const lang = body.lang === 'sw' ? 'sw' : 'en';
+
+      const ai = await generateAIResponse({
+        system:
+          lang === 'sw'
+            ? 'Wewe ni mwalimu rafiki wa Mwalimu Family. Eleza somo hili kwa Kiswahili rahisi ukitoa mfano mmoja halisi wa maisha ya Kenya na zoezi moja fupi.'
+            : 'You are Mwalimu Family AI Tutor. Explain this mini-course lesson in simple practical words with 1 Kenyan real-life example and 1 quick self-check exercise (3-4 short bullets).',
+        prompt: `Course: ${courseTitle}\nLesson: ${lessonTitle}\nSummary: ${lessonContent}`,
+        temperature: 0.5,
+        maxTokens: 320,
+      });
+
+      const text =
+        ai.text ||
+        (lang === 'sw'
+          ? `• Somo: ${lessonTitle}\n• Mfano wa Kenya: Tumia ujuzi huu katika bajeti ya shule, miradi ya kikundi, au ujumbe salama wa simu.\n• Zoezi fupi: Eleza hatua moja unayoweza kuitumia leo.`
+          : `• Key Idea (${lessonTitle}): Focus on one small daily habit you can repeat consistently.\n• Kenyan Example: Apply this directly when reviewing KNEC past papers, budgeting via M-Pesa, or organizing class notes.\n• Quick Try: Write a 2-sentence summary in your notebook before moving to the next lesson.`);
+
+      return NextResponse.json({ ok: true, provider: ai.provider, text });
+    }
+
+    if (task === 'explain_term') {
+      const term = clean(body.term, 100);
+      const definition = clean(body.definition, 600);
+      const lang = body.lang === 'sw' ? 'sw' : 'en';
+
+      const ai = await generateAIResponse({
+        system:
+          lang === 'sw'
+            ? 'Eleza istilahi hii ya elimu ya Kenya (CBC / KNEC / KUCCPS / TSC) kwa lugha nyepesi kwa wazazi na wanafunzi katika sentensi 2-3.'
+            : 'Explain this Kenyan education term clearly for parents and learners in 2-3 plain sentences with what action families should take if relevant.',
+        prompt: `Term: ${term}\nGlossary Note: ${definition}`,
+        temperature: 0.4,
+        maxTokens: 220,
+      });
+
+      const text = ai.text || `${term}: ${definition} Ask your school academic desk or check official MoE/KNEC circulars if you need confirmation.`;
+      return NextResponse.json({ ok: true, provider: ai.provider, text });
+    }
+
     return NextResponse.json({ ok: false, error: 'Unsupported task' }, { status: 400 });
   } catch (err: any) {
     console.error('AI assist error:', err);

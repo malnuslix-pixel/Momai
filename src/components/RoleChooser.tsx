@@ -14,6 +14,7 @@ import {
   Sparkles
 } from 'lucide-react';
 import { useLanguage } from '@/lib/language';
+import { useSectionCopy } from '@/lib/cms-context';
 
 interface RoleChooserProps {
   onNavClick?: (hash: string) => void;
@@ -21,23 +22,18 @@ interface RoleChooserProps {
 
 export default function RoleChooser({ onNavClick }: RoleChooserProps) {
   const [lang] = useLanguage();
+  const copy = useSectionCopy('roleChooser', lang);
 
   return (
     <section className="sec" id="haud" aria-labelledby="hau">
       <div className="w">
         <div style={{ marginBottom: '1.8rem' }}>
-          <span className="tag">
-            {lang === 'sw' ? 'Njia za Wadau' : 'Audience Pathways'}
-          </span>
+          <span className="tag">{copy.tag}</span>
           <h2 className="sh" id="hau" style={{ margin: '0.4rem 0 0.2rem' }}>
-            {lang === 'sw'
-              ? 'Imeandaliwa Mahususi kwa Kila Mdau wa Elimu'
-              : 'Tailored for Every Educational Stakeholder'}
+            {copy.title}
           </h2>
           <p className="sub" style={{ margin: 0 }}>
-            {lang === 'sw'
-              ? 'Chagua nafasi yako kupata nyenzo rasmi za mtaala, matangazo ya serikali, na zana za kuokoa muda.'
-              : 'Choose your role to find verified curriculum resources, official notices, and time-saving tools.'}
+            {copy.subtitle}
           </p>
         </div>
 

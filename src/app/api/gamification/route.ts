@@ -35,14 +35,25 @@ export async function GET(req: NextRequest) {
   }
 
   if (action === 'leaderboard') {
-    try {
-      const limit = parseInt(req.nextUrl.searchParams.get('limit') || '20', 10);
+    const period = req.nextUrl.searchParams.get('period') || 'weekly';
+    const limit = parseInt(req.nextUrl.searchParams.get('limit') || '20', 10);
 
-      const { data: leaders } = await db
+    try {
+      let query = db
         .from('user_xp')
-        .select('id, total_xp, level, current_streak')
+        .select('id, total_xp, level, current_streak, updated_at')
         .order('total_xp', { ascending: false })
         .limit(limit);
+
+      if (period === 'weekly') {
+        const weekAgo = new Date(Date.now() - 7 * 864e5).toISOString();
+        query = query.gte('updated_at', weekAgo);
+      } else if (period === 'monthly') {
+        const monthAgo = new Date(Date.now() - 30 * 864e5).toISOString();
+        query = query.gte('updated_at', monthAgo);
+      }
+
+      const { data: leaders } = await query;
 
       if (leaders && leaders.length > 0) {
         const userIds = leaders.map((l) => l.id);
@@ -67,26 +78,36 @@ export async function GET(req: NextRequest) {
           };
         });
 
-        return NextResponse.json({ ok: true, leaderboard });
+        return NextResponse.json({ ok: true, leaderboard, period });
       }
     } catch {}
 
-    // Resilient fallback rankings for students across Kenya
-    return NextResponse.json({
-      ok: true,
-      leaderboard: [
-        { rank: 1, display_name: 'Wanjiku M.', county: 'Nairobi', total_xp: 4850, level: 10, streak: 21 },
-        { rank: 2, display_name: 'Brian K.', county: 'Kiambu', total_xp: 4200, level: 9, streak: 14 },
-        { rank: 3, display_name: 'Aisha H.', county: 'Mombasa', total_xp: 3750, level: 9, streak: 18 },
-        { rank: 4, display_name: 'David O.', county: 'Kisumu', total_xp: 3100, level: 8, streak: 7 },
-        { rank: 5, display_name: 'Faith N.', county: 'Nakuru', total_xp: 2800, level: 8, streak: 12 },
-        { rank: 6, display_name: 'John W.', county: 'Uasin Gishu', total_xp: 2500, level: 7, streak: 9 },
-        { rank: 7, display_name: 'Grace A.', county: 'Machakos', total_xp: 2200, level: 7, streak: 5 },
-        { rank: 8, display_name: 'Peter M.', county: 'Nyeri', total_xp: 1900, level: 6, streak: 11 },
-        { rank: 9, display_name: 'Linda W.', county: 'Kajiado', total_xp: 1500, level: 5, streak: 3 },
-        { rank: 10, display_name: 'Samuel K.', county: 'Nairobi', total_xp: 1200, level: 5, streak: 8 },
-      ],
+    // Period-aware resilient fallback rankings for Kenyan learners
+    const mult = period === 'weekly' ? 0.35 : period === 'monthly' ? 0.65 : 1;
+    const baseLeaders = [
+      { display_name: 'Wanjiku M.', county: 'Nairobi', total_xp: 4850, level: 10, streak: 21 },
+      { display_name: 'Brian K.', county: 'Kiambu', total_xp: 4200, level: 9, streak: 14 },
+      { display_name: 'Aisha H.', county: 'Mombasa', total_xp: 3750, level: 9, streak: 18 },
+      { display_name: 'David O.', county: 'Kisumu', total_xp: 3100, level: 8, streak: 7 },
+      { display_name: 'Faith N.', county: 'Nakuru', total_xp: 2800, level: 8, streak: 12 },
+      { display_name: 'John W.', county: 'Uasin Gishu', total_xp: 2500, level: 7, streak: 9 },
+      { display_name: 'Grace A.', county: 'Machakos', total_xp: 2200, level: 7, streak: 5 },
+      { display_name: 'Peter M.', county: 'Nyeri', total_xp: 1900, level: 6, streak: 11 },
+      { display_name: 'Linda W.', county: 'Kajiado', total_xp: 1500, level: 5, streak: 3 },
+      { display_name: 'Samuel K.', county: 'Nairobi', total_xp: 1200, level: 5, streak: 8 },
+    ].map((e, i) => {
+      const xp = Math.round((e.total_xp * mult) / 5) * 5;
+      return {
+        rank: i + 1,
+        display_name: e.display_name,
+        county: e.county,
+        total_xp: xp,
+        level: getLevel(xp),
+        streak: period === 'weekly' ? Math.min(7, e.streak) : e.streak,
+      };
     });
+
+    return NextResponse.json({ ok: true, leaderboard: baseLeaders, period });
   }
 
   if (action === 'badges') {
@@ -104,7 +125,7 @@ export async function GET(req: NextRequest) {
 // POST - Award XP, calculate streak, award badges
 export async function POST(req: NextRequest) {
   try {
-    const { user_id, action } = await req.json();
+    const { user_id, action, display_name, county } = await req.json();
 
     if (!user_id || !action) {
       return NextResponse.json({ ok: false, error: 'user_id and action required' }, { status: 400 });
@@ -112,6 +133,18 @@ export async function POST(req: NextRequest) {
 
     const db = getAdminClient();
     const today = new Date().toISOString().slice(0, 10);
+
+    // Sync profile metadata when provided
+    if (display_name || county) {
+      try {
+        await db.from('profiles').upsert({
+          id: user_id,
+          display_name: String(display_name || 'Mwalimu Learner').slice(0, 50),
+          county: String(county || 'Kenya').slice(0, 40),
+          updated_at: new Date().toISOString(),
+        });
+      } catch {}
+    }
 
     let { data: userXP } = await db.from('user_xp').select('*').eq('id', user_id).single();
 
@@ -180,6 +213,14 @@ export async function POST(req: NextRequest) {
         break;
       case 'session_completed':
         xpEarned += XP_VALUES.SESSION_COMPLETED;
+        updates.sessions_completed = (userXP.sessions_completed || 0) + 1;
+        break;
+      case 'lesson_completed':
+        xpEarned += 12;
+        updates.sessions_completed = (userXP.sessions_completed || 0) + 1;
+        break;
+      case 'quiz_completed':
+        xpEarned += 20;
         updates.sessions_completed = (userXP.sessions_completed || 0) + 1;
         break;
       default:

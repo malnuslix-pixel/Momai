@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import {
   FormSubmissionRecord,
@@ -19,6 +19,11 @@ interface SavedItem {
   subject: string;
   term: string;
   type: string;
+}
+
+interface LiveStatusInfo {
+  st: 'new' | 'approved' | 'rejected' | string;
+  updated_at?: string;
 }
 
 const G10_CHECKLIST_STEPS = [
@@ -52,17 +57,34 @@ const G10_CHECKLIST_STEPS = [
 export default function ActivitySection({ onNavClick }: ActivitySectionProps) {
   const [tab, setTab] = useState<'all' | 'materials' | 'submissions' | 'checklist'>('all');
   const [submissions, setSubmissions] = useState<FormSubmissionRecord[]>([]);
+  const [liveStatuses, setLiveStatuses] = useState<Record<string, LiveStatusInfo>>({});
+  const [refreshingStatus, setRefreshingStatus] = useState(false);
   const [savedItems, setSavedItems] = useState<SavedItem[]>([]);
   const [g10Checks, setG10Checks] = useState<boolean[]>([false, false, false, false, false]);
   const [copiedRef, setCopiedRef] = useState<string | null>(null);
 
+  const syncLiveStatuses = useCallback(async (subs: FormSubmissionRecord[]) => {
+    const refs = subs.map((s) => s.ref).filter(Boolean);
+    if (refs.length === 0) return;
+    setRefreshingStatus(true);
+    try {
+      const res = await fetch(`/api/submit?refs=${encodeURIComponent(refs.join(','))}`);
+      const data = await res.json();
+      if (data?.ok && data.statuses) {
+        setLiveStatuses(data.statuses);
+      }
+    } catch {}
+    finally {
+      setRefreshingStatus(false);
+    }
+  }, []);
+
   useEffect(() => {
     try {
-      // Submissions
-      const subs = JSON.parse(localStorage.getItem('mfsub') || '[]');
+      const subs: FormSubmissionRecord[] = JSON.parse(localStorage.getItem('mfsub') || '[]');
       setSubmissions(subs);
+      syncLiveStatuses(subs);
 
-      // Saved Library Materials
       const storedMfs: string[] = JSON.parse(localStorage.getItem('mfs') || '[]');
       const parsed: SavedItem[] = storedMfs.map((id) => {
         const parts = id.split('|');
@@ -76,13 +98,12 @@ export default function ActivitySection({ onNavClick }: ActivitySectionProps) {
       });
       setSavedItems(parsed);
 
-      // Grade 10 Checklist
       const storedChecks = JSON.parse(localStorage.getItem('g10_checks') || '[]');
       if (Array.isArray(storedChecks) && storedChecks.length === 5) {
         setG10Checks(storedChecks);
       }
     } catch {}
-  }, []);
+  }, [syncLiveStatuses]);
 
   const handleToggleCheck = (index: number) => {
     const updated = [...g10Checks];
@@ -104,6 +125,7 @@ export default function ActivitySection({ onNavClick }: ActivitySectionProps) {
   const handleClearSubmissions = () => {
     if (window.confirm('Are you sure you want to clear your local submission history on this device?')) {
       setSubmissions([]);
+      setLiveStatuses({});
       try {
         localStorage.removeItem('mfsub');
       } catch {}
@@ -122,41 +144,17 @@ export default function ActivitySection({ onNavClick }: ActivitySectionProps) {
   return (
     <section className="sec" id="activity" aria-labelledby="avh" style={{ padding: '2.5rem 0 4rem' }}>
       <div className="w">
-        {/* Navigation / Filter Tabs */}
-        <div style={{
-          display: 'flex',
-          gap: '0.5rem',
-          flexWrap: 'wrap',
-          marginBottom: '2rem',
-          borderBottom: '1px solid #e0ddd6',
-          paddingBottom: '0.8rem'
-        }}>
-          <button
-            onClick={() => setTab('all')}
-            className={`chip ${tab === 'all' ? 'on' : ''}`}
-            style={{ cursor: 'pointer', fontSize: '0.92rem' }}
-          >
+        <div className="chips" style={{ marginBottom: '2rem', borderBottom: '1px solid var(--ln)', paddingBottom: '0.8rem' }}>
+          <button onClick={() => setTab('all')} className={`chip ${tab === 'all' ? 'on' : ''}`}>
             📋 All Activity ({savedItems.length + submissions.length})
           </button>
-          <button
-            onClick={() => setTab('materials')}
-            className={`chip ${tab === 'materials' ? 'on' : ''}`}
-            style={{ cursor: 'pointer', fontSize: '0.92rem' }}
-          >
+          <button onClick={() => setTab('materials')} className={`chip ${tab === 'materials' ? 'on' : ''}`}>
             ⭐ Saved Materials ({savedItems.length})
           </button>
-          <button
-            onClick={() => setTab('submissions')}
-            className={`chip ${tab === 'submissions' ? 'on' : ''}`}
-            style={{ cursor: 'pointer', fontSize: '0.92rem' }}
-          >
+          <button onClick={() => setTab('submissions')} className={`chip ${tab === 'submissions' ? 'on' : ''}`}>
             📬 My Submissions ({submissions.length})
           </button>
-          <button
-            onClick={() => setTab('checklist')}
-            className={`chip ${tab === 'checklist' ? 'on' : ''}`}
-            style={{ cursor: 'pointer', fontSize: '0.92rem' }}
-          >
+          <button onClick={() => setTab('checklist')} className={`chip ${tab === 'checklist' ? 'on' : ''}`}>
             ✅ Grade 10 Placement ({completedStepsCount}/5)
           </button>
         </div>
@@ -167,7 +165,7 @@ export default function ActivitySection({ onNavClick }: ActivitySectionProps) {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.8rem', marginBottom: '1.2rem' }}>
               <div>
                 <h2 style={{ fontSize: '1.4rem', color: 'var(--hd)' }}>⭐ Saved Learning Materials</h2>
-                <p style={{ margin: 0, fontSize: '0.92rem', color: '#555' }}>
+                <p style={{ margin: 0, fontSize: '0.92rem', color: 'var(--mu)' }}>
                   Editable Word (.doc) schemes, notes, and past papers bookmarked on this device.
                 </p>
               </div>
@@ -182,14 +180,7 @@ export default function ActivitySection({ onNavClick }: ActivitySectionProps) {
                   const hue = getSubjectHue(item.subject);
                   const emoji = getSubjectEmoji(item.subject);
                   return (
-                    <div key={item.id} className="mc" style={{
-                      background: '#fff',
-                      borderRadius: '16px',
-                      border: '1px solid #e0ddd6',
-                      overflow: 'hidden',
-                      display: 'flex',
-                      flexDirection: 'column'
-                    }}>
+                    <div key={item.id} className="mc" style={{ background: '#ffffff', color: '#1f2937', borderRadius: '16px', border: '1px solid #d5dfd5', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
                       <div
                         className="cv"
                         style={{
@@ -202,14 +193,14 @@ export default function ActivitySection({ onNavClick }: ActivitySectionProps) {
                         }}
                       >
                         <span style={{ fontSize: '1.8rem' }}>{emoji}</span>
-                        <span className="tag" style={{ background: 'rgba(255,255,255,0.25)', color: '#fff' }}>
+                        <span className="tag" style={{ background: 'rgba(0,0,0,0.35)', color: '#fff', borderColor: 'rgba(255,255,255,0.4)' }}>
                           {item.grade}
                         </span>
                       </div>
                       <div style={{ padding: '1rem', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                         <div>
-                          <h3 style={{ fontSize: '1.15rem', margin: '0 0 0.3rem' }}>{item.subject}</h3>
-                          <p style={{ margin: 0, fontSize: '0.88rem', color: '#666' }}>
+                          <h3 style={{ fontSize: '1.15rem', margin: '0 0 0.3rem', color: '#143215' }}>{item.subject}</h3>
+                          <p style={{ margin: 0, fontSize: '0.88rem', color: '#374151' }}>
                             {item.term} · <b>{item.type}</b>
                           </p>
                         </div>
@@ -230,7 +221,7 @@ export default function ActivitySection({ onNavClick }: ActivitySectionProps) {
                           </button>
                           <button
                             className="gb o"
-                            style={{ padding: '0.45rem 0.7rem', fontSize: '0.85rem', color: '#a00' }}
+                            style={{ padding: '0.45rem 0.7rem', fontSize: '0.85rem', color: '#b91c1c', borderColor: '#b91c1c' }}
                             onClick={() => handleRemoveSavedItem(item.id)}
                             title="Remove from saved"
                           >
@@ -244,15 +235,15 @@ export default function ActivitySection({ onNavClick }: ActivitySectionProps) {
               </div>
             ) : (
               <div style={{
-                background: '#fff',
-                border: '1px dashed #d0ccc0',
+                background: 'var(--card)',
+                border: '1px dashed var(--ln)',
                 borderRadius: '16px',
                 padding: '2rem 1.5rem',
                 textAlign: 'center'
               }}>
                 <span style={{ fontSize: '2.5rem', display: 'block', marginBottom: '0.6rem' }}>📚</span>
-                <h3 style={{ fontSize: '1.15rem', margin: '0 0 0.4rem' }}>No materials bookmarked yet</h3>
-                <p style={{ color: '#666', fontSize: '0.92rem', maxWidth: '420px', margin: '0 auto 1.2rem' }}>
+                <h3 style={{ fontSize: '1.15rem', margin: '0 0 0.4rem', color: '#fff' }}>No materials bookmarked yet</h3>
+                <p style={{ color: 'var(--mu)', fontSize: '0.92rem', maxWidth: '420px', margin: '0 auto 1.2rem' }}>
                   Save schemes of work, lesson plans, and revision notes as you browse the library for instant offline access.
                 </p>
                 <Link href="/learn" className="btn b1" style={{ fontSize: '0.9rem', padding: '0.6rem 1.4rem', textDecoration: 'none' }}>
@@ -263,128 +254,162 @@ export default function ActivitySection({ onNavClick }: ActivitySectionProps) {
           </div>
         )}
 
-        {/* 2. SUBMISSIONS LOG SECTION */}
+        {/* 2. SUBMISSIONS LOG SECTION (WITH LIVE STATUS SYNC) */}
         {(tab === 'all' || tab === 'submissions') && (
           <div style={{ marginBottom: '3rem' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.8rem', marginBottom: '1.2rem' }}>
               <div>
                 <h2 style={{ fontSize: '1.4rem', color: 'var(--hd)' }}>📬 My Form Submissions & Inquiries</h2>
-                <p style={{ margin: 0, fontSize: '0.92rem', color: '#555' }}>
-                  Real-time status of job vacancies, tutoring inquiries, official notices, and advertisements submitted from this device.
+                <p style={{ margin: 0, fontSize: '0.92rem', color: 'var(--mu)' }}>
+                  Live status of job vacancies, tutoring inquiries, notices, and advertisements submitted from this device.
                 </p>
               </div>
               {submissions.length > 0 && (
-                <button
-                  onClick={handleClearSubmissions}
-                  className="gb o"
-                  style={{ fontSize: '0.82rem', padding: '0.35rem 0.8rem', color: '#888' }}
-                >
-                  Clear History
-                </button>
+                <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                  <button
+                    onClick={() => syncLiveStatuses(submissions)}
+                    disabled={refreshingStatus}
+                    className="gb o"
+                    style={{ fontSize: '0.82rem', padding: '0.35rem 0.85rem', margin: 0 }}
+                  >
+                    {refreshingStatus ? 'Syncing…' : '↻ Refresh Status'}
+                  </button>
+                  <button
+                    onClick={handleClearSubmissions}
+                    className="gb o"
+                    style={{ fontSize: '0.82rem', padding: '0.35rem 0.85rem', margin: 0, color: '#fca5a5', borderColor: 'rgba(252,165,165,0.5)' }}
+                  >
+                    Clear History
+                  </button>
+                </div>
               )}
             </div>
 
             {submissions.length > 0 ? (
               <div style={{ display: 'grid', gap: '1rem' }}>
-                {submissions.map((s, idx) => (
-                  <div
-                    key={idx}
-                    style={{
-                      background: '#fff',
-                      border: '1px solid #e0ddd6',
-                      borderRadius: '16px',
-                      padding: '1.4rem',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      gap: '0.7rem'
-                    }}
-                  >
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '0.6rem' }}>
-                      <div>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-                          <span style={{
-                            fontFamily: 'monospace',
-                            fontWeight: 700,
-                            fontSize: '1rem',
-                            color: '#1a3d1b',
-                            background: '#e8f3e8',
-                            padding: '0.2rem 0.6rem',
-                            borderRadius: '6px'
-                          }}>
-                            {s.ref}
-                          </span>
-                          <button
-                            onClick={() => copyRefToClipboard(s.ref)}
-                            style={{
-                              background: 'none',
-                              border: '1px solid #d0ccc0',
-                              borderRadius: '4px',
-                              padding: '0.2rem 0.5rem',
-                              fontSize: '0.78rem',
-                              cursor: 'pointer'
-                            }}
-                          >
-                            {copiedRef === s.ref ? '✓ Copied' : 'Copy Code'}
-                          </button>
-                        </div>
-                        <h3 style={{ fontSize: '1.15rem', margin: '0.5rem 0 0.2rem' }}>{s.title}</h3>
-                      </div>
-                      <span className="tag" style={{ background: '#f4a261', color: '#fff', fontWeight: 600 }}>
-                        {s.type.toUpperCase()}
-                      </span>
-                    </div>
+                {submissions.map((s, idx) => {
+                  const statusObj = liveStatuses[s.ref];
+                  const st = statusObj?.st || 'new';
+                  const statusLabel =
+                    st === 'approved'
+                      ? '✅ Approved & Verified'
+                      : st === 'rejected'
+                        ? '⚠️ Declined / Action Needed'
+                        : '🔍 Editorial Verification';
+                  const statusColor =
+                    st === 'approved'
+                      ? '#15803d'
+                      : st === 'rejected'
+                        ? '#b91c1c'
+                        : '#b45309';
 
-                    {/* Progress Pipeline */}
-                    <div style={{
-                      background: '#faf8f5',
-                      padding: '0.8rem 1rem',
-                      borderRadius: '10px',
-                      border: '1px solid #eee',
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                      flexWrap: 'wrap',
-                      gap: '0.5rem',
-                      fontSize: '0.86rem'
-                    }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#2c5f2d', fontWeight: 600 }}>
-                        <span>●</span> Submitted on {s.date}
-                      </div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#e76f51', fontWeight: 600 }}>
-                        <span>🔍</span> Editorial Verification
-                      </div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#888' }}>
-                        <span>🌐</span> Public Listing
-                      </div>
-                    </div>
-
-                    {s.data && (
-                      <details style={{ fontSize: '0.88rem', color: '#555', cursor: 'pointer' }}>
-                        <summary style={{ fontWeight: 600, color: '#2c5f2d' }}>View Submitted Parameters</summary>
-                        <div style={{ marginTop: '0.5rem', background: '#fdfbf7', padding: '0.8rem', borderRadius: '8px', border: '1px solid #eee' }}>
-                          {Object.entries(s.data).map(([k, v]) => (
-                            <div key={k} style={{ marginBottom: '0.3rem' }}>
-                              <b style={{ textTransform: 'capitalize' }}>{k}:</b> {String(v)}
-                            </div>
-                          ))}
+                  return (
+                    <div
+                      key={idx}
+                      style={{
+                        background: '#ffffff',
+                        color: '#1f2937',
+                        border: '1px solid #d5dfd5',
+                        borderRadius: '16px',
+                        padding: '1.4rem',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '0.7rem'
+                      }}
+                    >
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '0.6rem' }}>
+                        <div>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', flexWrap: 'wrap' }}>
+                            <span style={{
+                              fontFamily: 'monospace',
+                              fontWeight: 700,
+                              fontSize: '1rem',
+                              color: '#1a3d1b',
+                              background: '#e8f3e8',
+                              padding: '0.2rem 0.6rem',
+                              borderRadius: '6px'
+                            }}>
+                              {s.ref}
+                            </span>
+                            <button
+                              onClick={() => copyRefToClipboard(s.ref)}
+                              style={{
+                                background: '#f8faf8',
+                                color: '#143215',
+                                border: '1px solid #cbd5cb',
+                                borderRadius: '6px',
+                                padding: '0.25rem 0.6rem',
+                                fontSize: '0.78rem',
+                                fontWeight: 600,
+                                cursor: 'pointer'
+                              }}
+                            >
+                              {copiedRef === s.ref ? '✓ Copied' : 'Copy Code'}
+                            </button>
+                          </div>
+                          <h3 style={{ fontSize: '1.15rem', margin: '0.5rem 0 0.2rem', color: '#143215' }}>{s.title}</h3>
                         </div>
-                      </details>
-                    )}
-                  </div>
-                ))}
+                        <span className="tag" style={{ background: '#fef3c7', color: '#92400e', borderColor: '#f59e0b', fontWeight: 700 }}>
+                          {s.type.toUpperCase()}
+                        </span>
+                      </div>
+
+                      <div style={{
+                        background: '#f5f8f5',
+                        padding: '0.8rem 1rem',
+                        borderRadius: '10px',
+                        border: '1px solid #dce5dc',
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        flexWrap: 'wrap',
+                        gap: '0.5rem',
+                        fontSize: '0.86rem'
+                      }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#166534', fontWeight: 600 }}>
+                          <span>●</span> Submitted on {s.date}
+                        </div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: statusColor, fontWeight: 700 }}>
+                          <span>{statusLabel}</span>
+                        </div>
+                        <a
+                          href={`https://wa.me/254715363944?text=${encodeURIComponent(`Hello Mwalimu Desk, following up on submission [${s.ref}] (${s.title}).`)}`}
+                          target="_blank"
+                          rel="noopener"
+                          style={{ color: '#14532d', fontWeight: 700, textDecoration: 'underline' }}
+                        >
+                          Follow up on WhatsApp →
+                        </a>
+                      </div>
+
+                      {s.data && (
+                        <details style={{ fontSize: '0.88rem', color: '#374151', cursor: 'pointer' }}>
+                          <summary style={{ fontWeight: 700, color: '#14532d' }}>View Submitted Details</summary>
+                          <div style={{ marginTop: '0.5rem', background: '#f8faf8', padding: '0.8rem', borderRadius: '8px', border: '1px solid #dce5dc', color: '#1f2937' }}>
+                            {Object.entries(s.data).map(([k, v]) => (
+                              <div key={k} style={{ marginBottom: '0.3rem' }}>
+                                <b style={{ textTransform: 'capitalize', color: '#143215' }}>{k}:</b> {String(v)}
+                              </div>
+                            ))}
+                          </div>
+                        </details>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
             ) : (
               <div style={{
-                background: '#fff',
-                border: '1px dashed #d0ccc0',
+                background: 'var(--card)',
+                border: '1px dashed var(--ln)',
                 borderRadius: '16px',
                 padding: '2rem 1.5rem',
                 textAlign: 'center'
               }}>
                 <span style={{ fontSize: '2.5rem', display: 'block', marginBottom: '0.6rem' }}>📬</span>
-                <h3 style={{ fontSize: '1.15rem', margin: '0 0 0.4rem' }}>No submissions on this device yet</h3>
-                <p style={{ color: '#666', fontSize: '0.92rem', maxWidth: '460px', margin: '0 auto 1.2rem' }}>
-                  When you submit a teaching vacancy, request an evening tutor, or send an official notice, your submission reference code will be tracked here.
+                <h3 style={{ fontSize: '1.15rem', margin: '0 0 0.4rem', color: '#fff' }}>No submissions on this device yet</h3>
+                <p style={{ color: 'var(--mu)', fontSize: '0.92rem', maxWidth: '460px', margin: '0 auto 1.2rem' }}>
+                  When you submit a teaching vacancy, request an evening tutor, or send an official notice, your live review status will be tracked here.
                 </p>
                 <div style={{ display: 'flex', gap: '0.6rem', justifyContent: 'center', flexWrap: 'wrap' }}>
                   <Link href="/jobs" className="btn b2" style={{ fontSize: '0.88rem', padding: '0.5rem 1rem', textDecoration: 'none' }}>
@@ -405,30 +430,17 @@ export default function ActivitySection({ onNavClick }: ActivitySectionProps) {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.8rem', marginBottom: '1.2rem' }}>
               <div>
                 <h2 style={{ fontSize: '1.4rem', color: 'var(--hd)' }}>✅ Senior School Grade 10 Placement Readiness</h2>
-                <p style={{ margin: 0, fontSize: '0.92rem', color: '#555' }}>
+                <p style={{ margin: 0, fontSize: '0.92rem', color: 'var(--mu)' }}>
                   Track your preparation for Grade 9 to 10 Senior School pathway selection and reporting.
                 </p>
               </div>
-              <span className="tag" style={{ background: '#2c5f2d', color: '#fff', fontSize: '0.9rem', padding: '0.3rem 0.8rem' }}>
+              <span className="tag" style={{ background: '#2c5f2d', color: '#fff', borderColor: '#6ec272', fontSize: '0.9rem', padding: '0.3rem 0.8rem' }}>
                 {checklistPercentage}% Completed ({completedStepsCount}/5)
               </span>
             </div>
 
-            {/* Visual Progress Bar */}
-            <div style={{
-              width: '100%',
-              height: '8px',
-              background: '#e0ddd6',
-              borderRadius: '999px',
-              overflow: 'hidden',
-              marginBottom: '1.4rem'
-            }}>
-              <div style={{
-                width: `${checklistPercentage}%`,
-                height: '100%',
-                background: '#2c5f2d',
-                transition: 'width 0.4s ease'
-              }} />
+            <div style={{ width: '100%', height: '8px', background: 'rgba(255,255,255,0.18)', borderRadius: '999px', overflow: 'hidden', marginBottom: '1.4rem' }}>
+              <div style={{ width: `${checklistPercentage}%`, height: '100%', background: 'var(--ac)', transition: 'width 0.4s ease' }} />
             </div>
 
             <div style={{ display: 'grid', gap: '0.8rem' }}>
@@ -438,14 +450,15 @@ export default function ActivitySection({ onNavClick }: ActivitySectionProps) {
                   <label
                     key={step.id}
                     style={{
-                      background: isDone ? '#f5faf5' : '#fff',
-                      border: `1px solid ${isDone ? '#a3d9a5' : '#e0ddd6'}`,
+                      background: isDone ? '#eef8ef' : '#ffffff',
+                      border: `1px solid ${isDone ? '#86c98a' : '#d5dfd5'}`,
                       borderRadius: '14px',
                       padding: '1rem 1.2rem',
                       display: 'flex',
                       alignItems: 'flex-start',
                       gap: '0.9rem',
                       cursor: 'pointer',
+                      color: '#1f2937',
                       transition: 'all 0.2s'
                     }}
                   >
@@ -453,18 +466,18 @@ export default function ActivitySection({ onNavClick }: ActivitySectionProps) {
                       type="checkbox"
                       checked={isDone}
                       onChange={() => handleToggleCheck(step.id)}
-                      style={{ width: '20px', height: '20px', accentColor: '#2c5f2d', marginTop: '0.2rem', cursor: 'pointer' }}
+                      style={{ width: '20px', height: '20px', accentColor: '#2c5f2d', marginTop: '0.2rem', cursor: 'pointer', flexShrink: 0 }}
                     />
                     <div>
                       <h4 style={{
                         margin: 0,
                         fontSize: '1.02rem',
-                        color: isDone ? '#1a4d1d' : 'var(--hd)',
+                        color: isDone ? '#14532d' : '#143215',
                         textDecoration: isDone ? 'line-through' : 'none'
                       }}>
                         {step.title}
                       </h4>
-                      <p style={{ margin: '0.2rem 0 0', fontSize: '0.88rem', color: '#555' }}>
+                      <p style={{ margin: '0.2rem 0 0', fontSize: '0.88rem', color: '#374151' }}>
                         {step.desc}
                       </p>
                     </div>
@@ -475,11 +488,10 @@ export default function ActivitySection({ onNavClick }: ActivitySectionProps) {
           </div>
         )}
 
-        {/* Verification Guarantee & Safety Info */}
         <div className="warn" style={{ marginTop: '2.5rem' }}>
           <h3 style={{ color: 'var(--hd)' }}>🔒 Privacy & Data Policy</h3>
-          <p style={{ fontSize: '0.92rem', color: '#555', marginTop: '0.4rem', lineHeight: 1.6 }}>
-            All bookmarked materials, checklist states, and submission logs on this page are stored strictly in your local device browser storage. Mwalimu Family does not sell or share personal data with third-party advertisers.
+          <p style={{ fontSize: '0.92rem', color: 'var(--tx)', marginTop: '0.4rem', lineHeight: 1.6 }}>
+            Bookmarked materials and checklist states remain in your device browser storage, while submission status codes sync securely by reference ID without exposing private contact details.
           </p>
         </div>
       </div>

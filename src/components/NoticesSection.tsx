@@ -1,22 +1,34 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { submitOnlineForm } from '@/lib/mwalimu-data';
+import { useLanguage } from '@/lib/language';
+import { useSectionCopy } from '@/lib/cms-context';
 
-const INITIAL_NOTICES = [
+interface NoticeDisplay {
+  category: string;
+  date: string;
+  title: string;
+  body: string;
+  url: string;
+  isLive?: boolean;
+}
+
+const INITIAL_NOTICES: NoticeDisplay[] = [
   {
     category: 'Exams',
     date: '20 Nov 2026',
     title: 'Results release windows targeted by Ministry of Education',
     body: 'Education CS Julius Ogamba confirmed that KJSEA results are expected in December 2026, while KCSE and KPSEA results are targeted for January 2027.',
-    url: '#/s1'
+    url: '/news/s1'
   },
   {
     category: 'Safety',
     date: '21 Nov 2026',
     title: 'Results scam alert: Never pay anyone claiming early access',
     body: 'KNEC and MoE remind families that results are accessible strictly via official SMS codes and verified portals without any advance payment.',
-    url: '#/s4'
+    url: '/news/s4'
   },
   {
     category: 'Community',
@@ -46,7 +58,9 @@ const CHECKLIST = {
 
 export default function NoticesSection() {
   const [noticeCategory, setNoticeCategory] = useState('All');
-  const [lang, setLang] = useState<'en' | 'sw'>('en');
+  const [notices, setNotices] = useState<NoticeDisplay[]>(INITIAL_NOTICES);
+  const [lang, setLang] = useLanguage();
+  const copy = useSectionCopy('notices', lang);
   const [checkedItems, setCheckedItems] = useState<boolean[]>([false, false, false, false, false]);
   const [kjseaCountdown, setKjseaCountdown] = useState({ d: 0, h: 0, m: 0, s: 0 });
   const [kcseCountdown, setKcseCountdown] = useState({ d: 0, h: 0, m: 0, s: 0 });
@@ -59,12 +73,37 @@ export default function NoticesSection() {
   const [noticeConsent, setNoticeConsent] = useState(false);
   const [noticeSubmitting, setNoticeSubmitting] = useState(false);
   const [noticeRef, setNoticeRef] = useState<string | null>(null);
+  const [noticeWaUrl, setNoticeWaUrl] = useState('');
 
   useEffect(() => {
     try {
       const stored = localStorage.getItem('g10_checks');
       if (stored) setCheckedItems(JSON.parse(stored));
     } catch {}
+
+    fetch('/api/items?k=notice')
+      .then((r) => r.json())
+      .then((data) => {
+        if (data?.ok && Array.isArray(data.items) && data.items.length > 0) {
+          const liveNotices: NoticeDisplay[] = data.items.map((item: any) => ({
+            category: item.cat || 'Community',
+            date: item.created_at ? new Date(item.created_at).toLocaleDateString('en-KE', { day: 'numeric', month: 'short', year: 'numeric' }) : 'Verified',
+            title: item.t,
+            body: item.body,
+            url: '',
+            isLive: true,
+          }));
+          const seen = new Set<string>();
+          const merged = [...liveNotices, ...INITIAL_NOTICES].filter((n) => {
+            const key = n.title.trim().toLowerCase();
+            if (seen.has(key)) return false;
+            seen.add(key);
+            return true;
+          });
+          setNotices(merged);
+        }
+      })
+      .catch(() => {});
 
     const updateCountdowns = () => {
       const now = new Date().getTime();
@@ -120,10 +159,17 @@ export default function NoticesSection() {
 
     const res = await submitOnlineForm('note', 'Notice', noticeTitle, fields, noticeConsent);
     setNoticeRef(res.ref);
+    setNoticeWaUrl(res.whatsappUrl);
+    setOrg('');
+    setNoticeTitle('');
+    setNoticeDetails('');
+    setNoticeContact('');
+    setNoticeConsent(false);
     setNoticeSubmitting(false);
   };
 
-  const filteredNotices = INITIAL_NOTICES.filter(n => {
+  const categories = ['All', ...Array.from(new Set(notices.map((n) => n.category)))];
+  const filteredNotices = notices.filter(n => {
     if (noticeCategory === 'All') return true;
     return n.category === noticeCategory;
   });
@@ -132,10 +178,8 @@ export default function NoticesSection() {
     <section className="sec cine c2 mb board" id="notices" aria-labelledby="nth">
       <div className="gy" aria-hidden="true" />
       <div className="w">
-        <h2 className="sh" id="nth">Notice board</h2>
-        <p className="sub">
-          Education notices, deadlines and community announcements. Always confirm exact details with the issuing office.
-        </p>
+        <h2 className="sh" id="nth">{copy.title}</h2>
+        <p className="sub">{copy.subtitle}</p>
 
         <div className="warn">
           <h3 style={{ color: 'var(--hd)' }}>Before you act on a notice</h3>
@@ -148,7 +192,7 @@ export default function NoticesSection() {
 
         {/* Notice Category Filter */}
         <div className="chips" style={{ margin: '1.5rem 0' }}>
-          {['All', 'Exams', 'Safety', 'Community'].map(cat => (
+          {categories.map(cat => (
             <button
               key={cat}
               className={`chip ${noticeCategory === cat ? 'on' : ''}`}
@@ -165,11 +209,11 @@ export default function NoticesSection() {
             <div key={idx} style={{ background: '#16251a', border: '1px solid #2a3d2d', borderRadius: '16px', padding: '1.5rem' }}>
               <span className="tag">{n.category} · {n.date}</span>
               <h3 style={{ color: '#fff', fontSize: '1.25rem', marginTop: '0.5rem' }}>{n.title}</h3>
-              <p style={{ color: '#d6efd6', fontSize: '0.92rem', margin: '0.6rem 0' }}>{n.body}</p>
+              <p style={{ color: '#d6efd6', fontSize: '0.92rem', margin: '0.6rem 0', whiteSpace: 'pre-line' }}>{n.body}</p>
               {n.url && (
-                <a className="dl" href={n.url} style={{ color: '#f4a261', fontWeight: 700 }}>
+                <Link className="dl" href={n.url} style={{ color: '#f4a261', fontWeight: 700 }}>
                   Read the story →
-                </a>
+                </Link>
               )}
             </div>
           ))}
@@ -202,7 +246,7 @@ export default function NoticesSection() {
               <h3 style={{ margin: 0 }}>Grade 10 placement checklist</h3>
               <button
                 className="gb o"
-                onClick={() => setLang(l => l === 'en' ? 'sw' : 'en')}
+                onClick={() => setLang(lang === 'en' ? 'sw' : 'en')}
                 style={{ padding: '0.2rem 0.7rem', fontSize: '0.8rem', margin: 0 }}
               >
                 {lang === 'en' ? 'Kiswahili' : 'English'}
@@ -241,36 +285,46 @@ export default function NoticesSection() {
         </div>
 
         {/* SUBMIT A NOTICE FORM */}
-        <div className="fm" style={{ maxWidth: '640px', margin: '3rem auto 0', background: '#fff', color: '#1a1a1a', borderRadius: '20px', padding: '2rem' }}>
-          <h3 style={{ fontSize: '1.4rem', color: '#1a3d1b', marginBottom: '0.4rem' }}>Submit a notice for review</h3>
-          <p style={{ fontSize: '0.88rem', color: '#666', marginBottom: '1.2rem' }}>
+        <div className="fm fm-light" style={{ maxWidth: '640px', margin: '3rem auto 0' }}>
+          <h3 style={{ fontSize: '1.4rem', marginBottom: '0.4rem' }}>Submit a notice for review</h3>
+          <p style={{ fontSize: '0.88rem', marginBottom: '1.2rem' }}>
             Schools, institutions and community groups can submit official announcements. Our desk verifies them before publication.
           </p>
 
           {noticeRef ? (
-            <div style={{ padding: '1rem', background: '#eaf5eb', borderRadius: '10px', color: '#1f7a3a' }}>
+            <div className="fm-confirm-box">
               <h4>✅ Notice Submitted for Review</h4>
-              <p style={{ fontSize: '0.92rem', margin: '0.4rem 0' }}>
-                Reference Code: <b>{noticeRef}</b>. The editorial team will verify and publish your notice.
+              <p style={{ fontSize: '0.92rem', margin: '0.45rem 0 0.85rem' }}>
+                Reference Code: <b>{noticeRef}</b>. Track status in <Link href="/activity" style={{ textDecoration: 'underline', fontWeight: 700, color: '#14532d' }}>My Activity</Link> while our editorial desk verifies your notice.
               </p>
-              <button className="gb" onClick={() => setNoticeRef(null)}>Submit Another Notice</button>
+              <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                {noticeWaUrl && (
+                  <a className="btn wab" href={noticeWaUrl} target="_blank" rel="noopener" style={{ margin: 0, padding: '0.55rem 1.1rem', fontSize: '0.88rem' }}>
+                    Send Copy on WhatsApp →
+                  </a>
+                )}
+                <button className="gb" onClick={() => setNoticeRef(null)} style={{ margin: 0 }}>
+                  Submit Another Notice
+                </button>
+              </div>
             </div>
           ) : (
             <form onSubmit={handleSubmitNotice}>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.8rem' }}>
+              <div className="fm-grid-2">
                 <div>
-                  <label>Organisation / School:</label>
-                  <input className="sel" type="text" value={org} onChange={(e) => setOrg(e.target.value)} required placeholder="e.g. Nairobi Teachers Forum" />
+                  <label htmlFor="nt-org">Organisation / School:</label>
+                  <input id="nt-org" className="sel" type="text" value={org} onChange={(e) => setOrg(e.target.value)} required placeholder="e.g. Nairobi Teachers Forum" />
                 </div>
                 <div>
-                  <label>Notice Title:</label>
-                  <input className="sel" type="text" value={noticeTitle} onChange={(e) => setNoticeTitle(e.target.value)} required placeholder="e.g. Free Term 1 CBC Workshop" />
+                  <label htmlFor="nt-title">Notice Title:</label>
+                  <input id="nt-title" className="sel" type="text" value={noticeTitle} onChange={(e) => setNoticeTitle(e.target.value)} required placeholder="e.g. Free Term 1 CBC Workshop" />
                 </div>
               </div>
 
               <div style={{ marginTop: '0.8rem' }}>
-                <label>Details & Dates:</label>
+                <label htmlFor="nt-det">Details & Dates:</label>
                 <textarea
+                  id="nt-det"
                   className="sel"
                   rows={4}
                   value={noticeDetails}
@@ -281,11 +335,11 @@ export default function NoticesSection() {
               </div>
 
               <div style={{ marginTop: '0.8rem' }}>
-                <label>Official Contact (Email / Phone):</label>
-                <input className="sel" type="text" value={noticeContact} onChange={(e) => setNoticeContact(e.target.value)} required placeholder="e.g. info@organisation.or.ke" />
+                <label htmlFor="nt-contact">Official Contact (Email / Phone):</label>
+                <input id="nt-contact" className="sel" type="text" value={noticeContact} onChange={(e) => setNoticeContact(e.target.value)} required placeholder="e.g. info@organisation.or.ke" />
               </div>
 
-              <label className="ck" style={{ margin: '1rem 0' }}>
+              <label className="ck">
                 <input
                   type="checkbox"
                   checked={noticeConsent}

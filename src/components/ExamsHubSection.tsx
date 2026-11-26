@@ -1,12 +1,17 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
+import { useLanguage } from '@/lib/language';
+import { useSectionCopy } from '@/lib/cms-context';
 
 interface ExamsHubSectionProps {
   onNavClick?: (hash: string) => void;
 }
 
 export default function ExamsHubSection({ onNavClick }: ExamsHubSectionProps) {
+  const [lang] = useLanguage();
+  const copy = useSectionCopy('exams', lang);
   const [kjseaCountdown, setKjseaCountdown] = useState({ d: 0, h: 0, m: 0, s: 0 });
   const [kcseCountdown, setKcseCountdown] = useState({ d: 0, h: 0, m: 0, s: 0 });
 
@@ -42,10 +47,8 @@ export default function ExamsHubSection({ onNavClick }: ExamsHubSectionProps) {
   return (
     <section className="sec" id="exams" aria-labelledby="exh">
       <div className="w">
-        <h2 className="sh rv" id="exh">Exams hub: KPSEA, KJSEA and KCSE</h2>
-        <p className="sub rv">
-          A plain-language guide to Kenya’s national assessments and how to follow results safely. Always confirm dates with the Ministry of Education and KNEC.
-        </p>
+        <h2 className="sh rv" id="exh">{copy.title}</h2>
+        <p className="sub rv">{copy.subtitle}</p>
 
         {/* 3 National Exams Overview Cards */}
         <div className="ex3" style={{ margin: '2rem 0' }}>
@@ -99,10 +102,10 @@ export default function ExamsHubSection({ onNavClick }: ExamsHubSectionProps) {
 
         {/* Safe Checking Banner */}
         <div className="warn" style={{ margin: '2rem 0' }}>
-          <h3 style={{ color: 'var(--hd)' }}>Check results safely</h3>
+          <h3 style={{ color: 'var(--hd)' }}>{lang === 'sw' ? 'Kagua matokeo kwa usalama' : 'Check results safely'}</h3>
           <p style={{ color: 'var(--tx)', marginTop: '0.4rem' }}>
             Use only official Ministry of Education and KNEC channels. Never pay to see results early. Never share your child’s index number or personal identification with unverified phone numbers or WhatsApp groups.{' '}
-            <a className="dl" href="#/s4">How to spot fake results messages →</a>
+            <Link className="dl" href="/news/s4">How to spot fake results messages →</Link>
           </p>
         </div>
 
@@ -116,14 +119,14 @@ export default function ExamsHubSection({ onNavClick }: ExamsHubSectionProps) {
             <h3>Ministry of Education</h3>
             <p>Official press statements, policy briefs, and term date schedules.</p>
           </a>
-          <a className="x2c" href="#/s1">
+          <Link className="x2c" href="/news/s1">
             <h3>Latest Timeline Announcement</h3>
             <p>Full breakdown of Education CS Julius Ogamba’s announcement on 20 November 2026.</p>
-          </a>
-          <a className="x2c" href="#/s5">
+          </Link>
+          <Link className="x2c" href="/news/s5">
             <h3>Assessment Explainer</h3>
             <p>How KPSEA, KJSEA and KCSE work together under the reformed Kenyan curriculum.</p>
-          </a>
+          </Link>
         </div>
 
         {/* FAQs */}
@@ -160,7 +163,7 @@ export default function ExamsHubSection({ onNavClick }: ExamsHubSectionProps) {
         {/* Results Countdown */}
         <div className="card" style={{ maxWidth: '640px', margin: '0 auto', textAlign: 'center' }}>
           <h3 style={{ fontSize: '1.25rem', marginBottom: '0.8rem' }}>Live Examination Results Countdowns</h3>
-          <p style={{ fontSize: '0.9rem', color: '#666' }}>KJSEA Expected Release Window (December 2026):</p>
+          <p style={{ fontSize: '0.9rem', color: 'var(--mu)' }}>KJSEA Expected Release Window (December 2026):</p>
           <div className="clk" style={{ justifyContent: 'center' }}>
             <div><b>{kjseaCountdown.d}</b><small>days</small></div>
             <div><b>{kjseaCountdown.h}</b><small>hrs</small></div>
@@ -168,7 +171,7 @@ export default function ExamsHubSection({ onNavClick }: ExamsHubSectionProps) {
             <div><b>{kjseaCountdown.s}</b><small>sec</small></div>
           </div>
 
-          <p style={{ fontSize: '0.9rem', color: '#666', marginTop: '1.2rem' }}>KCSE & KPSEA Targeted Window (January 2027):</p>
+          <p style={{ fontSize: '0.9rem', color: 'var(--mu)', marginTop: '1.2rem' }}>KCSE & KPSEA Targeted Window (January 2027):</p>
           <div className="clk" style={{ justifyContent: 'center' }}>
             <div><b>{kcseCountdown.d}</b><small>days</small></div>
             <div><b>{kcseCountdown.h}</b><small>hrs</small></div>

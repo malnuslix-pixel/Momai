@@ -2,20 +2,28 @@
 
 import React, { useState, useEffect } from 'react';
 import {
-  GRADES,
-  TERMS,
-  RESOURCE_TYPES,
   getSubjectsForGrade,
   getSubjectEmoji,
   getSubjectHue,
-  downloadWordDocument
+  downloadWordDocument,
+  downloadCustomDoc,
 } from '@/lib/mwalimu-data';
+import { useLanguage } from '@/lib/language';
+import { useCms, useSectionCopy } from '@/lib/cms-context';
 
 interface LibrarySectionProps {
   onNavClick: (hash: string) => void;
 }
 
 export default function LibrarySection({ onNavClick }: LibrarySectionProps) {
+  const [lang] = useLanguage();
+  const { cms } = useCms();
+  const copy = useSectionCopy('library', lang);
+  const grades = cms.learning.grades;
+  const terms = cms.learning.terms;
+  const resourceTypes = cms.learning.resourceTypes;
+  const customMaterials = cms.learning.materials;
+
   const [selectedGrade, setSelectedGrade] = useState('Grade 7');
   const [selectedSubject, setSelectedSubject] = useState('');
   const [selectedTerm, setSelectedTerm] = useState('');
@@ -23,6 +31,31 @@ export default function LibrarySection({ onNavClick }: LibrarySectionProps) {
   const [search, setSearch] = useState('');
   const [limit, setLimit] = useState(18);
   const [savedIds, setSavedIds] = useState<string[]>([]);
+  const [aiTopic, setAiTopic] = useState('');
+  const [aiPack, setAiPack] = useState<string | null>(null);
+  const [aiPackLoading, setAiPackLoading] = useState(false);
+
+  const handleGenerateAIPack = async () => {
+    setAiPackLoading(true);
+    try {
+      const res = await fetch('/api/ai/assist', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          task: 'scheme',
+          grade: selectedGrade || 'Grade 7',
+          subject: selectedSubject || subjects[0] || 'Mathematics',
+          term: selectedTerm || terms[0] || 'Term 1',
+          strand: aiTopic.trim() || search.trim() || 'Core Term Concepts & Practice',
+        }),
+      });
+      const data = await res.json();
+      if (data.ok && data.text) setAiPack(data.text);
+    } catch {
+    } finally {
+      setAiPackLoading(false);
+    }
+  };
 
   useEffect(() => {
     try {
@@ -46,16 +79,16 @@ export default function LibrarySection({ onNavClick }: LibrarySectionProps) {
 
   const subjects = getSubjectsForGrade(selectedGrade);
 
-  // Generate catalog items
+  // Generate catalog items from Admin-controlled grades, terms, and resourceTypes
   const catalog = [];
-  for (const g of GRADES) {
+  for (const g of grades) {
     if (selectedGrade && g !== selectedGrade) continue;
     const subs = getSubjectsForGrade(g);
     for (const s of subs) {
       if (selectedSubject && s !== selectedSubject) continue;
-      for (const t of TERMS) {
+      for (const t of terms) {
         if (selectedTerm && t !== selectedTerm) continue;
-        for (const [tLabel, tKey] of RESOURCE_TYPES) {
+        for (const [tLabel, tKey] of resourceTypes) {
           if (selectedType && tLabel !== selectedType) continue;
           if (search) {
             const query = `${g} ${s} ${t} ${tLabel}`.toLowerCase();
@@ -74,16 +107,24 @@ export default function LibrarySection({ onNavClick }: LibrarySectionProps) {
     }
   }
 
+  const filteredCustomMaterials = customMaterials.filter((m) => {
+    if (selectedGrade && m.grade !== selectedGrade) return false;
+    if (selectedSubject && m.subject !== selectedSubject) return false;
+    if (selectedTerm && m.term !== selectedTerm) return false;
+    if (selectedType && m.type !== selectedType) return false;
+    if (search && !`${m.title} ${m.grade} ${m.subject} ${m.summary}`.toLowerCase().includes(search.toLowerCase())) {
+      return false;
+    }
+    return true;
+  });
+
   const displayed = catalog.slice(0, limit);
 
   return (
     <section className="sec alt" id="library" aria-labelledby="lh">
       <div className="w">
-        <h2 className="sh" id="lh">Learning and teaching library</h2>
-        <p className="sub">
-          Editable, ready-to-fill teaching materials for every grade, subject and term.
-          Pick your grade below, then download free as editable Word (.doc) files.
-        </p>
+        <h2 className="sh" id="lh">{copy.title}</h2>
+        <p className="sub">{copy.subtitle}</p>
 
         <div className="warn">
           <h3 style={{ color: 'var(--hd)' }}>How to use a template</h3>
@@ -114,7 +155,7 @@ export default function LibrarySection({ onNavClick }: LibrarySectionProps) {
             aria-label="Grade"
           >
             <option value="">All grades</option>
-            {GRADES.map(g => (
+            {grades.map(g => (
               <option key={g} value={g}>{g}</option>
             ))}
           </select>
@@ -138,7 +179,7 @@ export default function LibrarySection({ onNavClick }: LibrarySectionProps) {
             aria-label="Term"
           >
             <option value="">All terms</option>
-            {TERMS.map(t => (
+            {terms.map(t => (
               <option key={t} value={t}>{t}</option>
             ))}
           </select>
@@ -152,7 +193,7 @@ export default function LibrarySection({ onNavClick }: LibrarySectionProps) {
           >
             All
           </button>
-          {RESOURCE_TYPES.map(([tLabel]) => (
+          {resourceTypes.map(([tLabel]) => (
             <button
               key={tLabel}
               className={`chip ${selectedType === tLabel ? 'on' : ''}`}
@@ -162,6 +203,101 @@ export default function LibrarySection({ onNavClick }: LibrarySectionProps) {
             </button>
           ))}
         </div>
+
+        {/* AI Custom Study Pack Builder */}
+        <div className="gl" style={{ marginBottom: '1.4rem', display: 'flex', flexDirection: 'column', gap: '0.65rem' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.6rem' }}>
+            <div>
+              <strong style={{ color: '#ffd166' }}>✨ Need specific lesson notes or a KICD scheme for {selectedGrade || 'any grade'}?</strong>
+              <p style={{ margin: '0.2rem 0 0', fontSize: '0.88rem', opacity: 0.9 }}>
+                Enter a strand or topic and Mwalimu AI will draft outcomes, inquiry questions & rubric tasks you can download.
+              </p>
+            </div>
+          </div>
+          <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+            <input
+              type="text"
+              className="sel"
+              value={aiTopic}
+              onChange={(e) => setAiTopic(e.target.value)}
+              placeholder={`Topic for ${selectedSubject || 'selected subject'} (e.g. Fractions & Percentages)`}
+              style={{ flex: '1 1 240px', marginBottom: 0 }}
+            />
+            <button
+              type="button"
+              className="gb"
+              onClick={handleGenerateAIPack}
+              disabled={aiPackLoading}
+            >
+              {aiPackLoading ? 'Generating…' : '✨ Generate AI Notes'}
+            </button>
+            {aiPack && (
+              <button
+                type="button"
+                className="gb o"
+                onClick={() =>
+                  downloadCustomDoc(
+                    `AI_${selectedGrade || 'CBC'}_${selectedSubject || 'Pack'}`,
+                    `${selectedGrade || 'CBC'} ${selectedSubject || ''} — ${aiTopic || 'AI Learning Pack'}`.trim(),
+                    `${selectedTerm || 'Term 1'} · Mwalimu AI KICD Assistant`,
+                    aiPack
+                  )
+                }
+              >
+                Download AI Pack (.doc)
+              </button>
+            )}
+          </div>
+          {aiPack && (
+            <pre style={{ background: 'rgba(0,0,0,0.28)', padding: '0.85rem', borderRadius: '10px', whiteSpace: 'pre-wrap', fontFamily: 'inherit', fontSize: '0.9rem', lineHeight: 1.6, margin: 0, maxHeight: '260px', overflowY: 'auto' }}>
+              {aiPack}
+            </pre>
+          )}
+        </div>
+
+        {/* Admin Published Special Learning Materials */}
+        {filteredCustomMaterials.length > 0 && (
+          <div style={{ marginBottom: '1.6rem' }}>
+            <h3 style={{ marginBottom: '0.75rem', fontSize: '1.15rem' }}>📌 Featured Study &amp; Revision Packs</h3>
+            <div className="mg">
+              {filteredCustomMaterials.map((mat) => (
+                <div key={mat.id} className="mc" style={{ border: '1.5px solid #f4a261' }}>
+                  <div className="cv" style={{ background: 'linear-gradient(135deg, #1b4332, #2d6a4f)' }}>
+                    <span>📘</span>
+                    <small>{mat.grade}</small>
+                  </div>
+                  <div className="mb">
+                    <span className="tag" style={{ background: '#fef3c7', color: '#92400e', fontSize: '0.75rem' }}>
+                      {mat.type} · Featured
+                    </span>
+                    <h3 style={{ marginTop: '0.35rem' }}>{mat.title}</h3>
+                    <p>{mat.summary}</p>
+                    <div>
+                      <button
+                        className="gb"
+                        onClick={() =>
+                          downloadCustomDoc(
+                            mat.title,
+                            mat.title,
+                            `${mat.grade} · ${mat.subject} · ${mat.term} · ${mat.type}`,
+                            mat.content
+                          )
+                        }
+                      >
+                        Download (.doc)
+                      </button>
+                      {mat.url && (
+                        <a className="gb o" href={mat.url} target="_blank" rel="noopener">
+                          Open Link
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         <p className="sub" style={{ margin: '0 0 1rem' }}>
           {catalog.length.toLocaleString()} editable templates available

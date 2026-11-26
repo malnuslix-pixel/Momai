@@ -5,7 +5,8 @@ import { notFound } from 'next/navigation';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import FloatingWidgets from '@/components/FloatingWidgets';
-import { ARTICLES, Article } from '@/lib/mwalimu-data';
+import { Article } from '@/lib/mwalimu-data';
+import { loadCmsServer } from '@/lib/cms-server';
 import { SITE_URL } from '@/lib/seo';
 import {
   Calendar,
@@ -18,16 +19,15 @@ import {
   Share2
 } from 'lucide-react';
 
+export const dynamic = 'force-dynamic';
+
 interface ArticlePageProps {
   params: { id: string };
 }
 
-export async function generateStaticParams() {
-  return Object.keys(ARTICLES).map((id) => ({ id }));
-}
-
 export async function generateMetadata({ params }: ArticlePageProps): Promise<Metadata> {
-  const article = ARTICLES[params.id];
+  const cms = await loadCmsServer();
+  const article = cms.news.articles.find((a) => a.id === params.id);
   if (!article) return { title: 'Article Not Found' };
 
   const ogUrl = `${SITE_URL}/api/og?${new URLSearchParams({
@@ -61,8 +61,9 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
   };
 }
 
-export default function ArticlePage({ params }: ArticlePageProps) {
-  const article = ARTICLES[params.id];
+export default async function ArticlePage({ params }: ArticlePageProps) {
+  const cms = await loadCmsServer();
+  const article = cms.news.articles.find((a) => a.id === params.id);
 
   if (!article) {
     notFound();
@@ -117,8 +118,8 @@ export default function ArticlePage({ params }: ArticlePageProps) {
   }
 
   const relatedArticles = (article.r || [])
-    .map((rid) => ARTICLES[rid])
-    .filter(Boolean);
+    .map((rid) => cms.news.articles.find((a) => a.id === rid))
+    .filter((x): x is Article => Boolean(x));
 
   return (
     <>

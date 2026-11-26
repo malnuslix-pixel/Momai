@@ -1,14 +1,26 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { downloadSchoolCalendar, submitOnlineForm } from '@/lib/mwalimu-data';
+import { useLanguage } from '@/lib/language';
+import { useSectionCopy } from '@/lib/cms-context';
 
 interface ParentsAndJobsProps {
   onNavClick: (hash: string) => void;
   mode?: 'all' | 'parents' | 'jobs';
 }
 
-const SAMPLE_JOBS = [
+interface JobListing {
+  title: string;
+  employer: string;
+  location: string;
+  category: string;
+  desc: string;
+  featured: boolean;
+}
+
+const SAMPLE_JOBS: JobListing[] = [
   {
     title: 'Junior School Mathematics & Science Teacher',
     employer: 'Greenwood Academy',
@@ -44,6 +56,9 @@ const SAMPLE_JOBS = [
 ];
 
 export default function ParentsAndJobs({ onNavClick, mode = 'all' }: ParentsAndJobsProps) {
+  const [lang] = useLanguage();
+  const parentsCopy = useSectionCopy('parents', lang);
+  const jobsCopy = useSectionCopy('jobs', lang);
   // Term Calendar
   const [t1Open, setT1Open] = useState('2026-01-05');
   const [t1Close, setT1Close] = useState('2026-04-03');
@@ -60,11 +75,38 @@ export default function ParentsAndJobs({ onNavClick, mode = 'all' }: ParentsAndJ
     ]);
   };
 
-  // Jobs Search & Filter
+  // Jobs Search & Filter (hydrated with live published vacancies from /api/items)
+  const [jobs, setJobs] = useState<JobListing[]>(SAMPLE_JOBS);
   const [jobCategory, setJobCategory] = useState('');
   const [jobQuery, setJobQuery] = useState('');
 
-  const filteredJobs = SAMPLE_JOBS.filter(j => {
+  useEffect(() => {
+    fetch('/api/items?k=job')
+      .then((r) => r.json())
+      .then((data) => {
+        if (data?.ok && Array.isArray(data.items) && data.items.length > 0) {
+          const liveJobs: JobListing[] = data.items.map((item: any) => ({
+            title: item.t,
+            employer: item.who || 'Verified Institution',
+            location: item.loc || 'Kenya',
+            category: item.cat || 'Teaching',
+            desc: item.body,
+            featured: Boolean(item.featured),
+          }));
+          const seen = new Set<string>();
+          const merged = [...liveJobs, ...SAMPLE_JOBS].filter((j) => {
+            const key = `${j.title}::${j.employer}`.toLowerCase();
+            if (seen.has(key)) return false;
+            seen.add(key);
+            return true;
+          });
+          setJobs(merged);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  const filteredJobs = jobs.filter(j => {
     const matchesCat = !jobCategory || j.category === jobCategory;
     const matchesQuery = !jobQuery ||
       (j.title + ' ' + j.employer + ' ' + j.location + ' ' + j.desc).toLowerCase().includes(jobQuery.toLowerCase());
@@ -82,6 +124,7 @@ export default function ParentsAndJobs({ onNavClick, mode = 'all' }: ParentsAndJ
   const [jobConsent, setJobConsent] = useState(false);
   const [jobSubmitting, setJobSubmitting] = useState(false);
   const [jobRef, setJobRef] = useState<string | null>(null);
+  const [jobWaUrl, setJobWaUrl] = useState('');
 
   const handlePostJob = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -100,6 +143,13 @@ export default function ParentsAndJobs({ onNavClick, mode = 'all' }: ParentsAndJ
 
     const res = await submitOnlineForm('job', 'Job Listing', jobTitle, fields, jobConsent);
     setJobRef(res.ref);
+    setJobWaUrl(res.whatsappUrl);
+    setEmployer('');
+    setJobTitle('');
+    setLocation('');
+    setContact('');
+    setDesc('');
+    setJobConsent(false);
     setJobSubmitting(false);
   };
 
@@ -109,8 +159,8 @@ export default function ParentsAndJobs({ onNavClick, mode = 'all' }: ParentsAndJ
       {mode !== 'jobs' && (
       <section className="sec" id="parents" aria-labelledby="ph">
         <div className="w">
-          <h2 className="sh rv" id="ph">Parents’ hub</h2>
-          <p className="sub rv">Plain-language guides for Kenyan families. Always confirm details with official Ministry guidelines.</p>
+          <h2 className="sh rv" id="ph">{parentsCopy.title}</h2>
+          <p className="sub rv">{parentsCopy.subtitle}</p>
 
           <h3 style={{ fontSize: '1.4rem', margin: '2rem 0 1rem' }}>Grade 10 Senior School pathways</h3>
           <div className="ex3">
@@ -194,7 +244,7 @@ export default function ParentsAndJobs({ onNavClick, mode = 'all' }: ParentsAndJ
           {/* School Term Calendar Generator */}
           <div className="card" style={{ marginTop: '2.5rem' }}>
             <h3>My school calendar downloader</h3>
-            <p style={{ fontSize: '0.9rem', color: '#666' }}>
+            <p style={{ fontSize: '0.9rem', color: 'var(--mu)' }}>
               Set your school&apos;s term opening and closing dates, then download an `.ics` calendar file to automatically sync dates to your phone:
             </p>
 
@@ -227,12 +277,12 @@ export default function ParentsAndJobs({ onNavClick, mode = 'all' }: ParentsAndJ
           </div>
 
           {/* Where Next */}
-          <div style={{ marginTop: '3rem', borderTop: '1px solid #e0ddd6', paddingTop: '1.5rem' }}>
-            <h4 style={{ color: '#2c5f2d', marginBottom: '0.6rem' }}>Where next?</h4>
+          <div style={{ marginTop: '3rem', borderTop: '1px solid var(--ln)', paddingTop: '1.5rem' }}>
+            <h4 style={{ color: '#86efac', marginBottom: '0.6rem', fontSize: '1.05rem' }}>Where next?</h4>
             <div className="chips">
-              <button className="chip on" onClick={() => onNavClick('#notices')}>Notice Board →</button>
-              <button className="chip on" onClick={() => onNavClick('#tools')}>Pathway Starter →</button>
-              <button className="chip on" onClick={() => onNavClick('#library')}>Learning Library →</button>
+              <Link className="chip on" href="/notices">Notice Board →</Link>
+              <Link className="chip on" href="/tools">Pathway Starter →</Link>
+              <Link className="chip on" href="/learn">Learning Library →</Link>
             </div>
           </div>
         </div>
@@ -243,10 +293,8 @@ export default function ParentsAndJobs({ onNavClick, mode = 'all' }: ParentsAndJ
       {mode !== 'parents' && (
       <section className="sec mb bp" id="jobs" aria-labelledby="jbh">
         <div className="w">
-          <h2 className="sh" id="jbh">Education jobs</h2>
-          <p className="sub">
-            Vacancies from verified Kenyan schools and institutions. Genuine employers never charge application fees. Every listing is reviewed by our editorial desk before publication.
-          </p>
+          <h2 className="sh" id="jbh">{jobsCopy.title}</h2>
+          <p className="sub">{jobsCopy.subtitle}</p>
 
           {/* Search & Category Filter */}
           <div className="fl" style={{ marginBottom: '1.5rem' }}>
@@ -319,37 +367,46 @@ export default function ParentsAndJobs({ onNavClick, mode = 'all' }: ParentsAndJ
           </div>
 
           {/* POST A JOB FORM */}
-          <div className="fm" style={{ maxWidth: '680px', margin: '0 auto', background: '#fff', color: '#1a1a1a', borderRadius: '20px', padding: '2rem' }}>
-            <h3 style={{ fontSize: '1.4rem', color: '#1a3d1b', marginBottom: '0.4rem' }}>Post a teaching vacancy</h3>
-            <p style={{ fontSize: '0.88rem', color: '#666', marginBottom: '1.2rem' }}>
+          <div className="fm fm-light" style={{ maxWidth: '680px', margin: '0 auto' }}>
+            <h3 style={{ fontSize: '1.4rem', marginBottom: '0.4rem' }}>Post a teaching vacancy</h3>
+            <p style={{ fontSize: '0.88rem', marginBottom: '1.2rem' }}>
               Schools and education organisations can submit job vacancies for review. Once verified against our anti-scam checklist, the listing goes live.
             </p>
 
             {jobRef ? (
-              <div style={{ padding: '1rem', background: '#eaf5eb', borderRadius: '10px', color: '#1f7a3a' }}>
+              <div className="fm-confirm-box">
                 <h4>✅ Vacancy Submitted for Review</h4>
-                <p style={{ fontSize: '0.92rem', margin: '0.4rem 0' }}>
-                  Reference Code: <b>{jobRef}</b>. Our editorial desk will verify the institution and approve your listing shortly.
+                <p style={{ fontSize: '0.92rem', margin: '0.45rem 0 0.85rem' }}>
+                  Reference Code: <b>{jobRef}</b>. Track approval status in <Link href="/activity" style={{ textDecoration: 'underline', fontWeight: 700, color: '#14532d' }}>My Activity</Link>.
                 </p>
-                <button className="gb" onClick={() => setJobRef(null)}>Submit Another Vacancy</button>
+                <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                  {jobWaUrl && (
+                    <a className="btn wab" href={jobWaUrl} target="_blank" rel="noopener" style={{ margin: 0, padding: '0.55rem 1.1rem', fontSize: '0.88rem' }}>
+                      Send Copy on WhatsApp →
+                    </a>
+                  )}
+                  <button className="gb" onClick={() => setJobRef(null)} style={{ margin: 0 }}>
+                    Submit Another Vacancy
+                  </button>
+                </div>
               </div>
             ) : (
               <form onSubmit={handlePostJob}>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.8rem' }}>
+                <div className="fm-grid-2">
                   <div>
-                    <label>Employer / School Name:</label>
-                    <input className="sel" type="text" value={employer} onChange={(e) => setEmployer(e.target.value)} required placeholder="e.g. Alliance High School" />
+                    <label htmlFor="jb-emp">Employer / School Name:</label>
+                    <input id="jb-emp" className="sel" type="text" value={employer} onChange={(e) => setEmployer(e.target.value)} required placeholder="e.g. Alliance High School" />
                   </div>
                   <div>
-                    <label>Job Title:</label>
-                    <input className="sel" type="text" value={jobTitle} onChange={(e) => setJobTitle(e.target.value)} required placeholder="e.g. Grade 8 Maths Teacher" />
+                    <label htmlFor="jb-title">Job Title:</label>
+                    <input id="jb-title" className="sel" type="text" value={jobTitle} onChange={(e) => setJobTitle(e.target.value)} required placeholder="e.g. Grade 8 Maths Teacher" />
                   </div>
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.8rem', marginTop: '0.8rem' }}>
+                <div className="fm-grid-2" style={{ marginTop: '0.8rem' }}>
                   <div>
-                    <label>Category:</label>
-                    <select className="sel" value={postCategory} onChange={(e) => setPostCategory(e.target.value)}>
+                    <label htmlFor="jb-cat">Category:</label>
+                    <select id="jb-cat" className="sel" value={postCategory} onChange={(e) => setPostCategory(e.target.value)}>
                       <option value="Teaching">Teaching</option>
                       <option value="School management">School management</option>
                       <option value="Support staff">Support staff</option>
@@ -357,28 +414,29 @@ export default function ParentsAndJobs({ onNavClick, mode = 'all' }: ParentsAndJ
                     </select>
                   </div>
                   <div>
-                    <label>Visibility:</label>
-                    <select className="sel" value={visibility} onChange={(e) => setVisibility(e.target.value)}>
+                    <label htmlFor="jb-vis">Visibility:</label>
+                    <select id="jb-vis" className="sel" value={visibility} onChange={(e) => setVisibility(e.target.value)}>
                       <option value="Standard listing">Standard listing (Free)</option>
                       <option value="Featured listing">Featured listing (Top of page)</option>
                     </select>
                   </div>
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.8rem', marginTop: '0.8rem' }}>
+                <div className="fm-grid-2" style={{ marginTop: '0.8rem' }}>
                   <div>
-                    <label>Location / County:</label>
-                    <input className="sel" type="text" value={location} onChange={(e) => setLocation(e.target.value)} placeholder="e.g. Kiambu County" />
+                    <label htmlFor="jb-loc">Location / County:</label>
+                    <input id="jb-loc" className="sel" type="text" value={location} onChange={(e) => setLocation(e.target.value)} placeholder="e.g. Kiambu County" />
                   </div>
                   <div>
-                    <label>How to Apply (Email / Phone):</label>
-                    <input className="sel" type="text" value={contact} onChange={(e) => setContact(e.target.value)} required placeholder="e.g. jobs@school.ac.ke" />
+                    <label htmlFor="jb-contact">How to Apply (Email / Phone):</label>
+                    <input id="jb-contact" className="sel" type="text" value={contact} onChange={(e) => setContact(e.target.value)} required placeholder="e.g. jobs@school.ac.ke" />
                   </div>
                 </div>
 
                 <div style={{ marginTop: '0.8rem' }}>
-                  <label>Job Description, Requirements & Deadline:</label>
+                  <label htmlFor="jb-desc">Job Description, Requirements & Deadline:</label>
                   <textarea
+                    id="jb-desc"
                     className="sel"
                     rows={4}
                     value={desc}
@@ -388,7 +446,7 @@ export default function ParentsAndJobs({ onNavClick, mode = 'all' }: ParentsAndJ
                   />
                 </div>
 
-                <label className="ck" style={{ margin: '1rem 0' }}>
+                <label className="ck">
                   <input
                     type="checkbox"
                     checked={jobConsent}

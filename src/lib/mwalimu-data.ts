@@ -629,6 +629,25 @@ export function downloadWordDocument(filename: string, title: string, grade: str
   generateDocFile(filename, html);
 }
 
+export function downloadCustomDoc(filename: string, heading: string, metaLine: string, bodyText: string) {
+  const safeHtml = bodyText
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .split(/\r?\n/)
+    .map((line) => (line.trim() ? `<p>${line}</p>` : '<br/>'))
+    .join('\n');
+
+  const html = `
+    <h2>${heading}</h2>
+    <p style="color:#444;margin-bottom:10px;"><b>${metaLine}</b></p>
+    <hr style="border:0;border-top:1px solid #ccc;margin:10px 0;"/>
+    ${safeHtml}
+  `;
+
+  generateDocFile(filename.replace(/[^a-zA-Z0-9_-]/g, '_'), html);
+}
+
 export function downloadTemplateByType(typeId: string, filename: string) {
   let body = '';
   const headerInfo = `<p><b>School:</b> _________________________ &nbsp;&nbsp; <b>Teacher:</b> _________________________</p><p><b>Year:</b> 2026 &nbsp;&nbsp; <b>Term:</b> Term 1 &nbsp;&nbsp; <b>Grade:</b> Grade 7 &nbsp;&nbsp; <b>Subject:</b> ________________</p><br/>`;

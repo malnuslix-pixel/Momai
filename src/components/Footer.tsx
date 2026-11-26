@@ -2,12 +2,14 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { useCms } from '@/lib/cms-context';
 
 interface FooterProps {
   onNavClick?: (hash: string) => void;
 }
 
 export default function Footer({ onNavClick }: FooterProps) {
+  const { cms } = useCms();
   return (
     <footer>
       <div className="w">
@@ -34,8 +36,8 @@ export default function Footer({ onNavClick }: FooterProps) {
 
         <div className="fc">
           <div>
-            <h4>Mwalimu Family</h4>
-            <p>News and learning resources for Kenyan families and teachers.</p>
+            <h4>{cms.siteCopy.brandName}</h4>
+            <p>{cms.siteCopy.footerTagline}</p>
           </div>
           <div>
             <h4>Explore</h4>
@@ -68,7 +70,7 @@ export default function Footer({ onNavClick }: FooterProps) {
         </div>
 
         <div className="bot">
-          <p>© 2026 Mwalimu Family. Proudly serving Kenya’s 47 counties.</p>
+          <p>{cms.siteCopy.footerCopy}</p>
           <p>
             <Link href="/privacy">Privacy Notice</Link> &nbsp;·&nbsp;
             <a href="https://wa.me/254715363944" target="_blank" rel="noopener">WhatsApp Support</a>

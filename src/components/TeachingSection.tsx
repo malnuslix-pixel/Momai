@@ -2,18 +2,24 @@
 
 import React, { useState } from 'react';
 import {
-  GRADES,
-  TEACHING_TEMPLATES,
   downloadTemplateByType,
+  downloadCustomDoc,
   downloadWordDocument,
   downloadTimetableDoc
 } from '@/lib/mwalimu-data';
+import { useLanguage } from '@/lib/language';
+import { useCms, useSectionCopy } from '@/lib/cms-context';
 
 interface TeachingSectionProps {
   onNavClick: (hash: string) => void;
 }
 
 export default function TeachingSection({ onNavClick }: TeachingSectionProps) {
+  const [lang] = useLanguage();
+  const { cms } = useCms();
+  const copy = useSectionCopy('teaching', lang);
+  const grades = cms.learning.grades;
+  const templates = cms.teaching;
   // Category filter
   const [filterType, setFilterType] = useState<string>('All');
 
@@ -89,23 +95,17 @@ export default function TeachingSection({ onNavClick }: TeachingSectionProps) {
     );
   };
 
-  const filteredTemplates = TEACHING_TEMPLATES.filter(t => {
+  const filteredTemplates = templates.filter(t => {
     if (filterType === 'All') return true;
-    if (filterType === 'Exams') return t.category === 'Exams';
-    if (filterType === 'Schemes') return t.category === 'Schemes';
-    if (filterType === 'Lesson notes') return t.category === 'Lesson notes';
-    if (filterType === 'Records') return t.category === 'Records';
-    return true;
+    return t.category === filterType;
   });
 
   return (
     <section className="sec cine" id="teaching" aria-labelledby="th">
       <div className="gy" aria-hidden="true" />
       <div className="w">
-        <h2 className="sh" id="th">Teaching materials</h2>
-        <p className="sub">
-          Free, original templates and tools for Kenyan teachers: schemes of work, lesson notes, exams and records. Everything downloads as an editable Word (.doc) file.
-        </p>
+        <h2 className="sh" id="th">{copy.title}</h2>
+        <p className="sub">{copy.subtitle}</p>
 
         {/* Filter Chips */}
         <div className="chips" style={{ marginBottom: '1.5rem' }}>
@@ -131,7 +131,11 @@ export default function TeachingSection({ onNavClick }: TeachingSectionProps) {
               </div>
               <button
                 className="gb"
-                onClick={() => downloadTemplateByType(item.typeId, item.filename)}
+                onClick={() =>
+                  item.customBody
+                    ? downloadCustomDoc(item.filename, item.title, `${item.category} · ${item.targetGrades}`, item.customBody)
+                    : downloadTemplateByType(item.typeId, item.filename)
+                }
                 style={{ marginTop: '1rem', width: 'fit-content' }}
               >
                 Download Free (.doc)
@@ -227,7 +231,7 @@ export default function TeachingSection({ onNavClick }: TeachingSectionProps) {
               value={schemeGrade}
               onChange={(e) => setSchemeGrade(e.target.value)}
             >
-              {GRADES.map(g => (
+              {grades.map(g => (
                 <option key={g} value={g}>{g}</option>
               ))}
             </select>

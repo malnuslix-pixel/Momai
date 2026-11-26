@@ -4,6 +4,8 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Sparkles, ArrowRight, Bot, BookOpen, BrainCircuit, CheckCircle2, Zap } from 'lucide-react';
+import { useLanguage } from '@/lib/language';
+import { useSectionCopy } from '@/lib/cms-context';
 
 const POPULAR_PROMPTS = [
   {
@@ -57,6 +59,8 @@ const GRADES = [
 
 export default function AiTutorSpotlight() {
   const router = useRouter();
+  const [lang] = useLanguage();
+  const copy = useSectionCopy('tutorSpotlight', lang);
   const [query, setQuery] = useState('');
   const [subject, setSubject] = useState('Mathematics');
   const [grade, setGrade] = useState('Grade 8');
@@ -110,13 +114,13 @@ export default function AiTutorSpotlight() {
           <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem', marginBottom: '1.2rem' }}>
             <div>
               <span className="tag" style={{ background: '#f4a261', color: '#1a1a1a', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: '5px' }}>
-                <Sparkles size={13} /> Flagship AI Assistant
+                <Sparkles size={13} /> {copy.tag}
               </span>
               <h2 className="sh" style={{ margin: '0.6rem 0 0.3rem', fontSize: 'clamp(1.6rem, 3.5vw, 2.3rem)', color: '#ffffff' }}>
-                Mwalimu AI Tutor: Instant Kenyan Syllabus Revision
+                {copy.title}
               </h2>
               <p className="sub" style={{ margin: 0, maxWidth: '48rem', color: '#d1dcd2', fontSize: '1rem', lineHeight: 1.6 }}>
-                Stuck on a tricky question or topic? Ask in plain English or Kiswahili. Get instant step-by-step workings, CBC Grade 7–10 competency guides, and KCSE exam tips aligned with KICD standards.
+                {copy.subtitle}
               </p>
             </div>
 

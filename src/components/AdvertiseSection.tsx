@@ -15,6 +15,7 @@ export default function AdvertiseSection({ onNavClick }: AdvertiseSectionProps) 
   const [consent, setConsent] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [ref, setRef] = useState<string | null>(null);
+  const [waUrl, setWaUrl] = useState<string>('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,6 +31,11 @@ export default function AdvertiseSection({ onNavClick }: AdvertiseSectionProps) 
 
     const res = await submitOnlineForm('ad', 'Advertising Quote', business, fields, consent);
     setRef(res.ref);
+    setWaUrl(res.whatsappUrl);
+    setBusiness('');
+    setContact('');
+    setDetails('');
+    setConsent(false);
     setSubmitting(false);
   };
 
@@ -100,36 +106,45 @@ export default function AdvertiseSection({ onNavClick }: AdvertiseSectionProps) 
         </div>
 
         {/* REQUEST A QUOTE FORM */}
-        <div className="fm" style={{ maxWidth: '640px', margin: '0 auto', background: '#fff', color: '#1a1a1a', borderRadius: '20px', padding: '2rem' }}>
-          <h3 style={{ fontSize: '1.4rem', color: '#1a3d1b', marginBottom: '0.4rem' }}>Request an advertising quote</h3>
-          <p style={{ fontSize: '0.88rem', color: '#666', marginBottom: '1.2rem' }}>
+        <div className="fm fm-light" style={{ maxWidth: '640px', margin: '0 auto' }}>
+          <h3 style={{ fontSize: '1.4rem', marginBottom: '0.4rem' }}>Request an advertising quote</h3>
+          <p style={{ fontSize: '0.88rem', marginBottom: '1.2rem' }}>
             Tell us about your brand or school campaign. Our promotions team will reply within 24 hours with package rates.
           </p>
 
           {ref ? (
-            <div style={{ padding: '1rem', background: '#eaf5eb', borderRadius: '10px', color: '#1f7a3a' }}>
+            <div className="fm-confirm-box">
               <h4>✅ Quote Request Submitted</h4>
-              <p style={{ fontSize: '0.92rem', margin: '0.4rem 0' }}>
-                Reference Code: <b>{ref}</b>. Our promotions desk will contact you with media kit rates.
+              <p style={{ fontSize: '0.92rem', margin: '0.45rem 0 0.85rem' }}>
+                Reference Code: <b>{ref}</b>. Saved to your Activity tracker and queued for our promotions desk.
               </p>
-              <button className="gb" onClick={() => setRef(null)}>Submit Another Enquiry</button>
+              <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                {waUrl && (
+                  <a className="btn wab" href={waUrl} target="_blank" rel="noopener" style={{ margin: 0, padding: '0.55rem 1.1rem', fontSize: '0.88rem' }}>
+                    Send Copy on WhatsApp →
+                  </a>
+                )}
+                <button className="gb" onClick={() => setRef(null)} style={{ margin: 0 }}>
+                  Submit Another Enquiry
+                </button>
+              </div>
             </div>
           ) : (
             <form onSubmit={handleSubmit}>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.8rem' }}>
+              <div className="fm-grid-2">
                 <div>
-                  <label>Business / Organisation:</label>
-                  <input className="sel" type="text" value={business} onChange={(e) => setBusiness(e.target.value)} required placeholder="e.g. Oxford Bookshop Nairobi" />
+                  <label htmlFor="adv-biz">Business / Organisation:</label>
+                  <input id="adv-biz" className="sel" type="text" value={business} onChange={(e) => setBusiness(e.target.value)} required placeholder="e.g. Oxford Bookshop Nairobi" />
                 </div>
                 <div>
-                  <label>Contact (Phone or Email):</label>
-                  <input className="sel" type="text" value={contact} onChange={(e) => setContact(e.target.value)} required placeholder="e.g. 0712345678 or ads@brand.co.ke" />
+                  <label htmlFor="adv-contact">Contact (Phone or Email):</label>
+                  <input id="adv-contact" className="sel" type="text" value={contact} onChange={(e) => setContact(e.target.value)} required placeholder="e.g. 0712345678 or ads@brand.com" />
                 </div>
               </div>
 
               <div style={{ marginTop: '0.8rem' }}>
-                <label>Preferred Package:</label>
-                <select className="sel" value={pkg} onChange={(e) => setPkg(e.target.value)}>
+                <label htmlFor="adv-pkg">Preferred Package:</label>
+                <select id="adv-pkg" className="sel" value={pkg} onChange={(e) => setPkg(e.target.value)}>
                   <option value="Sponsored notice">Sponsored notice</option>
                   <option value="Featured job listing">Featured job listing</option>
                   <option value="Newsletter and WhatsApp mention">Newsletter and WhatsApp mention</option>
@@ -139,8 +154,9 @@ export default function AdvertiseSection({ onNavClick }: AdvertiseSectionProps) 
               </div>
 
               <div style={{ marginTop: '0.8rem' }}>
-                <label>What are you promoting? (Dates, message, target audience):</label>
+                <label htmlFor="adv-det">What are you promoting? (Dates, message, target audience):</label>
                 <textarea
+                  id="adv-det"
                   className="sel"
                   rows={4}
                   value={details}
@@ -150,7 +166,7 @@ export default function AdvertiseSection({ onNavClick }: AdvertiseSectionProps) 
                 />
               </div>
 
-              <label className="ck" style={{ margin: '1rem 0' }}>
+              <label className="ck">
                 <input
                   type="checkbox"
                   checked={consent}

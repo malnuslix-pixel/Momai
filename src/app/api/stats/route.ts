@@ -13,11 +13,12 @@ export async function GET(req: NextRequest) {
     const admin = getAdminClient();
 
     // Query real Supabase metrics across tables
-    const [subsRes, subrRes, itemsRes, logsRes, auditRes] = await Promise.allSettled([
+    const [subsRes, subrRes, itemsRes, logsRes, recentLogsRes, auditRes] = await Promise.allSettled([
       admin.from('submissions').select('id, st, created_at', { count: 'exact' }),
       admin.from('subscribers').select('id, active', { count: 'exact' }),
       admin.from('items').select('id, st, k', { count: 'exact' }),
       admin.from('assistant_logs').select('id, created_at', { count: 'exact' }),
+      admin.from('assistant_logs').select('id, question, reply, model, status, created_at').order('created_at', { ascending: false }).limit(20),
       admin.from('audit_log').select('*').order('created_at', { ascending: false }).limit(30),
     ]);
 
@@ -43,6 +44,11 @@ export async function GET(req: NextRequest) {
       ? logsRes.value.count
       : 248;
 
+    const recentAssistantLogs =
+      recentLogsRes.status === 'fulfilled' && Array.isArray(recentLogsRes.value.data)
+        ? recentLogsRes.value.data
+        : [];
+
     // Audit Log formatting
     const auditLogs = auditRes.status === 'fulfilled' && auditRes.value.data && auditRes.value.data.length > 0
       ? auditRes.value.data.map((a: any) => ({
@@ -61,6 +67,7 @@ export async function GET(req: NextRequest) {
       publishedItems: publishedCount,
       draftItems: draftCount,
       assistantToday: assistantLogsCount,
+      recentAssistantLogs,
       errorRate: '0.1%',
       systemStatus: 'Operational',
       audit: auditLogs,

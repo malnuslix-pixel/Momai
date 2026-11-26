@@ -1,13 +1,19 @@
 'use client';
 
 import React, { useState } from 'react';
-import { submitOnlineForm, QUIZZES_FULL } from '@/lib/mwalimu-data';
+import Link from 'next/link';
+import { submitOnlineForm } from '@/lib/mwalimu-data';
+import { awardLearnerXP } from '@/lib/learner-profile';
+import { useLanguage } from '@/lib/language';
+import { useSectionCopy } from '@/lib/cms-context';
 
 interface TutoringSectionProps {
   onNavClick?: (hash: string) => void;
 }
 
 export default function TutoringSection({ onNavClick }: TutoringSectionProps) {
+  const [lang] = useLanguage();
+  const copy = useSectionCopy('tutoring', lang);
   // Maths Practice State
   const [op, setOp] = useState<'+' | '−' | '×' | '÷'>('+');
   const [level, setLevel] = useState<1 | 2 | 3>(1);
@@ -50,7 +56,8 @@ export default function TutoringSection({ onNavClick }: TutoringSectionProps) {
         score++;
       }
     });
-    setPracticeResult(`Score: ${score} / ${problems.length} ${score === problems.length ? '🏆 Perfect Score!' : ''}`);
+    const earned = score >= 3 ? awardLearnerXP('quiz_completed', 'maths') : awardLearnerXP('session_completed', 'maths');
+    setPracticeResult(`Score: ${score} / ${problems.length} (+${earned.xpEarned} XP) ${score === problems.length ? '🏆 Perfect Score!' : ''}`);
   };
 
   // Find a Tutor Form State
@@ -62,6 +69,7 @@ export default function TutoringSection({ onNavClick }: TutoringSectionProps) {
   const [findConsent, setFindConsent] = useState(false);
   const [findSubmitting, setFindSubmitting] = useState(false);
   const [findRef, setFindRef] = useState<string | null>(null);
+  const [findWaUrl, setFindWaUrl] = useState('');
 
   const handleFindTutor = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -78,6 +86,12 @@ export default function TutoringSection({ onNavClick }: TutoringSectionProps) {
 
     const res = await submitOnlineForm('find', 'Tutor Request', `${findGrade} ${findSubject}`, fields, findConsent);
     setFindRef(res.ref);
+    setFindWaUrl(res.whatsappUrl);
+    setFindSubject('');
+    setFindGrade('');
+    setFindLocation('');
+    setFindContact('');
+    setFindConsent(false);
     setFindSubmitting(false);
   };
 
@@ -90,6 +104,7 @@ export default function TutoringSection({ onNavClick }: TutoringSectionProps) {
   const [tutConsent, setTutConsent] = useState(false);
   const [tutSubmitting, setTutSubmitting] = useState(false);
   const [tutRef, setTutRef] = useState<string | null>(null);
+  const [tutWaUrl, setTutWaUrl] = useState('');
 
   const handleApplyTutor = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -106,16 +121,21 @@ export default function TutoringSection({ onNavClick }: TutoringSectionProps) {
 
     const res = await submitOnlineForm('tut', 'Tutor Application', tutName, fields, tutConsent);
     setTutRef(res.ref);
+    setTutWaUrl(res.whatsappUrl);
+    setTutName('');
+    setTutSubs('');
+    setTutQuals('');
+    setTutLocation('');
+    setTutContact('');
+    setTutConsent(false);
     setTutSubmitting(false);
   };
 
   return (
     <section className="sec mb board" id="tutoring" aria-labelledby="tuh">
       <div className="w">
-        <h2 className="sh" id="tuh">Tutoring and practice</h2>
-        <p className="sub">
-          Practise maths, test your mastery, find an experienced tutor, or offer your educational skills to Kenyan learners.
-        </p>
+        <h2 className="sh" id="tuh">{copy.title}</h2>
+        <p className="sub">{copy.subtitle}</p>
 
         <div className="x2" style={{ marginBottom: '3rem' }}>
           {/* MATHS PRACTICE GENERATOR */}
@@ -182,54 +202,63 @@ export default function TutoringSection({ onNavClick }: TutoringSectionProps) {
           </div>
 
           {/* FIND A TUTOR FORM */}
-          <div style={{ background: '#fff', color: '#1a1a1a', borderRadius: '20px', padding: '1.8rem' }}>
-            <h3 style={{ fontSize: '1.35rem', color: '#1a3d1b', marginBottom: '0.4rem' }}>Find an accredited tutor</h3>
-            <p style={{ fontSize: '0.85rem', color: '#666', marginBottom: '1rem' }}>
+          <div className="fm fm-light">
+            <h3 style={{ fontSize: '1.35rem', marginBottom: '0.4rem' }}>Find an accredited tutor</h3>
+            <p style={{ fontSize: '0.85rem', marginBottom: '1rem' }}>
               Parents can request targeted 1-on-1 tutoring in CBC subjects, KCSE revision, or remedial numeracy.
             </p>
 
             {findRef ? (
-              <div style={{ padding: '1rem', background: '#eaf5eb', borderRadius: '10px', color: '#1f7a3a' }}>
+              <div className="fm-confirm-box">
                 <h4>✅ Tutor Request Logged</h4>
-                <p style={{ fontSize: '0.9rem', margin: '0.4rem 0' }}>
-                  Reference Code: <b>{findRef}</b>. We will match you with a vetted tutor.
+                <p style={{ fontSize: '0.9rem', margin: '0.45rem 0 0.8rem' }}>
+                  Reference Code: <b>{findRef}</b>. Track status in <Link href="/activity" style={{ textDecoration: 'underline', fontWeight: 700, color: '#14532d' }}>My Activity</Link>.
                 </p>
-                <button className="gb" onClick={() => setFindRef(null)}>Submit Another Request</button>
+                <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                  {findWaUrl && (
+                    <a className="btn wab" href={findWaUrl} target="_blank" rel="noopener" style={{ margin: 0, padding: '0.5rem 1rem', fontSize: '0.86rem' }}>
+                      Send on WhatsApp →
+                    </a>
+                  )}
+                  <button className="gb" onClick={() => setFindRef(null)} style={{ margin: 0 }}>
+                    Submit Another Request
+                  </button>
+                </div>
               </div>
             ) : (
               <form onSubmit={handleFindTutor}>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.6rem' }}>
+                <div className="fm-grid-2">
                   <div>
-                    <label style={{ fontSize: '0.85rem' }}>Subject:</label>
-                    <input className="sel" type="text" value={findSubject} onChange={(e) => setFindSubject(e.target.value)} required placeholder="e.g. Mathematics" />
+                    <label htmlFor="ft-sub">Subject:</label>
+                    <input id="ft-sub" className="sel" type="text" value={findSubject} onChange={(e) => setFindSubject(e.target.value)} required placeholder="e.g. Mathematics" />
                   </div>
                   <div>
-                    <label style={{ fontSize: '0.85rem' }}>Grade or Level:</label>
-                    <input className="sel" type="text" value={findGrade} onChange={(e) => setFindGrade(e.target.value)} required placeholder="e.g. Grade 8" />
+                    <label htmlFor="ft-grd">Grade or Level:</label>
+                    <input id="ft-grd" className="sel" type="text" value={findGrade} onChange={(e) => setFindGrade(e.target.value)} required placeholder="e.g. Grade 8" />
                   </div>
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.6rem', marginTop: '0.6rem' }}>
+                <div className="fm-grid-2" style={{ marginTop: '0.6rem' }}>
                   <div>
-                    <label style={{ fontSize: '0.85rem' }}>Mode:</label>
-                    <select className="sel" value={findMode} onChange={(e) => setFindMode(e.target.value)}>
+                    <label htmlFor="ft-mod">Mode:</label>
+                    <select id="ft-mod" className="sel" value={findMode} onChange={(e) => setFindMode(e.target.value)}>
                       <option value="Online">Online</option>
                       <option value="In person">In person</option>
                       <option value="Either">Either</option>
                     </select>
                   </div>
                   <div>
-                    <label style={{ fontSize: '0.85rem' }}>Location / Town:</label>
-                    <input className="sel" type="text" value={findLocation} onChange={(e) => setFindLocation(e.target.value)} placeholder="e.g. Ruiru, Kiambu" />
+                    <label htmlFor="ft-loc">Location / Town:</label>
+                    <input id="ft-loc" className="sel" type="text" value={findLocation} onChange={(e) => setFindLocation(e.target.value)} placeholder="e.g. Ruiru, Kiambu" />
                   </div>
                 </div>
 
                 <div style={{ marginTop: '0.6rem' }}>
-                  <label style={{ fontSize: '0.85rem' }}>Parent / Guardian Phone or Email:</label>
-                  <input className="sel" type="text" value={findContact} onChange={(e) => setFindContact(e.target.value)} required placeholder="e.g. 0722000000" />
+                  <label htmlFor="ft-cnt">Parent / Guardian Phone or Email:</label>
+                  <input id="ft-cnt" className="sel" type="text" value={findContact} onChange={(e) => setFindContact(e.target.value)} required placeholder="e.g. 0722000000" />
                 </div>
 
-                <label className="ck" style={{ margin: '0.8rem 0', fontSize: '0.82rem' }}>
+                <label className="ck" style={{ fontSize: '0.82rem' }}>
                   <input type="checkbox" checked={findConsent} onChange={(e) => setFindConsent(e.target.checked)} required />
                   <span>I agree to be contacted by verified tutors. Learners under 18 require parent supervision.</span>
                 </label>
@@ -243,36 +272,46 @@ export default function TutoringSection({ onNavClick }: TutoringSectionProps) {
         </div>
 
         {/* BECOME A TUTOR FORM */}
-        <div style={{ maxWidth: '680px', margin: '0 auto', background: '#fff', color: '#1a1a1a', borderRadius: '20px', padding: '2rem' }}>
-          <h3 style={{ fontSize: '1.4rem', color: '#1a3d1b', marginBottom: '0.4rem' }}>Apply to become a tutor</h3>
-          <p style={{ fontSize: '0.88rem', color: '#666', marginBottom: '1.2rem' }}>
+        <div className="fm fm-light" style={{ maxWidth: '680px', margin: '0 auto' }}>
+          <h3 style={{ fontSize: '1.4rem', marginBottom: '0.4rem' }}>Apply to become a tutor</h3>
+          <p style={{ fontSize: '0.88rem', marginBottom: '1.2rem' }}>
             Join our registry of vetted educators. Tutors must hold valid credentials or university transcripts.
           </p>
 
           {tutRef ? (
-            <div style={{ padding: '1rem', background: '#eaf5eb', borderRadius: '10px', color: '#1f7a3a' }}>
+            <div className="fm-confirm-box">
               <h4>✅ Tutor Application Received</h4>
-              <p style={{ fontSize: '0.92rem', margin: '0.4rem 0' }}>
-                Reference Code: <b>{tutRef}</b>. We will contact you for credential verification.
+              <p style={{ fontSize: '0.92rem', margin: '0.45rem 0 0.85rem' }}>
+                Reference Code: <b>{tutRef}</b>. Track verification in <Link href="/activity" style={{ textDecoration: 'underline', fontWeight: 700, color: '#14532d' }}>My Activity</Link>.
               </p>
-              <button className="gb" onClick={() => setTutRef(null)}>Submit Another Application</button>
+              <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                {tutWaUrl && (
+                  <a className="btn wab" href={tutWaUrl} target="_blank" rel="noopener" style={{ margin: 0, padding: '0.55rem 1.1rem', fontSize: '0.88rem' }}>
+                    Send on WhatsApp →
+                  </a>
+                )}
+                <button className="gb" onClick={() => setTutRef(null)} style={{ margin: 0 }}>
+                  Submit Another Application
+                </button>
+              </div>
             </div>
           ) : (
             <form onSubmit={handleApplyTutor}>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.8rem' }}>
+              <div className="fm-grid-2">
                 <div>
-                  <label>Full Name:</label>
-                  <input className="sel" type="text" value={tutName} onChange={(e) => setTutName(e.target.value)} required placeholder="e.g. Samuel Mutua" />
+                  <label htmlFor="tt-name">Full Name:</label>
+                  <input id="tt-name" className="sel" type="text" value={tutName} onChange={(e) => setTutName(e.target.value)} required placeholder="e.g. Samuel Mutua" />
                 </div>
                 <div>
-                  <label>Subjects & Target Grades:</label>
-                  <input className="sel" type="text" value={tutSubs} onChange={(e) => setTutSubs(e.target.value)} required placeholder="e.g. Grade 7-9 Science & Maths" />
+                  <label htmlFor="tt-sub">Subjects & Target Grades:</label>
+                  <input id="tt-sub" className="sel" type="text" value={tutSubs} onChange={(e) => setTutSubs(e.target.value)} required placeholder="e.g. Grade 7-9 Science & Maths" />
                 </div>
               </div>
 
               <div style={{ marginTop: '0.8rem' }}>
-                <label>Qualifications & Teaching Experience:</label>
+                <label htmlFor="tt-qual">Qualifications & Teaching Experience:</label>
                 <textarea
+                  id="tt-qual"
                   className="sel"
                   rows={3}
                   value={tutQuals}
@@ -282,18 +321,18 @@ export default function TutoringSection({ onNavClick }: TutoringSectionProps) {
                 />
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.8rem', marginTop: '0.8rem' }}>
+              <div className="fm-grid-2" style={{ marginTop: '0.8rem' }}>
                 <div>
-                  <label>Location / Mode:</label>
-                  <input className="sel" type="text" value={tutLocation} onChange={(e) => setTutLocation(e.target.value)} placeholder="e.g. Nairobi (Online & Physical)" />
+                  <label htmlFor="tt-loc">Location / Mode:</label>
+                  <input id="tt-loc" className="sel" type="text" value={tutLocation} onChange={(e) => setTutLocation(e.target.value)} placeholder="e.g. Nairobi (Online & Physical)" />
                 </div>
                 <div>
-                  <label>Phone / Email:</label>
-                  <input className="sel" type="text" value={tutContact} onChange={(e) => setTutContact(e.target.value)} required placeholder="e.g. 0712345678" />
+                  <label htmlFor="tt-cnt">Phone / Email:</label>
+                  <input id="tt-cnt" className="sel" type="text" value={tutContact} onChange={(e) => setTutContact(e.target.value)} required placeholder="e.g. 0712345678" />
                 </div>
               </div>
 
-              <label className="ck" style={{ margin: '1rem 0' }}>
+              <label className="ck">
                 <input type="checkbox" checked={tutConsent} onChange={(e) => setTutConsent(e.target.checked)} required />
                 <span>I confirm my qualifications are authentic and consent to teacher identity verification.</span>
               </label>

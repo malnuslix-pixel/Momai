@@ -7,30 +7,54 @@ interface FloatingWidgetsProps {
   onNavClick?: (hash: string) => void;
 }
 
+const QUICK_STARTERS = [
+  { label: 'KJSEA & KCSE dates', q: 'When are KJSEA and KCSE results released?' },
+  { label: 'KUCCPS formula', q: 'How do I calculate KUCCPS cluster points?' },
+  { label: 'Grade 10 pathways', q: 'Explain Grade 10 Senior School pathways' },
+  { label: 'Scam safety', q: 'How do I spot fake results messages?' },
+];
+
 export default function FloatingWidgets({ onNavClick }: FloatingWidgetsProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [inputVal, setInputVal] = useState('');
+  const [sending, setSending] = useState(false);
   const [messages, setMessages] = useState<Array<{ role: 'b' | 'u'; text: string; link?: [string, string] }>>([
     {
       role: 'b',
-      text: 'Habari! I am your Ask Mwalimu assistant. Ask me about exams, syllabus schemes, CBC Grade 10 placement, or revision materials!'
+      text: 'Habari! I am your Ask Mwalimu AI assistant. Ask me about Kenyan exams, syllabus schemes, Grade 10 placement, or revision!'
     }
   ]);
 
+  const sendQuestion = async (rawText: string) => {
+    const userText = rawText.trim();
+    if (!userText || sending) return;
+
+    setInputVal('');
+    const nextMsgs = [...messages, { role: 'u' as const, text: userText }];
+    setMessages(nextMsgs);
+    setSending(true);
+
+    const localMatch = getAskMwalimuReply(userText);
+
+    try {
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: userText }),
+      });
+      const data = await res.json();
+      const replyText = data?.reply || localMatch.reply;
+      setMessages([...nextMsgs, { role: 'b' as const, text: replyText, link: localMatch.link as any }]);
+    } catch {
+      setMessages([...nextMsgs, { role: 'b' as const, text: localMatch.reply, link: localMatch.link as any }]);
+    } finally {
+      setSending(false);
+    }
+  };
+
   const handleSend = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!inputVal.trim()) return;
-
-    const userText = inputVal.trim();
-    setInputVal('');
-
-    const newMsgs = [...messages, { role: 'u' as const, text: userText }];
-    setMessages(newMsgs);
-
-    const match = getAskMwalimuReply(userText);
-    setTimeout(() => {
-      setMessages([...newMsgs, { role: 'b' as const, text: match.reply, link: match.link as any }]);
-    }, 400);
+    sendQuestion(inputVal);
   };
 
   const scrollToTop = () => {
@@ -83,6 +107,24 @@ export default function FloatingWidgets({ onNavClick }: FloatingWidgetsProps) {
                   )}
                 </div>
               ))}
+              {sending && (
+                <div className="b" style={{ opacity: 0.8 }}>
+                  Thinking...
+                </div>
+              )}
+            </div>
+
+            <div className="mfq">
+              {QUICK_STARTERS.map((s) => (
+                <button
+                  key={s.label}
+                  type="button"
+                  onClick={() => sendQuestion(s.q)}
+                  disabled={sending}
+                >
+                  {s.label}
+                </button>
+              ))}
             </div>
 
             <form className="mff" onSubmit={handleSend}>
@@ -93,8 +135,11 @@ export default function FloatingWidgets({ onNavClick }: FloatingWidgetsProps) {
                 placeholder="Ask about exams, schemes, CBC..."
                 aria-label="Your question"
                 autoComplete="off"
+                disabled={sending}
               />
-              <button type="submit">Send</button>
+              <button type="submit" disabled={sending || !inputVal.trim()}>
+                {sending ? '…' : 'Send'}
+              </button>
             </form>
           </div>
         )}

@@ -94,3 +94,47 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'server_error' }, { status: 500 });
   }
 }
+
+// Public non-PII status lookup by submission reference codes (?refs=JOB-...,NTC-...)
+export async function GET(req: NextRequest) {
+  try {
+    const rawRefs = req.nextUrl.searchParams.get('refs') || '';
+    const refs = rawRefs
+      .split(',')
+      .map((r) => r.trim().toUpperCase())
+      .filter((r) => /^[A-Z]{3}-\d{6}-\d{4}$/.test(r))
+      .slice(0, 30);
+
+    if (refs.length === 0) {
+      return NextResponse.json({ ok: true, statuses: {} });
+    }
+
+    const statuses: Record<string, { st: string; updated_at?: string }> = {};
+
+    // Seed/in-memory fallback first
+    for (const s of SEED_SUBMISSIONS) {
+      if (refs.includes(s.ref)) {
+        statuses[s.ref] = { st: s.st, updated_at: s.updated_at || s.created_at };
+      }
+    }
+
+    try {
+      const admin = getAdminClient();
+      const { data } = await admin
+        .from('submissions')
+        .select('ref, st, updated_at')
+        .in('ref', refs);
+
+      if (data && Array.isArray(data)) {
+        for (const row of data) {
+          statuses[row.ref] = { st: row.st, updated_at: row.updated_at };
+        }
+      }
+    } catch {}
+
+    return NextResponse.json({ ok: true, statuses });
+  } catch (err: any) {
+    console.error('Submit status GET error:', err);
+    return NextResponse.json({ ok: true, statuses: {} });
+  }
+}

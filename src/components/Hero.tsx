@@ -3,6 +3,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useLanguage } from '@/lib/language';
+import { useCms } from '@/lib/cms-context';
 
 interface HeroProps {
   onNavClick: (hash: string) => void;
@@ -14,6 +15,10 @@ export default function Hero({ onNavClick }: HeroProps) {
   const lastSceneRef = useRef(0);
   const [activeScene, setActiveScene] = useState(0);
   const [lang] = useLanguage();
+  const { cms } = useCms();
+  const scenes = cms.siteCopy.heroScenes;
+  const tickerItems = cms.siteCopy.tickerItems;
+  const tickerLabel = lang === 'sw' ? cms.siteCopy.tickerLabelSw : cms.siteCopy.tickerLabel;
 
   // Cinematic scroll: hardware-accelerated scene transitions based on scroll progress
   useEffect(() => {
@@ -75,118 +80,47 @@ export default function Hero({ onNavClick }: HeroProps) {
 
         <div className="w" style={{ position: 'relative', width: '100%' }}>
           <div className="scenes">
-            {/* Scene 1 */}
-            <div className={`scene ${activeScene === 0 ? 'on' : ''}`}>
-              <h1>
-                {lang === 'sw'
-                  ? 'Habari za shule za Kenya, kwa lugha rahisi.'
-                  : "Kenya's school news, made clear."}
-              </h1>
-              <p>
-                {lang === 'sw'
-                  ? 'Nini maana ya ratiba za mitihani, miongozo na nafasi za masomo kwa familia yako, ikielezwa wazi.'
-                  : 'What exam timelines, policies and placements mean for your family, explained in plain words.'}
-              </p>
-              <div className="btns">
-                <Link href="/learn" className="btn b1">
-                  📚 {lang === 'sw' ? 'Maktaba ya Masomo' : 'Browse Library'}
-                </Link>
-                <Link href="/exams" className="btn b2">
-                  📝 {lang === 'sw' ? 'Kituo cha Mitihani' : 'View Exams Hub'}
-                </Link>
+            {scenes.slice(0, 3).map((sc, idx) => (
+              <div key={idx} className={`scene ${activeScene === idx ? 'on' : ''}`}>
+                <h1>{lang === 'sw' ? sc.titleSw : sc.title}</h1>
+                <p>{lang === 'sw' ? sc.subtitleSw : sc.subtitle}</p>
+                <div className="btns">
+                  <Link href={sc.cta1Href || '/learn'} className="btn b1">
+                    {lang === 'sw' ? sc.cta1LabelSw : sc.cta1Label}
+                  </Link>
+                  <Link href={sc.cta2Href || '/exams'} className="btn b2">
+                    {lang === 'sw' ? sc.cta2LabelSw : sc.cta2Label}
+                  </Link>
+                </div>
               </div>
-            </div>
-
-            {/* Scene 2 */}
-            <div className={`scene ${activeScene === 1 ? 'on' : ''}`}>
-              <h1>
-                {lang === 'sw'
-                  ? 'Nyenzo kamili za kufundishia darasani.'
-                  : 'Classroom-ready resources.'}
-              </h1>
-              <p>
-                {lang === 'sw'
-                  ? 'Maazimio ya kazi, maandalio ya masomo na rekodi za kila darasa kwa walimu wa Kenya.'
-                  : 'Schemes of work, lesson plans and records for every grade, built for Kenyan teachers.'}
-              </p>
-              <div className="btns">
-                <Link href="/teach" className="btn b1">
-                  👩🏾‍🏫 {lang === 'sw' ? 'Maandalizi ya Walimu' : 'Teacher Preparation'}
-                </Link>
-                <Link href="/tools" className="btn b2">
-                  🧮 {lang === 'sw' ? 'Zana za Darasani' : 'Classroom Tools'}
-                </Link>
-              </div>
-            </div>
-
-            {/* Scene 3 */}
-            <div className={`scene ${activeScene === 2 ? 'on' : ''}`}>
-              <h1>
-                {lang === 'sw'
-                  ? 'Ujuzi wa vitendo kwa shule na maisha.'
-                  : 'Practical skills for school and work.'}
-              </h1>
-              <p>
-                {lang === 'sw'
-                  ? 'Kozi fupi za stadi za masomo, fedha, teknolojia na taaluma zenye mifano halisi ya Kenya.'
-                  : 'Short courses in study, money, digital and career skills, with Kenyan examples.'}
-              </p>
-              <div className="btns">
-                <Link href="/courses" className="btn b1">
-                  🎓 {lang === 'sw' ? 'Kozi na Mafunzo' : 'Browse Courses'}
-                </Link>
-                <Link href="/tutor" className="btn b2">
-                  🤖 {lang === 'sw' ? 'Uliza Mwalimu AI' : 'Ask Mwalimu AI Tutor'}
-                </Link>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
 
         {/* Latest News Ticker */}
         <div className="tick">
           <div className="w tk">
-            <strong>{lang === 'sw' ? 'Mapya:' : 'Latest:'}</strong>
+            <strong>{tickerLabel}</strong>
             <div className="mq" role="region" aria-label="Latest education news ticker">
               <div className="mt">
-                {/* Loop 1 */}
-                <a href="#/s1" onClick={(e) => { e.preventDefault(); onNavClick('#/s1'); }}>
-                  {lang === 'sw'
-                    ? 'Matokeo ya KJSEA 2026 kutarajiwa Desemba, KCSE ikilengwa Januari 2027'
-                    : '2026 KJSEA results expected in December, KCSE targeted for January 2027'}
-                </a>
-                <span aria-hidden="true">•</span>
-                <a href="#/s4" onClick={(e) => { e.preventDefault(); onNavClick('#/s4'); }}>
-                  {lang === 'sw'
-                    ? 'Jinsi ya kutambua jumbe ghushi za matokeo ya KJSEA na KCSE'
-                    : 'How to spot fake KJSEA and KCSE results messages'}
-                </a>
-                <span aria-hidden="true">•</span>
-                <a href="#/s5" onClick={(e) => { e.preventDefault(); onNavClick('#/s5'); }}>
-                  {lang === 'sw'
-                    ? 'Ufafanuzi kamili wa mitihani ya KPSEA, KJSEA na KCSE'
-                    : 'KPSEA, KJSEA and KCSE explained'}
-                </a>
-                <span aria-hidden="true">•</span>
-                {/* Loop 2 - Exact duplicate for seamless 50% translation loop */}
-                <a href="#/s1" onClick={(e) => { e.preventDefault(); onNavClick('#/s1'); }}>
-                  {lang === 'sw'
-                    ? 'Matokeo ya KJSEA 2026 kutarajiwa Desemba, KCSE ikilengwa Januari 2027'
-                    : '2026 KJSEA results expected in December, KCSE targeted for January 2027'}
-                </a>
-                <span aria-hidden="true">•</span>
-                <a href="#/s4" onClick={(e) => { e.preventDefault(); onNavClick('#/s4'); }}>
-                  {lang === 'sw'
-                    ? 'Jinsi ya kutambua jumbe ghushi za matokeo ya KJSEA na KCSE'
-                    : 'How to spot fake KJSEA and KCSE results messages'}
-                </a>
-                <span aria-hidden="true">•</span>
-                <a href="#/s5" onClick={(e) => { e.preventDefault(); onNavClick('#/s5'); }}>
-                  {lang === 'sw'
-                    ? 'Ufafanuzi kamili wa mitihani ya KPSEA, KJSEA na KCSE'
-                    : 'KPSEA, KJSEA and KCSE explained'}
-                </a>
-                <span aria-hidden="true">•</span>
+                {[0, 1].map((dupIdx) => (
+                  <React.Fragment key={dupIdx}>
+                    {tickerItems.map((tk, idx) => (
+                      <React.Fragment key={`${dupIdx}-${idx}`}>
+                        {tk.href.startsWith('#') ? (
+                          <a href={tk.href} onClick={(e) => { e.preventDefault(); onNavClick(tk.href); }}>
+                            {lang === 'sw' ? tk.labelSw : tk.label}
+                          </a>
+                        ) : (
+                          <Link href={tk.href}>
+                            {lang === 'sw' ? tk.labelSw : tk.label}
+                          </Link>
+                        )}
+                        <span aria-hidden="true">•</span>
+                      </React.Fragment>
+                    ))}
+                  </React.Fragment>
+                ))}
               </div>
             </div>
           </div>

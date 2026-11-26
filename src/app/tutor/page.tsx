@@ -22,6 +22,7 @@ import {
   Flame
 } from 'lucide-react';
 import TutorMarkdown from '@/components/TutorMarkdown';
+import { awardLearnerXP, getLearnerProfile } from '@/lib/learner-profile';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -97,7 +98,8 @@ function TutorClient() {
   useEffect(() => {
     try {
       const savedSession = localStorage.getItem('mf_tutor_session_id');
-      const sid = savedSession || `tutor-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
+      const profile = getLearnerProfile();
+      const sid = savedSession || profile.id || `tutor-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
       setSessionId(sid);
       if (!savedSession) {
         localStorage.setItem('mf_tutor_session_id', sid);
@@ -216,6 +218,7 @@ function TutorClient() {
     try {
       localStorage.setItem('mf_tutor_q_count', newCount.toString());
     } catch {}
+    awardLearnerXP('question_answered', 'tutor');
 
     setLoading(true);
 

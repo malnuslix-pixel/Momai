@@ -89,9 +89,9 @@ export default function PrivacyPage() {
 
         <h2>Who we are</h2>
         <p>
-          Mwalimu Family publishes education news and learning tools for Kenyan families.
-          Contact us on WhatsApp +254 715 363 944 or at [privacy email address].
-          [Add registered business name and ODPC registration number once registered.]
+          Mwalimu Family (Nairobi, Kenya) publishes education news and learning tools for Kenyan families.
+          Contact our editorial and privacy desk on WhatsApp +254 715 363 944 or by email at{' '}
+          <a href="mailto:updates@mwalimufamily.com">updates@mwalimufamily.com</a>.
         </p>
 
         <h2>What we collect and why</h2>

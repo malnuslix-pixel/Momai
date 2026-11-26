@@ -1,13 +1,9 @@
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
-import {
-  COURSES,
-  QUIZZES_FULL,
-  MEMORY_MATCH_PAIRS,
-  WORD_SCRAMBLE_WORDS
-} from '@/lib/mwalimu-data';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { useLanguage } from '@/lib/language';
+import { useCms, useSectionCopy } from '@/lib/cms-context';
+import { awardLearnerXP } from '@/lib/learner-profile';
 
 interface CoursesAndGamesProps {
   mode?: 'all' | 'courses' | 'games';
@@ -15,12 +11,47 @@ interface CoursesAndGamesProps {
 
 export default function CoursesAndGames({ mode = 'all' }: CoursesAndGamesProps) {
   const [lang] = useLanguage();
+  const { cms } = useCms();
+  const coursesCopy = useSectionCopy('courses', lang);
+  const gamesCopy = useSectionCopy('games', lang);
+  const COURSES = cms.courses;
+  const QUIZZES_FULL = cms.games.quizzes;
+  const MEMORY_MATCH_PAIRS = cms.games.memoryPairs;
+  const WORD_SCRAMBLE_WORDS = cms.games.wordScramble;
+
   // ==========================================
   // COURSES STATE & LOGIC
   // ==========================================
   const [courseCategory, setCourseCategory] = useState('All');
   const [courseSearch, setCourseSearch] = useState('');
   const [completedLessons, setCompletedLessons] = useState<Record<string, number[]>>({});
+  const [aiLessonHelp, setAiLessonHelp] = useState<Record<string, string>>({});
+  const [aiLessonLoading, setAiLessonLoading] = useState<string | null>(null);
+
+  const handleExplainLesson = async (courseId: string, courseTitle: string, lessonIdx: number, lessonTitle: string, lessonContent: string) => {
+    const key = `${courseId}-${lessonIdx}`;
+    setAiLessonLoading(key);
+    try {
+      const res = await fetch('/api/ai/assist', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          task: 'explain_lesson',
+          courseTitle,
+          lessonTitle,
+          lessonContent,
+          lang,
+        }),
+      });
+      const data = await res.json();
+      if (data.ok && data.text) {
+        setAiLessonHelp((prev) => ({ ...prev, [key]: data.text }));
+      }
+    } catch {
+    } finally {
+      setAiLessonLoading(null);
+    }
+  };
 
   useEffect(() => {
     try {
@@ -35,6 +66,9 @@ export default function CoursesAndGames({ mode = 'all' }: CoursesAndGamesProps) 
     const updated = exists ? current.filter(i => i !== lessonIdx) : [...current, lessonIdx];
     const next = { ...completedLessons, [courseId]: updated };
     setCompletedLessons(next);
+    if (!exists) {
+      awardLearnerXP('lesson_completed', 'lesson');
+    }
     try {
       localStorage.setItem('mfc_lessons', JSON.stringify(next));
     } catch {}
@@ -72,8 +106,10 @@ export default function CoursesAndGames({ mode = 'all' }: CoursesAndGamesProps) 
     if (isCorrect) {
       setQuizScore(s => s + 1);
       setQuizStreak(st => st + 1);
+      awardLearnerXP('correct_answer', 'quiz');
     } else {
       setQuizStreak(0);
+      awardLearnerXP('question_answered', 'quiz');
     }
 
     setTimeout(() => {
@@ -96,23 +132,24 @@ export default function CoursesAndGames({ mode = 'all' }: CoursesAndGamesProps) 
   const [selectedCards, setSelectedCards] = useState<number[]>([]);
   const [matchesWon, setMatchesWon] = useState(0);
 
-  const initMemoryGame = () => {
+  const pairGoal = Math.min(6, MEMORY_MATCH_PAIRS.length);
+
+  const initMemoryGame = useCallback(() => {
     const cards: MemoryCard[] = [];
-    const chosenPairs = MEMORY_MATCH_PAIRS.slice(0, 6); // 6 pairs = 12 cards
+    const chosenPairs = MEMORY_MATCH_PAIRS.slice(0, pairGoal);
     chosenPairs.forEach(([sw, en], idx) => {
       cards.push({ id: idx * 2, text: sw, pairId: idx, isSwahili: true, flipped: false, matched: false });
       cards.push({ id: idx * 2 + 1, text: en, pairId: idx, isSwahili: false, flipped: false, matched: false });
     });
-    // Shuffle
     cards.sort(() => Math.random() - 0.5);
     setMemoryCards(cards);
     setSelectedCards([]);
     setMatchesWon(0);
-  };
+  }, [MEMORY_MATCH_PAIRS, pairGoal]);
 
   useEffect(() => {
     initMemoryGame();
-  }, []);
+  }, [initMemoryGame]);
 
   const handleCardClick = (id: number) => {
     if (selectedCards.length === 2) return;
@@ -134,7 +171,11 @@ export default function CoursesAndGames({ mode = 'all' }: CoursesAndGamesProps) 
         setTimeout(() => {
           setMemoryCards(cards => cards.map(c => c.pairId === card1.pairId ? { ...c, matched: true } : c));
           setSelectedCards([]);
-          setMatchesWon(m => m + 1);
+          setMatchesWon(m => {
+            const nextM = m + 1;
+            if (nextM === pairGoal) awardLearnerXP('quiz_completed', 'quiz');
+            return nextM;
+          });
         }, 500);
       } else {
         // No match
@@ -183,6 +224,7 @@ export default function CoursesAndGames({ mode = 'all' }: CoursesAndGamesProps) 
       timer = setInterval(() => setSpeedSeconds(s => s - 1), 1000);
     } else if (speedSeconds === 0 && speedRunning) {
       setSpeedRunning(false);
+      if (speedScore > 0) awardLearnerXP('quiz_completed', 'quiz');
     }
     return () => clearInterval(timer);
   }, [speedRunning, speedSeconds]);
@@ -216,6 +258,7 @@ export default function CoursesAndGames({ mode = 'all' }: CoursesAndGamesProps) 
     e.preventDefault();
     if (scrambleInput.trim().toUpperCase() === currentScramble.word) {
       setScrambleFeedback(lang === 'sw' ? '🎉 Safi sana! Sahihi!' : '🎉 Safi sana! Correct!');
+      awardLearnerXP('correct_answer', 'quiz');
       setTimeout(() => {
         setScrambleFeedback(null);
         setScrambleInput('');
@@ -233,12 +276,8 @@ export default function CoursesAndGames({ mode = 'all' }: CoursesAndGamesProps) 
       {mode !== 'games' && (
       <section className="sec alt" id="courses" aria-labelledby="crh">
         <div className="w">
-          <h2 className="sh" id="crh">{lang === 'sw' ? 'Kozi na Ujuzi' : 'Courses and skills'}</h2>
-          <p className="sub">
-            {lang === 'sw'
-              ? 'Miongozo ya bure ya kujiendeleza kwa wanafunzi, wazazi na walimu. Weka alama kwenye masomo unayomaliza — maendeleo yako yanahifadhiwa kwenye kifaa hiki.'
-              : 'Free, self-paced skill guides for learners, parents and teachers. Tick off lessons as you go — your progress is securely saved on this device.'}
-          </p>
+          <h2 className="sh" id="crh">{coursesCopy.title}</h2>
+          <p className="sub">{coursesCopy.subtitle}</p>
 
           <p className="course-progress-summary">
             {lang === 'sw'
@@ -306,23 +345,42 @@ export default function CoursesAndGames({ mode = 'all' }: CoursesAndGamesProps) 
                       <div className="course-lessons-list">
                         {course.lessons.map((lesson, lIdx) => {
                           const isDone = doneList.includes(lIdx);
+                          const lKey = `${course.id}-${lIdx}`;
                           return (
-                            <label key={lIdx} className={`course-lesson-item ${isDone ? 'done' : ''}`}>
-                              <input
-                                type="checkbox"
-                                className="course-lesson-checkbox"
-                                checked={isDone}
-                                onChange={() => toggleLesson(course.id, lIdx)}
-                              />
-                              <div>
-                                <b className="course-lesson-title">
-                                  Lesson {lIdx + 1}: {lesson.title}
-                                </b>
-                                <p className="course-lesson-content">
-                                  {lesson.content}
-                                </p>
+                            <div key={lIdx} className={`course-lesson-item ${isDone ? 'done' : ''}`} style={{ flexDirection: 'column', alignItems: 'stretch' }}>
+                              <label style={{ display: 'flex', gap: '0.6rem', alignItems: 'flex-start', cursor: 'pointer' }}>
+                                <input
+                                  type="checkbox"
+                                  className="course-lesson-checkbox"
+                                  checked={isDone}
+                                  onChange={() => toggleLesson(course.id, lIdx)}
+                                />
+                                <div style={{ flex: 1 }}>
+                                  <b className="course-lesson-title">
+                                    Lesson {lIdx + 1}: {lesson.title}
+                                  </b>
+                                  <p className="course-lesson-content">
+                                    {lesson.content}
+                                  </p>
+                                </div>
+                              </label>
+                              <div style={{ marginLeft: '1.6rem', marginTop: '0.3rem' }}>
+                                <button
+                                  type="button"
+                                  className="gb o"
+                                  style={{ padding: '0.2rem 0.6rem', fontSize: '0.78rem', color: '#14532d', borderColor: '#2c5f2d' }}
+                                  onClick={() => handleExplainLesson(course.id, course.title, lIdx, lesson.title, lesson.content)}
+                                  disabled={aiLessonLoading === lKey}
+                                >
+                                  {aiLessonLoading === lKey ? 'Thinking…' : '✨ AI Kenyan Example'}
+                                </button>
+                                {aiLessonHelp[lKey] && (
+                                  <div style={{ marginTop: '0.45rem', padding: '0.6rem', background: '#f0f7f0', color: '#143215', border: '1px solid #cce3cc', borderRadius: '8px', fontSize: '0.84rem', whiteSpace: 'pre-wrap', lineHeight: 1.5 }}>
+                                    {aiLessonHelp[lKey]}
+                                  </div>
+                                )}
                               </div>
-                            </label>
+                            </div>
                           );
                         })}
                       </div>
@@ -364,12 +422,8 @@ export default function CoursesAndGames({ mode = 'all' }: CoursesAndGamesProps) 
       {mode !== 'courses' && (
       <section className="sec" id="games" aria-labelledby="gmh">
         <div className="w">
-          <h2 className="sh" id="gmh">{lang === 'sw' ? 'Michezo na Chemsha Bongo' : 'Games and quizzes'}</h2>
-          <p className="sub">
-            {lang === 'sw'
-              ? 'Chemsha bongo za masomo na michezo shirikishi ya kujifunza yenye alama na rekodi zilizohifadhiwa.'
-              : 'Subject quizzes and interactive learning games with saved scores and streaks.'}
-          </p>
+          <h2 className="sh" id="gmh">{gamesCopy.title}</h2>
+          <p className="sub">{gamesCopy.subtitle}</p>
 
           {/* Game Tabs */}
           <div className="chips" style={{ marginBottom: '1.8rem' }}>

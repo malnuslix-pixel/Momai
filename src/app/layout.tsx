@@ -3,6 +3,7 @@ import '@/styles/globals.css';
 import '@/styles/mwalimu-site.css';
 import ServiceWorkerManager from '@/components/ServiceWorkerManager';
 import ErrorBoundary from '@/components/ErrorBoundary';
+import { CmsProvider } from '@/lib/cms-context';
 import { SITE_URL, SITE_NAME } from '@/lib/seo';
 
 export const metadata: Metadata = {
@@ -134,7 +135,9 @@ export default function RootLayout({
         />
         <ServiceWorkerManager />
         <ErrorBoundary>
-          {children}
+          <CmsProvider>
+            {children}
+          </CmsProvider>
         </ErrorBoundary>
       </body>
     </html>

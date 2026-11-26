@@ -26,6 +26,7 @@ import NewsSection from '@/components/NewsSection';
 import VideosSection from '@/components/VideosSection';
 import AboutAndContact from '@/components/AboutAndContact';
 import Footer from '@/components/Footer';
+import SiteBanner from '@/components/SiteBanner';
 
 // Code-Split Dynamic Floating Widgets
 const FloatingWidgets = dynamic(() => import('@/components/FloatingWidgets'), { ssr: false });
@@ -125,6 +126,7 @@ export default function HomePage() {
         ) : (
           <>
             <Hero onNavClick={handleNavClick} />
+            <SiteBanner />
             <SearchSection onNavClick={handleNavClick} />
             <RoleChooser onNavClick={handleNavClick} />
 

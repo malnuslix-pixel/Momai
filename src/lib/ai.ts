@@ -14,6 +14,7 @@ export interface AIRequestOptions {
 export interface AIResponseResult {
   text: string;
   provider: 'gemini' | 'anthropic' | 'fallback';
+  model?: string;
   usedFallback: boolean;
 }
 
@@ -24,7 +25,7 @@ export async function generateAIResponse(opts: AIRequestOptions): Promise<AIResp
   const anthropicKey = process.env.ANTHROPIC_API_KEY?.trim();
 
   if (geminiKey) {
-    const geminiModels = ['gemini-3.8-flash', 'gemini-2.5-flash'];
+    const geminiModels = ['gemini-flash-lite-latest', 'gemini-3.5-flash-lite', 'gemini-3-flash-preview', 'gemini-3.1-flash-lite'];
     for (const model of geminiModels) {
       try {
         const generationConfig: Record<string, any> = {
@@ -53,7 +54,7 @@ export async function generateAIResponse(opts: AIRequestOptions): Promise<AIResp
           const data = await res.json();
           const text = data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || '';
           if (text) {
-            return { text, provider: 'gemini', usedFallback: false };
+            return { text, provider: 'gemini', model, usedFallback: false };
           }
         }
       } catch (err) {

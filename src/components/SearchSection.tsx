@@ -16,6 +16,7 @@ import {
   ArrowRight
 } from 'lucide-react';
 import { useLanguage } from '@/lib/language';
+import { useSectionCopy } from '@/lib/cms-context';
 
 interface SearchSectionProps {
   onNavClick?: (hash: string) => void;
@@ -91,6 +92,7 @@ export default function SearchSection({ onNavClick }: SearchSectionProps) {
   const router = useRouter();
   const [query, setQuery] = useState('');
   const [lang] = useLanguage();
+  const copy = useSectionCopy('search', lang);
   const [aiLoading, setAiLoading] = useState(false);
   const [aiResult, setAiResult] = useState<{ answer: string; suggestedRoutes: { label: string; href: string }[] } | null>(null);
 
@@ -158,8 +160,9 @@ export default function SearchSection({ onNavClick }: SearchSectionProps) {
     <section className="sec" id="find" aria-labelledby="fh">
       <div className="w">
         <h2 className="sh" id="fh">
-          {lang === 'sw' ? 'Tafuta unachohitaji' : 'Find what you need'}
+          {copy.title}
         </h2>
+        <p className="sub" style={{ marginBottom: '0.8rem' }}>{copy.subtitle}</p>
         <form onSubmit={handleSearch} className="sb" style={{ marginTop: '1rem', marginBottom: '1.2rem' }}>
           <input
             id="gq"

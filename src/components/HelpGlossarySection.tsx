@@ -1,10 +1,35 @@
 'use client';
 
 import React, { useState } from 'react';
+import Link from 'next/link';
 import { GLOSSARY } from '@/lib/mwalimu-data';
+import { useLanguage } from '@/lib/language';
+import { useSectionCopy } from '@/lib/cms-context';
 
 export default function HelpGlossarySection() {
+  const [lang] = useLanguage();
+  const copy = useSectionCopy('help', lang);
   const [glossSearch, setGlossSearch] = useState('');
+  const [aiExplanations, setAiExplanations] = useState<Record<string, string>>({});
+  const [loadingTerm, setLoadingTerm] = useState<string | null>(null);
+
+  const handleExplainTerm = async (term: string, def: string) => {
+    setLoadingTerm(term);
+    try {
+      const res = await fetch('/api/ai/assist', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ task: 'explain_term', term, definition: def, lang }),
+      });
+      const data = await res.json();
+      if (data.ok && data.text) {
+        setAiExplanations((prev) => ({ ...prev, [term]: data.text }));
+      }
+    } catch {
+    } finally {
+      setLoadingTerm(null);
+    }
+  };
 
   const filteredGlossary = GLOSSARY.filter(([term, def]) => {
     const q = glossSearch.toLowerCase();
@@ -16,10 +41,8 @@ export default function HelpGlossarySection() {
       <div className="w">
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem' }}>
           <div>
-            <h2 className="sh rv" id="hlh">Help and glossary</h2>
-            <p className="sub rv">
-              Answers to common educational questions and plain-language definitions of Kenyan curriculum terms.
-            </p>
+            <h2 className="sh rv" id="hlh">{copy.title}</h2>
+            <p className="sub rv">{copy.subtitle}</p>
           </div>
           <button
             className="gb o"
@@ -102,16 +125,51 @@ export default function HelpGlossarySection() {
 
         <dl className="gloss" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.2rem' }}>
           {filteredGlossary.map(([term, def]) => (
-            <div key={term} style={{ background: '#fff', border: '1px solid #e0ddd6', borderRadius: '14px', padding: '1.2rem' }}>
-              <dt style={{ fontWeight: 800, color: 'var(--hd)', fontSize: '1.2rem', marginBottom: '0.3rem' }}>
+            <div key={term} style={{ background: '#ffffff', color: '#1f2937', border: '1px solid #d5dfd5', borderRadius: '14px', padding: '1.2rem', boxShadow: '0 4px 12px rgba(0,0,0,0.12)' }}>
+              <dt style={{ fontWeight: 800, color: '#143215', fontSize: '1.2rem', margin: '0 0 0.35rem' }}>
                 {term}
               </dt>
-              <dd style={{ color: 'var(--tx)', fontSize: '0.92rem', lineHeight: 1.5, margin: 0 }}>
+              <dd style={{ color: '#1f2937', fontSize: '0.92rem', lineHeight: 1.55, margin: 0 }}>
                 {def}
               </dd>
+              <div style={{ marginTop: '0.6rem' }}>
+                <button
+                  type="button"
+                  onClick={() => handleExplainTerm(term, def)}
+                  disabled={loadingTerm === term}
+                  style={{
+                    background: '#eef6ee',
+                    color: '#14532d',
+                    border: '1px solid #cce3cc',
+                    borderRadius: '999px',
+                    padding: '0.25rem 0.7rem',
+                    fontSize: '0.78rem',
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                  }}
+                >
+                  {loadingTerm === term ? 'Explaining…' : '✨ AI Plain Guide'}
+                </button>
+                {aiExplanations[term] && (
+                  <p style={{ marginTop: '0.5rem', marginBottom: 0, padding: '0.55rem', background: '#f8faf8', borderRadius: '8px', fontSize: '0.84rem', color: '#143215', lineHeight: 1.5 }}>
+                    {aiExplanations[term]}
+                  </p>
+                )}
+              </div>
             </div>
           ))}
         </dl>
+
+        {filteredGlossary.length === 0 && (
+          <div className="warn" style={{ marginTop: '1rem' }}>
+            <p style={{ color: 'var(--tx)', margin: 0 }}>
+              No glossary terms match &ldquo;{glossSearch}&rdquo;.{' '}
+              <Link href={`/tutor?q=${encodeURIComponent(`Explain ${glossSearch} in Kenyan curriculum`)}`} className="dl">
+                Ask Mwalimu AI →
+              </Link>
+            </p>
+          </div>
+        )}
       </div>
     </section>
   );

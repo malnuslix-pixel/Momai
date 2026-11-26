@@ -73,7 +73,7 @@ export async function POST(req: NextRequest) {
     });
 
     const reply = ai.text || getKnowledgeReply(message);
-    const usedModel = ai.provider === 'gemini' ? 'gemini-2.0-flash' : ai.provider === 'anthropic' ? 'claude-3-haiku' : 'knowledge-engine';
+    const usedModel = ai.model || (ai.provider === 'anthropic' ? 'claude-3-haiku' : 'knowledge-engine');
 
     // Log to Supabase assistant_logs
     try {
@@ -88,7 +88,7 @@ export async function POST(req: NextRequest) {
       ]);
     } catch {}
 
-    return NextResponse.json({ reply }, { status: 200 });
+    return NextResponse.json({ reply, provider: ai.provider, model: usedModel }, { status: 200 });
   } catch (err: any) {
     console.error('Chat API error:', err);
     return NextResponse.json({ error: 'server_error' }, { status: 500 });

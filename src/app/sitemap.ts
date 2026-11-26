@@ -1,9 +1,12 @@
 import { MetadataRoute } from 'next';
-import { ARTICLES } from '@/lib/mwalimu-data';
+import { loadCmsServer } from '@/lib/cms-server';
 import { SITE_URL } from '@/lib/seo';
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export const dynamic = 'force-dynamic';
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
+  const cms = await loadCmsServer();
 
   const staticRoutes: MetadataRoute.Sitemap = [
     { url: `${SITE_URL}/`, lastModified: now, changeFrequency: 'daily', priority: 1.0 },
@@ -28,8 +31,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${SITE_URL}/privacy`, lastModified: now, changeFrequency: 'yearly', priority: 0.4 },
   ];
 
-  const articleRoutes: MetadataRoute.Sitemap = Object.keys(ARTICLES).map((id) => ({
-    url: `${SITE_URL}/news/${id}`,
+  const articleRoutes: MetadataRoute.Sitemap = cms.news.articles.map((art) => ({
+    url: `${SITE_URL}/news/${art.id}`,
     lastModified: now,
     changeFrequency: 'weekly',
     priority: 0.85,

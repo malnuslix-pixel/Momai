@@ -166,7 +166,7 @@ export default function AdminTitlesPanel({ cms, onCmsUpdated, showToast }: Admin
                   })
                 }
               >
-                {aiBusyKey === `hero-${idx}` ? 'Polishing…' : '✨ AI Polish + SW'}
+                {aiBusyKey === `hero-${idx}` ? 'Polishing…' : 'AI Polish + SW'}
               </button>
             </div>
             <div className="grid g2" style={{ marginBottom: '0.5rem' }}>
@@ -243,7 +243,7 @@ export default function AdminTitlesPanel({ cms, onCmsUpdated, showToast }: Admin
                       })
                     }
                   >
-                    {aiBusyKey === `sec-${key}` ? '…' : '✨ AI Polish'}
+                    {aiBusyKey === `sec-${key}` ? '…' : 'AI Polish'}
                   </button>
                 </div>
                 <input

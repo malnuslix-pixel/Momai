@@ -31,7 +31,7 @@ export default function GlobalError({
           textAlign: 'center',
           boxShadow: '0 8px 30px rgba(0,0,0,0.35)'
         }}>
-          <span style={{ fontSize: '3rem', display: 'block', marginBottom: '0.8rem' }}>✨</span>
+          <span style={{ fontSize: '3rem', display: 'block', marginBottom: '0.8rem' }}>🛡️</span>
           <h2 style={{ color: '#ffffff', margin: '0 0 0.8rem' }}>Application Recovered</h2>
           <p style={{ color: '#d1dcd2', lineHeight: '1.6', marginBottom: '1.8rem' }}>
             A temporary display exception occurred. Please reload to restore the interface.

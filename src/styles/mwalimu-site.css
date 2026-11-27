@@ -17,7 +17,7 @@
   --mu: #d1dcd2;
   --ln: rgba(255, 255, 255, 0.18);
   --hd: #ffffff;
-  --g: #2c5f2d;
+  --g: #143215;
   --gl: #6ec272;
   --gd: #143215;
   --ac: #f59e0b;
@@ -134,7 +134,7 @@ header.site-header, header:has(.nav) {
 }
 
 header.site-header.sol, header:has(.nav).sol {
-  background: #2c5f2d;
+  background: #143215;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
 }
 
@@ -431,14 +431,14 @@ nav a.cta {
 }
 
 .gazette-btn-primary {
-  background: var(--mf-forest-main, #245e27);
+  background: var(--mf-forest-main, #143215);
   color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.28);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
 }
 
 .gazette-btn-primary:hover {
-  background: var(--mf-forest-light, #3d8240);
+  background: var(--mf-forest-light, #224b23);
   transform: translateY(-2px);
 }
 
@@ -526,7 +526,8 @@ nav a.cta {
 .status-live-pill {
   font-size: 0.72rem;
   font-weight: 700;
-  background: #22c55e;
+  background: #143215;
+  border: 1px solid rgba(255, 255, 255, 0.28);
   color: #fff;
   padding: 0.15rem 0.5rem;
   border-radius: 50px;
@@ -936,17 +937,17 @@ nav a.cta {
   gap: 0.45rem;
   padding: 0.55rem 1.1rem;
   border-radius: 8px;
-  background: #347c37;
+  background: #143215;
   color: #ffffff;
   font-size: 0.88rem;
   font-weight: 600;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.28);
   cursor: pointer;
   transition: background 0.2s;
 }
 
 .btn-action-copy:hover {
-  background: #489b4c;
+  background: #224b23;
 }
 
 .tool-fine-note {
@@ -996,7 +997,7 @@ nav a.cta {
   background: linear-gradient(160deg, #1a3d1b, #2c5f2d 70%, #4a8c4b);
   color: #fff;
   display: grid;
-  grid-template-rows: 1fr auto;
+  grid-template-rows: minmax(0, 1fr) auto;
   grid-template-columns: minmax(0, 1fr);
   align-items: stretch;
   justify-items: stretch;
@@ -1025,12 +1026,12 @@ nav a.cta {
 .sun {
   position: absolute;
   left: 50%;
-  bottom: -38vmin;
+  bottom: -28dvh;
   top: auto;
-  width: 78vmin;
-  height: 78vmin;
+  width: max(78vmin, 66dvh);
+  height: max(78vmin, 66dvh);
   border-radius: 50%;
-  transform: translate3d(-50%, calc(var(--p, 0) * -68dvh), 0) scale(calc(1 + var(--p, 0) * 0.5));
+  transform: translate3d(-50%, calc(var(--p, 0) * -62dvh), 0) scale(calc(1 + var(--p, 0) * 0.45));
   pointer-events: none;
   will-change: transform;
   z-index: 0;
@@ -1047,13 +1048,13 @@ nav a.cta {
 .ring {
   position: absolute;
   left: 50%;
-  bottom: -52vmin;
+  bottom: -38dvh;
   top: auto;
-  width: 104vmin;
-  height: 104vmin;
+  width: max(104vmin, 88dvh);
+  height: max(104vmin, 88dvh);
   border-radius: 50%;
   border: 2px solid rgba(244, 162, 97, 0.35);
-  transform: translate3d(-50%, calc(var(--p, 0) * -40dvh), 0);
+  transform: translate3d(-50%, calc(var(--p, 0) * -36dvh), 0);
   pointer-events: none;
   will-change: transform;
   z-index: 0;
@@ -1074,14 +1075,14 @@ nav a.cta {
   inset: 0;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: flex-start;
   opacity: 0;
   visibility: hidden;
   transform: translateY(16px);
   transition: opacity 0.38s cubic-bezier(0.22, 1, 0.36, 1), transform 0.38s cubic-bezier(0.22, 1, 0.36, 1), visibility 0.38s;
   pointer-events: none;
-  padding: clamp(0.85rem, 2.5dvh, 1.5rem) 0 1.25rem;
+  padding: clamp(0.65rem, 2dvh, 1.25rem) 0;
   box-sizing: border-box;
   max-width: 100%;
 }
@@ -1316,8 +1317,8 @@ nav a.cta {
 }
 
 .chip.on {
-  background: var(--g);
-  border-color: var(--g);
+  background: #143215;
+  border-color: rgba(255, 255, 255, 0.45);
   color: #fff;
 }
 
@@ -1490,7 +1491,7 @@ nav a.cta {
 }
 
 .v:hover {
-  background: #2c5f2d;
+  background: #224b23;
 }
 
 .v h3 {
@@ -1638,9 +1639,9 @@ nav a.cta {
 }
 
 .soc .wa {
-  background: #25D366;
-  border-color: #25D366;
-  color: #0b2b14;
+  background: #143215;
+  border-color: rgba(255, 255, 255, 0.35);
+  color: #ffffff;
   font-weight: 700;
 }
 
@@ -1935,7 +1936,7 @@ footer .bot {
 }
 
 .vw header {
-  background: #2c5f2d;
+  background: #143215;
 }
 
 .art {
@@ -1973,8 +1974,9 @@ footer .bot {
 }
 
 .wab {
-  background: #25D366;
-  color: #0b2b14;
+  background: #143215;
+  border: 1.5px solid rgba(255, 255, 255, 0.35);
+  color: #ffffff;
   font-weight: 700;
   margin: 0.5rem 0.5rem 0.5rem 0;
 }
@@ -2884,7 +2886,7 @@ section.mb .sh, section.mb .sub, section.mb .pbn h1, section.mb .pbn p, section.
 }
 
 .mmc.up {
-  background: var(--g);
+  background: #143215;
   color: #fff;
 }
 
@@ -2901,19 +2903,22 @@ section.mb .sh, section.mb .sub, section.mb .pbn h1, section.mb .pbn p, section.
   width: 44px !important;
   height: 44px !important;
   border-radius: 50% !important;
-  border: 0 !important;
-  background: var(--g) !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.32) !important;
+  background: rgba(20, 50, 21, 0.92) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
   color: #fff !important;
   font-size: 1.3rem !important;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3) !important;
   cursor: pointer !important;
   display: grid !important;
   place-items: center !important;
-  transition: transform 0.2s, background 0.2s !important;
+  transition: transform 0.2s, background 0.2s, border-color 0.2s !important;
 }
 
 .bt:hover {
-  background: var(--gl) !important;
+  background: #1a3d1b !important;
+  border-color: var(--ac) !important;
   transform: translateY(-2px);
 }
 
@@ -2956,14 +2961,24 @@ section.mb .sh, section.mb .sub, section.mb .pbn h1, section.mb .pbn p, section.
 }
 
 .mfw .wa {
-  background: #25D366 !important;
-  color: #0b2b14 !important;
+  background: rgba(20, 50, 21, 0.92) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  color: #ffffff !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.32) !important;
 }
 
 .mfw .ai {
-  background: var(--g) !important;
+  background: rgba(20, 50, 21, 0.92) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
   color: #fff !important;
-  border: 1.5px solid rgba(255, 255, 255, 0.35) !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.32) !important;
+}
+
+.mfw .wa:hover, .mfw .ai:hover {
+  background: #1a3d1b !important;
+  border-color: var(--ac) !important;
 }
 
 .mfp {
@@ -2982,14 +2997,14 @@ section.mb .sh, section.mb .sub, section.mb .pbn h1, section.mb .pbn p, section.
 
 .mfp header {
   position: static !important;
-  background: var(--g) !important;
+  background: #143215 !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.16) !important;
   color: #fff !important;
   padding: 0.7rem 1rem !important;
   display: flex !important;
   justify-content: space-between !important;
   align-items: center !important;
   font-weight: 700 !important;
-  border: none !important;
 }
 
 .mfp header button {
@@ -3023,7 +3038,8 @@ section.mb .sh, section.mb .sub, section.mb .pbn h1, section.mb .pbn p, section.
 }
 
 .mfl .u {
-  background: var(--g) !important;
+  background: #143215 !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
   color: #fff !important;
   align-self: flex-end !important;
 }

@@ -372,7 +372,7 @@ export default function CoursesAndGames({ mode = 'all' }: CoursesAndGamesProps) 
                                   onClick={() => handleExplainLesson(course.id, course.title, lIdx, lesson.title, lesson.content)}
                                   disabled={aiLessonLoading === lKey}
                                 >
-                                  {aiLessonLoading === lKey ? 'Thinking…' : '✨ AI Kenyan Example'}
+                                  {aiLessonLoading === lKey ? 'Thinking…' : 'AI Kenyan Example'}
                                 </button>
                                 {aiLessonHelp[lKey] && (
                                   <div style={{ marginTop: '0.45rem', padding: '0.6rem', background: '#f0f7f0', color: '#143215', border: '1px solid #cce3cc', borderRadius: '8px', fontSize: '0.84rem', whiteSpace: 'pre-wrap', lineHeight: 1.5 }}>

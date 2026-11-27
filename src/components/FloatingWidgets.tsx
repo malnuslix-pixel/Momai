@@ -153,8 +153,8 @@ export default function FloatingWidgets({ onNavClick }: FloatingWidgetsProps) {
           aria-label="Chat on WhatsApp"
         >
           <svg width="20" height="20" viewBox="0 0 44 44" aria-hidden="true">
-            <path d="M22 6a16 16 0 0 0-13.7 24.3L6 38l7.9-2.2A16 16 0 1 0 22 6z" fill="none" stroke="#0b2b14" strokeWidth="3" strokeLinejoin="round"/>
-            <path d="M17.5 15c.7 5.5 5.7 10.4 11.5 12.2l2.3-2.4-3.7-2.2-1.7 1.3c-1.9-.7-3.9-2.7-4.6-4.6l1.3-1.7-2.2-3.7z" fill="#0b2b14"/>
+            <path d="M22 6a16 16 0 0 0-13.7 24.3L6 38l7.9-2.2A16 16 0 1 0 22 6z" fill="none" stroke="#ffffff" strokeWidth="3" strokeLinejoin="round"/>
+            <path d="M17.5 15c.7 5.5 5.7 10.4 11.5 12.2l2.3-2.4-3.7-2.2-1.7 1.3c-1.9-.7-3.9-2.7-4.6-4.6l1.3-1.7-2.2-3.7z" fill="#ffffff"/>
           </svg>
           WhatsApp
         </a>

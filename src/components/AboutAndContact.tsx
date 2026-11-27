@@ -127,7 +127,7 @@ export default function AboutAndContact() {
                 href="https://wa.me/254715363944?text=Please%20add%20me%20to%20Mwalimu%20Family%20updates"
                 target="_blank"
                 rel="noopener"
-                style={{ background: '#25D366', color: '#0b2b14', fontWeight: 700 }}
+                style={{ background: '#143215', color: '#ffffff', border: '1.5px solid rgba(255, 255, 255, 0.35)', fontWeight: 700 }}
               >
                 Get updates on WhatsApp →
               </a>
@@ -211,7 +211,7 @@ export default function AboutAndContact() {
                   Reference Code: <b>{msgResult.ref}</b>. Track status anytime in My Activity.
                 </p>
                 <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-                  <a className="btn b1" href={msgResult.whatsappUrl} target="_blank" rel="noopener" style={{ background: '#25D366', color: '#0b2b14' }}>
+                  <a className="btn b1" href={msgResult.whatsappUrl} target="_blank" rel="noopener" style={{ background: '#143215', color: '#ffffff', border: '1.5px solid rgba(255, 255, 255, 0.35)' }}>
                     Follow Up on WhatsApp →
                   </a>
                   <button type="button" className="gb o" onClick={() => setMsgResult(null)} style={{ margin: 0 }}>

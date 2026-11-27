@@ -33,17 +33,77 @@ export function verifyAdminPassword(candidate: string): boolean {
 }
 
 /**
- * Creates an HMAC-SHA256 signed admin session token.
- * Payload structure: admin:expiry_timestamp:signature
+ * Generates a cryptographic PBKDF2-SHA256 salted password hash (Edge + Node safe).
  */
-export async function createAdminSessionToken(durationSeconds = 86400): Promise<string> {
+export async function hashAdminPassword(password: string): Promise<{ salt: string; hash: string }> {
+  const saltBytes = crypto.getRandomValues(new Uint8Array(16));
+  const keyMaterial = await crypto.subtle.importKey(
+    'raw',
+    new TextEncoder().encode(password),
+    'PBKDF2',
+    false,
+    ['deriveBits']
+  );
+  const bits = await crypto.subtle.deriveBits(
+    { name: 'PBKDF2', salt: saltBytes, iterations: 100000, hash: 'SHA-256' },
+    keyMaterial,
+    256
+  );
+  return {
+    salt: Buffer.from(saltBytes).toString('base64url'),
+    hash: Buffer.from(bits).toString('base64url'),
+  };
+}
+
+/**
+ * Constant-time verification of a password against stored PBKDF2-SHA256 salt + hash.
+ */
+export async function verifyAdminPasswordHash(
+  candidate: string,
+  saltBase64: string,
+  expectedHashBase64: string
+): Promise<boolean> {
+  if (!candidate || !saltBase64 || !expectedHashBase64) return false;
+  try {
+    const saltBytes = Uint8Array.from(Buffer.from(saltBase64, 'base64url'));
+    const expectedBytes = Uint8Array.from(Buffer.from(expectedHashBase64, 'base64url'));
+    const keyMaterial = await crypto.subtle.importKey(
+      'raw',
+      new TextEncoder().encode(candidate),
+      'PBKDF2',
+      false,
+      ['deriveBits']
+    );
+    const bits = await crypto.subtle.deriveBits(
+      { name: 'PBKDF2', salt: saltBytes, iterations: 100000, hash: 'SHA-256' },
+      keyMaterial,
+      256
+    );
+    const derivedBytes = new Uint8Array(bits);
+    if (derivedBytes.length !== expectedBytes.length) return false;
+    let mismatch = 0;
+    for (let i = 0; i < derivedBytes.length; i++) {
+      mismatch |= derivedBytes[i] ^ expectedBytes[i];
+    }
+    return mismatch === 0;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Creates an HMAC-SHA256 signed admin session token.
+ * Supports optional admin email encoded in payload.
+ */
+export async function createAdminSessionToken(durationSeconds = 86400, email?: string): Promise<string> {
   const secret = getAdminSecretKey();
   if (!secret) {
     throw new Error('ADMIN_SECRET_KEY is not configured');
   }
   const expiresAt = Date.now() + durationSeconds * 1000;
-  const payload = `mf_admin:${expiresAt}`;
-  
+  const emailTag = email ? Buffer.from(email.trim().toLowerCase(), 'utf8').toString('base64url') : '';
+  const payload = emailTag ? `mf_admin_acct:${emailTag}:${expiresAt}` : `mf_admin:${expiresAt}`;
+
   const encoder = new TextEncoder();
   const keyData = encoder.encode(secret);
   const cryptoKey = await crypto.subtle.importKey(
@@ -65,27 +125,45 @@ export async function createAdminSessionToken(durationSeconds = 86400): Promise<
 }
 
 /**
- * Verifies an HMAC-SHA256 signed admin session token.
- * Confirms integrity and expiration timestamp.
+ * Parses and verifies an HMAC-SHA256 signed admin session token.
  */
-export async function verifyAdminSessionToken(token: string | undefined | null): Promise<boolean> {
-  if (!token || typeof token !== 'string') return false;
+export async function extractAdminSession(
+  token: string | undefined | null
+): Promise<{ valid: boolean; email?: string }> {
+  if (!token || typeof token !== 'string') return { valid: false };
 
   const parts = token.split(':');
-  if (parts.length !== 3) return false;
+  let prefix = '';
+  let email: string | undefined;
+  let expStr = '';
+  let signatureBase64 = '';
+  let payload = '';
 
-  const [prefix, expStr, signatureBase64] = parts;
-  if (prefix !== 'mf_admin') return false;
+  if (parts.length === 3 && parts[0] === 'mf_admin') {
+    [prefix, expStr, signatureBase64] = parts;
+    payload = `${prefix}:${expStr}`;
+  } else if (parts.length === 4 && parts[0] === 'mf_admin_acct') {
+    prefix = parts[0];
+    try {
+      email = Buffer.from(parts[1], 'base64url').toString('utf8');
+    } catch {
+      return { valid: false };
+    }
+    expStr = parts[2];
+    signatureBase64 = parts[3];
+    payload = `${prefix}:${parts[1]}:${expStr}`;
+  } else {
+    return { valid: false };
+  }
 
   const expiresAt = parseInt(expStr, 10);
   if (isNaN(expiresAt) || Date.now() > expiresAt) {
-    return false; // Token expired
+    return { valid: false };
   }
 
   try {
     const secret = getAdminSecretKey();
-    if (!secret) return false;
-    const payload = `${prefix}:${expStr}`;
+    if (!secret) return { valid: false };
     const encoder = new TextEncoder();
     const keyData = encoder.encode(secret);
 
@@ -98,15 +176,25 @@ export async function verifyAdminSessionToken(token: string | undefined | null):
     );
 
     const signatureBytes = Buffer.from(signatureBase64, 'base64url');
-    return await crypto.subtle.verify(
+    const valid = await crypto.subtle.verify(
       'HMAC',
       cryptoKey,
       signatureBytes,
       encoder.encode(payload)
     );
+    return valid ? { valid: true, email } : { valid: false };
   } catch {
-    return false;
+    return { valid: false };
   }
+}
+
+/**
+ * Verifies an HMAC-SHA256 signed admin session token.
+ * Confirms integrity and expiration timestamp.
+ */
+export async function verifyAdminSessionToken(token: string | undefined | null): Promise<boolean> {
+  const res = await extractAdminSession(token);
+  return res.valid;
 }
 
 /**

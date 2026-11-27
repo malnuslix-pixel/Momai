@@ -67,7 +67,7 @@ export function getStreakEmoji(streak: number): string {
   if (streak >= 14) return '💎';
   if (streak >= 7) return '⚔️';
   if (streak >= 3) return '🔥';
-  if (streak >= 1) return '✨';
+  if (streak >= 1) return '🔥';
   return '💤';
 }
 

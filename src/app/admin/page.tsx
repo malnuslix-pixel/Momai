@@ -32,11 +32,17 @@ const CK_LABELS = [
 export default function AdminPage() {
   // Admin Authentication State
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+  const [hasAccounts, setHasAccounts] = useState<boolean>(true);
+  const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
+  const [signedInAdminEmail, setSignedInAdminEmail] = useState<string | null>(null);
   const [authEmail, setAuthEmail] = useState('');
   const [authPassword, setAuthPassword] = useState('');
+  const [authConfirmPassword, setAuthConfirmPassword] = useState('');
+  const [authSecretKey, setAuthSecretKey] = useState('');
   const [authError, setAuthError] = useState<string | null>(null);
   const [authLoading, setAuthLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [showSecretKey, setShowSecretKey] = useState(false);
 
   const [tab, setTab] = useState<TabType>('overview');
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
@@ -83,15 +89,19 @@ export default function AdminPage() {
 
   // Sync with hash if present
   useEffect(() => {
-    // Verify server-side session via HTTP-only cookie
+    // Verify server-side session & whether admin account(s) exist
     fetch('/api/admin/auth')
       .then((r) => r.json())
       .then((data) => {
+        const accountsExist = Boolean(data.hasAccounts);
+        setHasAccounts(accountsExist);
         if (data.ok && data.authenticated) {
           setIsAuthenticated(true);
+          setSignedInAdminEmail(data.adminEmail || null);
           loadData();
         } else {
           setIsAuthenticated(false);
+          setAuthMode(accountsExist ? 'login' : 'register');
         }
       })
       .catch(() => {
@@ -114,31 +124,69 @@ export default function AdminPage() {
     setTimeout(() => setToastMessage(null), 3500);
   };
 
-  const handleSignIn = async (e: React.FormEvent) => {
+  const handleAuthSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setAuthLoading(true);
     setAuthError(null);
 
-    const enteredPass = authPassword.trim();
-    if (!enteredPass) {
-      setAuthError('Please enter your administrator secret key.');
+    const email = authEmail.trim().toLowerCase();
+    const password = authPassword;
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
+      setAuthError('Please enter a valid administrator email address.');
+      setAuthLoading(false);
+      return;
+    }
+
+    if (authMode === 'register') {
+      if (password.length < 8) {
+        setAuthError('Password must be at least 8 characters long.');
+        setAuthLoading(false);
+        return;
+      }
+      if (password !== authConfirmPassword) {
+        setAuthError('Passwords do not match.');
+        setAuthLoading(false);
+        return;
+      }
+      if (!authSecretKey.trim()) {
+        setAuthError('Administrator secret key is required to create an account.');
+        setAuthLoading(false);
+        return;
+      }
+    } else if (!password) {
+      setAuthError('Please enter your account password.');
       setAuthLoading(false);
       return;
     }
 
     try {
+      const payload =
+        authMode === 'register'
+          ? { mode: 'register', email, password, secretKey: authSecretKey.trim() }
+          : { mode: 'login', email, password };
+
       const res = await fetch('/api/admin/auth', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ key: enteredPass }),
+        body: JSON.stringify(payload),
       });
       const data = await res.json();
       if (data.ok) {
         setIsAuthenticated(true);
+        setHasAccounts(true);
+        setSignedInAdminEmail(data.adminEmail || email);
+        setAuthPassword('');
+        setAuthConfirmPassword('');
+        setAuthSecretKey('');
         setAuthLoading(false);
         loadData();
       } else {
-        setAuthError(data.message || 'Invalid credentials or secret key. Access denied.');
+        if (data.hasAccounts === false) {
+          setHasAccounts(false);
+          setAuthMode('register');
+        }
+        setAuthError(data.message || 'Authentication failed. Check your credentials.');
         setAuthLoading(false);
       }
     } catch {
@@ -152,8 +200,12 @@ export default function AdminPage() {
       await fetch('/api/admin/auth', { method: 'DELETE' });
     } catch {}
     setIsAuthenticated(false);
+    setAuthMode('login');
+    setSignedInAdminEmail(null);
     setAuthEmail('');
     setAuthPassword('');
+    setAuthConfirmPassword('');
+    setAuthSecretKey('');
     setAuthError(null);
   };
 
@@ -623,21 +675,73 @@ export default function AdminPage() {
           padding: '2.4rem 2rem',
           boxShadow: '0 20px 50px rgba(0, 0, 0, 0.5)'
         }}>
-          <div style={{ textAlign: 'center', marginBottom: '1.8rem' }}>
-            <div style={{ fontSize: '2.6rem', marginBottom: '0.4rem' }}>🛡️</div>
+          <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
+            <div style={{ fontSize: '2.4rem', marginBottom: '0.4rem' }}>🛡️</div>
             <h1 style={{ fontFamily: 'Georgia, serif', color: '#7fc080', fontSize: '1.65rem', margin: 0 }}>
-              Staff Admin Portal
+              {authMode === 'register' ? 'Create Admin Account' : 'Staff Admin Sign In'}
             </h1>
-            <p style={{ color: '#b8c2b9', fontSize: '0.88rem', marginTop: '0.4rem', lineHeight: 1.4 }}>
-              Authorized editorial, curriculum, and operations access only.
+            <p style={{ color: '#b8c2b9', fontSize: '0.88rem', marginTop: '0.4rem', lineHeight: 1.45 }}>
+              {authMode === 'register'
+                ? 'Register your administrator email and password using the authorized server secret key.'
+                : 'Sign in with your registered administrator email and password.'}
             </p>
           </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem', marginBottom: '1.2rem' }}>
+            <button
+              type="button"
+              onClick={() => { setAuthMode('login'); setAuthError(null); }}
+              style={{
+                padding: '0.55rem 0.7rem',
+                borderRadius: '8px',
+                border: '1px solid rgba(255,255,255,0.22)',
+                background: authMode === 'login' ? '#143215' : 'transparent',
+                color: '#fff',
+                fontWeight: 700,
+                fontSize: '0.85rem',
+                cursor: 'pointer',
+              }}
+            >
+              Sign In
+            </button>
+            <button
+              type="button"
+              onClick={() => { setAuthMode('register'); setAuthError(null); }}
+              style={{
+                padding: '0.55rem 0.7rem',
+                borderRadius: '8px',
+                border: '1px solid rgba(255,255,255,0.22)',
+                background: authMode === 'register' ? '#143215' : 'transparent',
+                color: '#fff',
+                fontWeight: 700,
+                fontSize: '0.85rem',
+                cursor: 'pointer',
+              }}
+            >
+              Create Account
+            </button>
+          </div>
+
+          {!hasAccounts && authMode === 'register' && (
+            <div style={{
+              background: 'rgba(245, 158, 11, 0.14)',
+              border: '1px solid rgba(245, 158, 11, 0.38)',
+              color: '#fde68a',
+              padding: '0.65rem 0.85rem',
+              borderRadius: '8px',
+              fontSize: '0.82rem',
+              marginBottom: '1rem',
+              lineHeight: 1.45,
+            }}>
+              First-time setup: create an administrator account. Future visits will require signing in with your email and password.
+            </div>
+          )}
 
           {authError && (
             <div style={{
               background: 'rgba(231, 76, 60, 0.15)',
               border: '1px solid rgba(231, 76, 60, 0.4)',
-              color: '#e74c3c',
+              color: '#fca5a5',
               padding: '0.75rem 0.9rem',
               borderRadius: '8px',
               fontSize: '0.88rem',
@@ -648,15 +752,16 @@ export default function AdminPage() {
             </div>
           )}
 
-          <form onSubmit={handleSignIn} style={{ display: 'grid', gap: '1.1rem' }}>
+          <form onSubmit={handleAuthSubmit} style={{ display: 'grid', gap: '1rem' }}>
             <div>
               <label htmlFor="admin-user" style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#d6efd6', marginBottom: '0.35rem' }}>
-                Admin Username or Email
+                Admin Email
               </label>
               <input
                 id="admin-user"
-                type="text"
-                autoComplete="username"
+                type="email"
+                autoComplete="email"
+                required
                 value={authEmail}
                 onChange={(e) => setAuthEmail(e.target.value)}
                 placeholder="admin@mwalimufamily.com"
@@ -677,7 +782,7 @@ export default function AdminPage() {
             <div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.35rem' }}>
                 <label htmlFor="admin-pass" style={{ fontSize: '0.85rem', fontWeight: 600, color: '#d6efd6' }}>
-                  Admin Secret Key
+                  {authMode === 'register' ? 'Account Password (min 8 chars)' : 'Account Password'}
                 </label>
                 <button
                   type="button"
@@ -685,23 +790,24 @@ export default function AdminPage() {
                   style={{
                     background: 'none',
                     border: 'none',
-                    color: '#7fc080',
+                    color: '#d1dcd2',
                     fontSize: '0.78rem',
                     cursor: 'pointer',
                     padding: 0
                   }}
                 >
-                  {showPassword ? 'Hide Key' : 'Show Key'}
+                  {showPassword ? 'Hide' : 'Show'}
                 </button>
               </div>
               <input
                 id="admin-pass"
                 type={showPassword ? 'text' : 'password'}
-                autoComplete="current-password"
+                autoComplete={authMode === 'register' ? 'new-password' : 'current-password'}
                 required
+                minLength={authMode === 'register' ? 8 : 1}
                 value={authPassword}
                 onChange={(e) => setAuthPassword(e.target.value)}
-                placeholder="Enter admin secret key"
+                placeholder={authMode === 'register' ? 'Choose a strong password' : 'Enter your password'}
                 style={{
                   width: '100%',
                   padding: '0.75rem 0.9rem',
@@ -714,27 +820,79 @@ export default function AdminPage() {
                   outline: 'none'
                 }}
               />
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '0.35rem' }}>
-                <span style={{ fontSize: '0.78rem', color: '#a0b0a2' }}>
-                  Default key: <code style={{ color: '#f4a261', background: 'rgba(255,255,255,0.08)', padding: '0.1rem 0.35rem', borderRadius: '4px' }}>Mwalimu@2025</code>
-                </span>
-                <button
-                  type="button"
-                  onClick={() => setAuthPassword('Mwalimu@2025')}
-                  style={{
-                    background: 'none',
-                    border: 'none',
-                    color: '#85e085',
-                    fontSize: '0.75rem',
-                    cursor: 'pointer',
-                    textDecoration: 'underline',
-                    padding: 0
-                  }}
-                >
-                  Fill key
-                </button>
-              </div>
             </div>
+
+            {authMode === 'register' && (
+              <>
+                <div>
+                  <label htmlFor="admin-confirm-pass" style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#d6efd6', marginBottom: '0.35rem' }}>
+                    Confirm Password
+                  </label>
+                  <input
+                    id="admin-confirm-pass"
+                    type={showPassword ? 'text' : 'password'}
+                    autoComplete="new-password"
+                    required
+                    value={authConfirmPassword}
+                    onChange={(e) => setAuthConfirmPassword(e.target.value)}
+                    placeholder="Re-enter your password"
+                    style={{
+                      width: '100%',
+                      padding: '0.75rem 0.9rem',
+                      borderRadius: '8px',
+                      background: '#0e1a0f',
+                      border: '1px solid #2a3d2d',
+                      color: '#fff',
+                      font: 'inherit',
+                      fontSize: '0.95rem',
+                      outline: 'none'
+                    }}
+                  />
+                </div>
+
+                <div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.35rem' }}>
+                    <label htmlFor="admin-secret-key" style={{ fontSize: '0.85rem', fontWeight: 600, color: '#d6efd6' }}>
+                      Admin Secret Key
+                    </label>
+                    <button
+                      type="button"
+                      onClick={() => setShowSecretKey(!showSecretKey)}
+                      style={{
+                        background: 'none',
+                        border: 'none',
+                        color: '#d1dcd2',
+                        fontSize: '0.78rem',
+                        cursor: 'pointer',
+                        padding: 0
+                      }}
+                    >
+                      {showSecretKey ? 'Hide Key' : 'Show Key'}
+                    </button>
+                  </div>
+                  <input
+                    id="admin-secret-key"
+                    type={showSecretKey ? 'text' : 'password'}
+                    autoComplete="off"
+                    required
+                    value={authSecretKey}
+                    onChange={(e) => setAuthSecretKey(e.target.value)}
+                    placeholder="Enter authorization secret key"
+                    style={{
+                      width: '100%',
+                      padding: '0.75rem 0.9rem',
+                      borderRadius: '8px',
+                      background: '#0e1a0f',
+                      border: '1px solid #2a3d2d',
+                      color: '#fff',
+                      font: 'inherit',
+                      fontSize: '0.95rem',
+                      outline: 'none'
+                    }}
+                  />
+                </div>
+              </>
+            )}
 
             <button
               type="submit"
@@ -743,18 +901,22 @@ export default function AdminPage() {
                 width: '100%',
                 padding: '0.85rem',
                 borderRadius: '8px',
-                background: '#2c5f2d',
+                background: '#143215',
                 color: '#fff',
-                border: 'none',
+                border: '1px solid rgba(255,255,255,0.28)',
                 fontWeight: 700,
                 fontSize: '1rem',
                 cursor: authLoading ? 'wait' : 'pointer',
-                marginTop: '0.5rem',
+                marginTop: '0.4rem',
                 transition: 'background 0.2s',
                 opacity: authLoading ? 0.7 : 1
               }}
             >
-              {authLoading ? 'Verifying Credentials…' : 'Unlock Admin Dashboard →'}
+              {authLoading
+                ? 'Verifying Credentials…'
+                : authMode === 'register'
+                ? 'Create Admin Account →'
+                : 'Sign In to Dashboard →'}
             </button>
           </form>
 
@@ -822,6 +984,7 @@ export default function AdminPage() {
         <h1>Mwalimu Family · Admin Dashboard</h1>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
           <span className="p ok">System Online</span>
+          {signedInAdminEmail && <span className="p">{signedInAdminEmail}</span>}
           <button className="b s" onClick={toggleTheme}>
             {theme === 'light' ? '🌙 Dark mode' : '☀️ Light mode'}
           </button>
@@ -837,7 +1000,7 @@ export default function AdminPage() {
           <Link href="/leaderboard" className="b s" style={{ textDecoration: 'none' }}>
             🏆 Leaderboard
           </Link>
-          <Link href="/" className="b s" style={{ background: '#2c5f2d', color: '#fff', textDecoration: 'none' }}>
+          <Link href="/" className="b s" style={{ background: '#143215', color: '#fff', border: '1px solid rgba(255,255,255,0.28)', textDecoration: 'none' }}>
             ← Public Site
           </Link>
           <button
@@ -1366,7 +1529,7 @@ export default function AdminPage() {
                           onClick={() => handleAIDraftReply(sub)}
                           disabled={aiReplyRef === sub.ref}
                         >
-                          {aiReplyRef === sub.ref ? 'Drafting…' : '✨ AI Draft Reply'}
+                          {aiReplyRef === sub.ref ? 'Drafting…' : 'AI Draft Reply'}
                         </button>
                       </div>
 
@@ -1613,7 +1776,7 @@ export default function AdminPage() {
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '0.6rem' }}>
                 <h2 style={{ margin: 0 }}>Recent AI Conversations &amp; Topic Trends</h2>
                 <button type="button" className="b s" onClick={handleAnalyzeAssistant} disabled={aiTrendsLoading}>
-                  {aiTrendsLoading ? 'Analyzing…' : '✨ Analyze Questions with AI'}
+                  {aiTrendsLoading ? 'Analyzing…' : 'Analyze Questions with AI'}
                 </button>
               </div>
               {aiTrends && (
@@ -1814,7 +1977,7 @@ export default function AdminPage() {
 
               <div className="card">
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.6rem' }}>
-                  <h2 style={{ margin: 0 }}>✨ AI Operations &amp; Audit Summary</h2>
+                  <h2 style={{ margin: 0 }}>AI Operations &amp; Audit Summary</h2>
                   <button className="b s" onClick={handleAIOpsBrief} disabled={aiBriefLoading}>
                     {aiBriefLoading ? 'Analyzing…' : 'Refresh AI Digest'}
                   </button>

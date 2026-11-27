@@ -429,7 +429,7 @@ export default function AdminCmsPanel({
     return (
       <div>
         <div className="card" style={{ borderLeft: '4px solid #f4a261' }}>
-          <h2>✨ AI Education Journalist (Full Article Writer)</h2>
+          <h2>AI Education Journalist (Full Article Writer)</h2>
           <p className="mu">Enter a Kenyan education topic or paste an MoE / KNEC press statement — AI generates headline, paragraphs, key facts, parent takeaways &amp; FAQs.</p>
           <div className="grid g2" style={{ marginBottom: '0.6rem' }}>
             <input
@@ -453,7 +453,7 @@ export default function AdminCmsPanel({
             style={{ width: '100%', marginBottom: '0.6rem' }}
           />
           <button type="button" className="b" onClick={handleAIWriteNews} disabled={newsAiLoading}>
-            {newsAiLoading ? 'Writing full article…' : '✨ Write Full Article with AI'}
+            {newsAiLoading ? 'Writing full article…' : 'Write Full Article with AI'}
           </button>
         </div>
 
@@ -551,7 +551,7 @@ export default function AdminCmsPanel({
     return (
       <div>
         <div className="card" style={{ borderLeft: '4px solid #f4a261' }}>
-          <h2>✨ AI Course &amp; Lesson Builder</h2>
+          <h2>AI Course &amp; Lesson Builder</h2>
           <div className="grid g3" style={{ marginBottom: '0.6rem' }}>
             <input type="text" value={courseAiTopic} onChange={(e) => setCourseAiTopic(e.target.value)} placeholder="Topic (e.g. Digital Safety & Financial Literacy)" />
             <select value={courseAiCat} onChange={(e) => setCourseAiCat(e.target.value as any)}>
@@ -562,7 +562,7 @@ export default function AdminCmsPanel({
             </select>
           </div>
           <button type="button" className="b" onClick={handleAIGenerateCourse} disabled={courseAiLoading}>
-            {courseAiLoading ? 'Designing course…' : '✨ Generate Course with AI'}
+            {courseAiLoading ? 'Designing course…' : 'Generate Course with AI'}
           </button>
         </div>
 
@@ -637,7 +637,7 @@ export default function AdminCmsPanel({
     return (
       <div>
         <div className="card" style={{ borderLeft: '4px solid #f4a261' }}>
-          <h2>📚 Publish Learning Material Pack (with ✨ AI KICD Generator)</h2>
+          <h2>📚 Publish Learning Material Pack (with AI KICD Generator)</h2>
           <form onSubmit={handleSaveLearningMaterial}>
             <div className="grid g2" style={{ marginBottom: '0.6rem' }}>
               <select value={matGrade} onChange={(e) => setMatGrade(e.target.value)}>
@@ -656,7 +656,7 @@ export default function AdminCmsPanel({
             <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '0.6rem' }}>
               <input type="text" value={matTitle} onChange={(e) => setMatTitle(e.target.value)} placeholder="Material title / topic" style={{ flex: 1 }} required />
               <button type="button" className="b s" onClick={handleAIGenerateLearningPack} disabled={matAiLoading}>
-                {matAiLoading ? 'Drafting…' : '✨ Draft Pack with AI'}
+                {matAiLoading ? 'Drafting…' : 'Draft Pack with AI'}
               </button>
             </div>
             <input type="text" value={matSummary} onChange={(e) => setMatSummary(e.target.value)} placeholder="Short summary shown on Library card" style={{ width: '100%', marginBottom: '0.6rem' }} />
@@ -743,9 +743,9 @@ export default function AdminCmsPanel({
           <input type="text" value={quizTopic} onChange={(e) => setQuizTopic(e.target.value)} placeholder="Focus topic (e.g. Algebra, Ecology, Msamiati)" />
         </div>
         <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-          <button type="button" className="b" onClick={() => handleAIGenerateQuizPack('quiz')} disabled={quizAiLoading}>✨ +4 Quiz Questions</button>
-          <button type="button" className="b s" onClick={() => handleAIGenerateQuizPack('memory')} disabled={quizAiLoading}>✨ +6 Memory Pairs</button>
-          <button type="button" className="b s" onClick={() => handleAIGenerateQuizPack('scramble')} disabled={quizAiLoading}>✨ +5 Scramble Words</button>
+          <button type="button" className="b" onClick={() => handleAIGenerateQuizPack('quiz')} disabled={quizAiLoading}>+4 Quiz Questions (AI)</button>
+          <button type="button" className="b s" onClick={() => handleAIGenerateQuizPack('memory')} disabled={quizAiLoading}>+6 Memory Pairs (AI)</button>
+          <button type="button" className="b s" onClick={() => handleAIGenerateQuizPack('scramble')} disabled={quizAiLoading}>+5 Scramble Words (AI)</button>
         </div>
       </div>
 

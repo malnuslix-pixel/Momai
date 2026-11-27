@@ -60,7 +60,7 @@ export default class ErrorBoundary extends Component<Props, State> {
               boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)',
             }}
           >
-            <div style={{ fontSize: '2.5rem', marginBottom: '0.6rem' }}>✨</div>
+            <div style={{ fontSize: '2.5rem', marginBottom: '0.6rem' }}>🛡️</div>
             <h2 style={{ fontSize: '1.4rem', margin: '0 0 0.5rem', color: '#ffffff' }}>
               Something refreshed unexpectedly
             </h2>

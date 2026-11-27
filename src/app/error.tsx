@@ -33,7 +33,7 @@ export default function ErrorBoundary({
         border: '1px solid var(--ln, rgba(255, 255, 255, 0.18))',
         boxShadow: '0 8px 30px rgba(0,0,0,0.35)'
       }}>
-        <span style={{ fontSize: '3.5rem', display: 'block', marginBottom: '1rem' }}>✨</span>
+        <span style={{ fontSize: '3.5rem', display: 'block', marginBottom: '1rem' }}>🛡️</span>
         <h1 style={{
           fontFamily: "'Fraunces', serif",
           fontSize: '2rem',

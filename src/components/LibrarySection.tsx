@@ -208,7 +208,7 @@ export default function LibrarySection({ onNavClick }: LibrarySectionProps) {
         <div className="gl" style={{ marginBottom: '1.4rem', display: 'flex', flexDirection: 'column', gap: '0.65rem' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.6rem' }}>
             <div>
-              <strong style={{ color: '#ffd166' }}>✨ Need specific lesson notes or a KICD scheme for {selectedGrade || 'any grade'}?</strong>
+              <strong style={{ color: '#ffd166' }}>Need specific lesson notes or a KICD scheme for {selectedGrade || 'any grade'}?</strong>
               <p style={{ margin: '0.2rem 0 0', fontSize: '0.88rem', opacity: 0.9 }}>
                 Enter a strand or topic and Mwalimu AI will draft outcomes, inquiry questions & rubric tasks you can download.
               </p>
@@ -229,7 +229,7 @@ export default function LibrarySection({ onNavClick }: LibrarySectionProps) {
               onClick={handleGenerateAIPack}
               disabled={aiPackLoading}
             >
-              {aiPackLoading ? 'Generating…' : '✨ Generate AI Notes'}
+              {aiPackLoading ? 'Generating…' : 'Generate AI Notes'}
             </button>
             {aiPack && (
               <button

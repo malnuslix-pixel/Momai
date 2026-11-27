@@ -4,10 +4,10 @@
    ============================================================================== */
 
 :root {
-  /* 1. Core Brand Color System - Hero Green Harmonized */
+  /* 1. Core Brand Color System - Deep Forest Theme Unified */
   --mf-forest-deep: #1a3d1b;     /* Primary brand & Hero Background Green (#1a3d1b) */
-  --mf-forest-main: #347c37;     /* Active brand, verified badges, action buttons */
-  --mf-forest-light: #52a856;    /* Interactive hover states, secondary highlights */
+  --mf-forest-main: #143215;     /* Deep forest container/action surface */
+  --mf-forest-light: #224b23;    /* Elevated card & interactive hover surface */
   --mf-forest-subtle: rgba(255, 255, 255, 0.08);   /* Elevated container surface on hero green */
 
   /* 2. Kenyan Academic Gazette Editorial Palette - Site-Wide Hero Green Canvas */

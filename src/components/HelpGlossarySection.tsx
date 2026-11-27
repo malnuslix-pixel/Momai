@@ -148,7 +148,7 @@ export default function HelpGlossarySection() {
                     cursor: 'pointer',
                   }}
                 >
-                  {loadingTerm === term ? 'Explaining…' : '✨ AI Plain Guide'}
+                  {loadingTerm === term ? 'Explaining…' : 'AI Plain Guide'}
                 </button>
                 {aiExplanations[term] && (
                   <p style={{ marginTop: '0.5rem', marginBottom: 0, padding: '0.55rem', background: '#f8faf8', borderRadius: '8px', fontSize: '0.84rem', color: '#143215', lineHeight: 1.5 }}>

@@ -2,8 +2,11 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { navigateBack } from '@/lib/navigation';
 
 export default function PrivacyPage() {
+  const router = useRouter();
   return (
     <div style={{
       margin: 0,
@@ -70,7 +73,7 @@ export default function PrivacyPage() {
         <div style={{ display: 'flex', gap: '0.6rem', marginBottom: '1.5rem', flexWrap: 'wrap' }}>
           <button
             type="button"
-            onClick={() => typeof window !== 'undefined' && window.history.length > 1 ? window.history.back() : window.location.assign('/')}
+            onClick={() => navigateBack(router, '/')}
             style={{
               padding: '0.4rem 0.9rem',
               borderRadius: '999px',

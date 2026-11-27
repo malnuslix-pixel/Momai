@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { getAskMwalimuReply } from '@/lib/mwalimu-data';
 
 interface FloatingWidgetsProps {
@@ -15,7 +15,21 @@ const QUICK_STARTERS = [
 ];
 
 export default function FloatingWidgets({ onNavClick }: FloatingWidgetsProps) {
+  const [assistantEnabled, setAssistantEnabled] = useState(true);
   const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    fetch('/api/config', { cache: 'no-store' })
+      .then((r) => r.json())
+      .then((data) => {
+        if (data?.ok) {
+          const enabled = data.flags?.ai !== false && data.aiSettings?.assistantEnabled !== false;
+          setAssistantEnabled(enabled);
+          if (!enabled) setIsOpen(false);
+        }
+      })
+      .catch(() => {});
+  }, []);
   const [inputVal, setInputVal] = useState('');
   const [sending, setSending] = useState(false);
   const [messages, setMessages] = useState<Array<{ role: 'b' | 'u'; text: string; link?: [string, string] }>>([
@@ -159,15 +173,17 @@ export default function FloatingWidgets({ onNavClick }: FloatingWidgetsProps) {
           WhatsApp
         </a>
 
-        {/* Ask Mwalimu Button */}
-        <button
-          className="fb ai"
-          onClick={() => setIsOpen(!isOpen)}
-          aria-expanded={isOpen}
-          aria-controls="mfp"
-        >
-          💬 Ask Mwalimu
-        </button>
+        {/* Ask Mwalimu Button (respects Admin site flag) */}
+        {assistantEnabled && (
+          <button
+            className="fb ai"
+            onClick={() => setIsOpen(!isOpen)}
+            aria-expanded={isOpen}
+            aria-controls="mfp"
+          >
+            💬 Ask Mwalimu
+          </button>
+        )}
       </div>
     </>
   );

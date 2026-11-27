@@ -3,13 +3,22 @@ import { NextRequest, NextResponse } from 'next/server';
 export const dynamic = 'force-dynamic';
 import { initiateSTKPush, formatPhone } from '@/lib/mpesa';
 import { getAdminClient } from '@/lib/supabase';
+import { loadPricingSettingsServer } from '@/lib/site-controls-server';
 
 export async function POST(req: NextRequest) {
   try {
+    const pricingSettings = await loadPricingSettingsServer();
+    if (!pricingSettings.pricingEnabled || !pricingSettings.mpesaEnabled) {
+      return NextResponse.json(
+        { ok: false, disabled: true, error: pricingSettings.pausedMessage || 'M-Pesa subscriptions are currently paused by administration.' },
+        { status: 403 }
+      );
+    }
+
     const { phone, amount, plan, user_id } = await req.json();
 
-    if (!phone || !amount || !plan) {
-      return NextResponse.json({ ok: false, error: 'Phone, amount, and plan are required' }, { status: 400 });
+    if (!phone || !plan) {
+      return NextResponse.json({ ok: false, error: 'Phone and plan are required' }, { status: 400 });
     }
 
     const validPlans = ['premium', 'pro'];
@@ -17,14 +26,23 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ ok: false, error: 'Invalid plan selection' }, { status: 400 });
     }
 
+    const configuredPlan = pricingSettings.plans.find((p) => p.id === plan);
+    if (!configuredPlan || !configuredPlan.enabled) {
+      return NextResponse.json({ ok: false, error: 'Selected plan is currently unavailable.' }, { status: 400 });
+    }
+    const authoritativeAmount = configuredPlan.price > 0 ? configuredPlan.price : Number(amount);
+    if (!authoritativeAmount || authoritativeAmount <= 0) {
+      return NextResponse.json({ ok: false, error: 'Invalid plan amount' }, { status: 400 });
+    }
+
     const appUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_APP_URL || 'https://mwalimufamily.com';
     const callbackUrl = `${appUrl}/api/mpesa/callback`;
 
     const result = await initiateSTKPush({
       phone,
-      amount: Number(amount),
+      amount: authoritativeAmount,
       accountRef: `MF-${plan.toUpperCase()}-${Date.now().toString(36).slice(-4)}`,
-      description: `Mwalimu Family ${plan} plan`,
+      description: `Mwalimu Family ${configuredPlan.name} plan`,
       callbackUrl,
     });
 
@@ -37,7 +55,7 @@ export async function POST(req: NextRequest) {
           checkout_request_id: result.CheckoutRequestID,
           merchant_request_id: result.MerchantRequestID || null,
           phone: formatPhone(phone),
-          amount: Number(amount),
+          amount: authoritativeAmount,
           plan,
           status: 'pending',
         });

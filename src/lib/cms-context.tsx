@@ -1,8 +1,10 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { usePathname } from 'next/navigation';
 import { CmsData, CmsSectionKey, DEFAULT_CMS_DATA, mergeCmsData } from './cms';
 import { Language } from './language';
+import { recordNavPath } from './navigation';
 
 interface CmsContextValue {
   cms: CmsData;
@@ -21,8 +23,13 @@ const CmsContext = createContext<CmsContextValue>({
 export const CMS_UPDATED_EVENT = 'mwalimu-cms-updated';
 
 export function CmsProvider({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
   const [cms, setCms] = useState<CmsData>(DEFAULT_CMS_DATA);
   const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    if (pathname) recordNavPath(pathname);
+  }, [pathname]);
 
   const refreshCms = useCallback(async () => {
     try {

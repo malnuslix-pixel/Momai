@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 export const dynamic = 'force-dynamic';
 import { getAdminClient } from '@/lib/supabase';
 import { getLevel, XP_VALUES, checkStreakBadges, checkXPBadges } from '@/lib/gamification';
+import { loadLeaderboardSettingsServer } from '@/lib/site-controls-server';
 
 // GET - Fetch user XP, badges, or leaderboard
 export async function GET(req: NextRequest) {
@@ -35,8 +36,21 @@ export async function GET(req: NextRequest) {
   }
 
   if (action === 'leaderboard') {
-    const period = req.nextUrl.searchParams.get('period') || 'weekly';
-    const limit = parseInt(req.nextUrl.searchParams.get('limit') || '20', 10);
+    const lbSettings = await loadLeaderboardSettingsServer();
+    if (!lbSettings.leaderboardEnabled) {
+      return NextResponse.json({
+        ok: true,
+        disabled: true,
+        pausedMessage: lbSettings.pausedMessage,
+        leaderboard: [],
+        period: lbSettings.defaultPeriod,
+        settings: lbSettings,
+      });
+    }
+
+    const period = req.nextUrl.searchParams.get('period') || lbSettings.defaultPeriod || 'weekly';
+    const requestedLimit = parseInt(req.nextUrl.searchParams.get('limit') || String(lbSettings.maxEntries), 10);
+    const limit = Math.min(lbSettings.maxEntries, Math.max(1, Number.isFinite(requestedLimit) ? requestedLimit : lbSettings.maxEntries));
 
     try {
       let query = db
@@ -78,11 +92,15 @@ export async function GET(req: NextRequest) {
           };
         });
 
-        return NextResponse.json({ ok: true, leaderboard, period });
+        return NextResponse.json({ ok: true, leaderboard, period, settings: lbSettings });
       }
     } catch {}
 
-    // Period-aware resilient fallback rankings for Kenyan learners
+    if (!lbSettings.showSampleLeaders) {
+      return NextResponse.json({ ok: true, leaderboard: [], period, settings: lbSettings });
+    }
+
+    // Period-aware optional starter rankings when explicitly enabled in Admin
     const mult = period === 'weekly' ? 0.35 : period === 'monthly' ? 0.65 : 1;
     const baseLeaders = [
       { display_name: 'Wanjiku M.', county: 'Nairobi', total_xp: 4850, level: 10, streak: 21 },
@@ -107,7 +125,7 @@ export async function GET(req: NextRequest) {
       };
     });
 
-    return NextResponse.json({ ok: true, leaderboard: baseLeaders, period });
+    return NextResponse.json({ ok: true, leaderboard: baseLeaders, period, settings: lbSettings });
   }
 
   if (action === 'badges') {

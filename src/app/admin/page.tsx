@@ -3,13 +3,16 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import '@/styles/control-room.css';
-import { FeedItem, Submission, SiteFlags, SiteConfig, VerificationCheck, AuditLogEntry, AssistantLog } from '@/lib/types';
-import { SEED_ITEMS, SEED_SUBMISSIONS, SEED_CONFIG, SEED_CHECKS, SEED_AUDIT } from '@/lib/supabase';
+import { FeedItem, Submission, SiteFlags, SiteConfig, VerificationCheck, AuditLogEntry, AssistantLog, AiSettings, PricingSettings, LeaderboardSettings } from '@/lib/types';
+import { SEED_CONFIG } from '@/lib/supabase';
 import { CmsData, DEFAULT_CMS_DATA, mergeCmsData } from '@/lib/cms';
+import { DEFAULT_LEADERBOARD_SETTINGS, DEFAULT_PRICING_SETTINGS } from '@/lib/site-controls';
 import AdminCmsPanel from '@/components/admin/AdminCmsPanel';
 import AdminTitlesPanel from '@/components/admin/AdminTitlesPanel';
+import AdminPricingPanel from '@/components/admin/AdminPricingPanel';
+import AdminLeaderboardPanel from '@/components/admin/AdminLeaderboardPanel';
 
-type TabType = 'overview' | 'content' | 'titles' | 'inbox' | 'audience' | 'assistant' | 'health' | 'config' | 'ops';
+type TabType = 'overview' | 'content' | 'titles' | 'inbox' | 'audience' | 'assistant' | 'pricing' | 'leaderboard' | 'health' | 'config' | 'ops';
 
 const TABS: [TabType, string][] = [
   ['overview', 'Overview'],
@@ -17,11 +20,21 @@ const TABS: [TabType, string][] = [
   ['titles', 'Site titles'],
   ['inbox', 'Inbox'],
   ['audience', 'Audience'],
-  ['assistant', 'Assistant'],
+  ['assistant', 'AI Tutor & Assistant'],
+  ['pricing', 'Pricing & M-Pesa'],
+  ['leaderboard', 'Leaderboard & XP'],
   ['health', 'Health & checks'],
   ['config', 'Site flags'],
   ['ops', 'Operations'],
 ];
+
+const DEFAULT_AI_CONTROLS: AiSettings = {
+  tutorEnabled: true,
+  assistantEnabled: true,
+  allowFallback: true,
+  dailyCap: 3000,
+  tutorGuidance: '',
+};
 
 const CK_LABELS = [
   'Verified phone or organization email',
@@ -46,11 +59,19 @@ export default function AdminPage() {
 
   const [tab, setTab] = useState<TabType>('overview');
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
-  const [items, setItems] = useState<FeedItem[]>(SEED_ITEMS);
-  const [submissions, setSubmissions] = useState<Submission[]>(SEED_SUBMISSIONS);
+  const [items, setItems] = useState<FeedItem[]>([]);
+  const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [config, setConfig] = useState<SiteConfig>(SEED_CONFIG);
-  const [checks, setChecks] = useState<VerificationCheck[]>(SEED_CHECKS);
-  const [auditLogs, setAuditLogs] = useState<AuditLogEntry[]>(SEED_AUDIT);
+  const [checks, setChecks] = useState<VerificationCheck[]>([]);
+  const [auditLogs, setAuditLogs] = useState<AuditLogEntry[]>([]);
+  const [liveStats, setLiveStats] = useState<any>(null);
+  const [aiSettings, setAiSettings] = useState<AiSettings>(DEFAULT_AI_CONTROLS);
+  const [aiSettingsSaving, setAiSettingsSaving] = useState(false);
+  const [pricingSettings, setPricingSettings] = useState<PricingSettings>(DEFAULT_PRICING_SETTINGS);
+  const [pricingSaving, setPricingSaving] = useState(false);
+  const [leaderboardSettings, setLeaderboardSettings] = useState<LeaderboardSettings>(DEFAULT_LEADERBOARD_SETTINGS);
+  const [leaderboardSaving, setLeaderboardSaving] = useState(false);
+  const [healthStatus, setHealthStatus] = useState<{ status: string; timestamp?: string } | null>(null);
   const [inboxFilter, setInboxFilter] = useState<'all' | 'new' | 'approved' | 'rejected'>('all');
   const [loading, setLoading] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -213,18 +234,19 @@ export default function AdminPage() {
   const loadData = async () => {
     try {
       setLoading(true);
-      const [itemsRes, subsRes, configRes, statsRes, cmsRes] = await Promise.allSettled([
+      const [itemsRes, subsRes, configRes, statsRes, cmsRes, healthRes] = await Promise.allSettled([
         fetch('/api/items?all=true').then((r) => r.json()),
         fetch('/api/submissions?filter=all').then((r) => r.json()),
-        fetch('/api/config').then((r) => r.json()),
-        fetch('/api/stats').then((r) => r.json()),
+        fetch('/api/config', { cache: 'no-store' }).then((r) => r.json()),
+        fetch('/api/stats', { cache: 'no-store' }).then((r) => r.json()),
         fetch('/api/cms', { cache: 'no-store' }).then((r) => r.json()),
+        fetch('/api/health', { cache: 'no-store' }).then((r) => r.json()),
       ]);
 
-      if (itemsRes.status === 'fulfilled' && itemsRes.value.ok && itemsRes.value.items) {
+      if (itemsRes.status === 'fulfilled' && itemsRes.value.ok && Array.isArray(itemsRes.value.items)) {
         setItems(itemsRes.value.items);
       }
-      if (subsRes.status === 'fulfilled' && subsRes.value.ok && subsRes.value.submissions) {
+      if (subsRes.status === 'fulfilled' && subsRes.value.ok && Array.isArray(subsRes.value.submissions)) {
         setSubmissions(subsRes.value.submissions);
       }
       if (configRes.status === 'fulfilled' && configRes.value.ok) {
@@ -233,18 +255,31 @@ export default function AdminPage() {
           setBannerText(configRes.value.banner.text);
           setBannerActive(configRes.value.banner.active);
         }
-        if (configRes.value.checks) {
+        if (Array.isArray(configRes.value.checks)) {
           setChecks(configRes.value.checks);
+        }
+        if (configRes.value.aiSettings) {
+          setAiSettings({ ...DEFAULT_AI_CONTROLS, ...configRes.value.aiSettings });
+        }
+        if (configRes.value.pricingSettings) {
+          setPricingSettings(configRes.value.pricingSettings);
+        }
+        if (configRes.value.leaderboardSettings) {
+          setLeaderboardSettings(configRes.value.leaderboardSettings);
         }
       }
       if (statsRes.status === 'fulfilled' && statsRes.value.ok) {
-        if (statsRes.value.audit) setAuditLogs(statsRes.value.audit);
+        setLiveStats(statsRes.value);
+        if (Array.isArray(statsRes.value.audit)) setAuditLogs(statsRes.value.audit);
         if (Array.isArray(statsRes.value.recentAssistantLogs)) {
           setRecentAssistantLogs(statsRes.value.recentAssistantLogs);
         }
       }
       if (cmsRes.status === 'fulfilled' && cmsRes.value.ok && cmsRes.value.cms) {
         setCmsData(mergeCmsData(cmsRes.value.cms));
+      }
+      if (healthRes.status === 'fulfilled' && healthRes.value) {
+        setHealthStatus(healthRes.value);
       }
     } catch (e) {
       console.warn('Admin offline/local mode:', e);
@@ -253,22 +288,78 @@ export default function AdminPage() {
     }
   };
 
-  useEffect(() => {
-    loadData();
-  }, []);
-
   const toggleTheme = () => {
     const next = theme === 'light' ? 'dark' : 'light';
     setTheme(next);
     document.documentElement.setAttribute('data-theme', next);
   };
 
-  const resetSample = () => {
-    setItems(SEED_ITEMS);
-    setSubmissions(SEED_SUBMISSIONS);
-    setConfig(SEED_CONFIG);
-    setChecks(SEED_CHECKS);
-    showToast('Reset to default sample data.');
+  const handleSaveAiSettings = async (override?: Partial<AiSettings>) => {
+    const nextAi = { ...aiSettings, ...(override || {}) };
+    setAiSettings(nextAi);
+    setAiSettingsSaving(true);
+    try {
+      const res = await fetch('/api/config', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ aiSettings: nextAi }),
+      });
+      const json = await res.json();
+      if (json.ok) {
+        setConfig((prev) => ({ ...prev, flags: { ...prev.flags, ai: nextAi.assistantEnabled } }));
+        showToast('AI Tutor & Assistant controls saved!');
+      } else {
+        showToast('Failed to save AI controls.');
+      }
+    } catch {
+      showToast('Network error saving AI controls.');
+    } finally {
+      setAiSettingsSaving(false);
+    }
+  };
+
+  const handleSavePricingSettings = async (next: PricingSettings) => {
+    setPricingSettings(next);
+    setPricingSaving(true);
+    try {
+      const res = await fetch('/api/config', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ pricingSettings: next }),
+      });
+      const json = await res.json();
+      if (json.ok) {
+        showToast('Pricing & M-Pesa settings saved!');
+      } else {
+        showToast('Failed to save pricing settings.');
+      }
+    } catch {
+      showToast('Network error saving pricing settings.');
+    } finally {
+      setPricingSaving(false);
+    }
+  };
+
+  const handleSaveLeaderboardSettings = async (next: LeaderboardSettings) => {
+    setLeaderboardSettings(next);
+    setLeaderboardSaving(true);
+    try {
+      const res = await fetch('/api/config', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ leaderboardSettings: next }),
+      });
+      const json = await res.json();
+      if (json.ok) {
+        showToast('Leaderboard controls saved!');
+      } else {
+        showToast('Failed to save leaderboard settings.');
+      }
+    } catch {
+      showToast('Network error saving leaderboard settings.');
+    } finally {
+      setLeaderboardSaving(false);
+    }
   };
 
   // Content Actions
@@ -394,6 +485,9 @@ export default function AdminPage() {
   const handleFlagToggle = async (key: keyof SiteFlags) => {
     const nextFlags = { ...config.flags, [key]: !config.flags[key] };
     setConfig((prev) => ({ ...prev, flags: nextFlags }));
+    if (key === 'ai') {
+      setAiSettings((prev) => ({ ...prev, assistantEnabled: nextFlags.ai }));
+    }
     try {
       await fetch('/api/config', {
         method: 'POST',
@@ -988,18 +1082,30 @@ export default function AdminPage() {
           <button className="b s" onClick={toggleTheme}>
             {theme === 'light' ? '🌙 Dark mode' : '☀️ Light mode'}
           </button>
-          <button className="b s" onClick={resetSample}>
-            Reset sample
+          <button className="b s" onClick={loadData} disabled={loading}>
+            {loading ? 'Refreshing…' : '↻ Refresh Data'}
           </button>
-          <Link href="/tutor" className="b s" style={{ textDecoration: 'none' }}>
+          <button
+            type="button"
+            className="b s"
+            onClick={() => changeTab('assistant')}
+          >
             🤖 AI Tutor
-          </Link>
-          <Link href="/pricing" className="b s" style={{ textDecoration: 'none' }}>
+          </button>
+          <button
+            type="button"
+            className="b s"
+            onClick={() => changeTab('pricing')}
+          >
             💳 Pricing
-          </Link>
-          <Link href="/leaderboard" className="b s" style={{ textDecoration: 'none' }}>
+          </button>
+          <button
+            type="button"
+            className="b s"
+            onClick={() => changeTab('leaderboard')}
+          >
             🏆 Leaderboard
-          </Link>
+          </button>
           <Link href="/" className="b s" style={{ background: '#143215', color: '#fff', border: '1px solid rgba(255,255,255,0.28)', textDecoration: 'none' }}>
             ← Public Site
           </Link>
@@ -1034,23 +1140,21 @@ export default function AdminPage() {
       {/* Main Content Area */}
       <main id="v">
         {/* ========================================================================= */}
-        {/* TAB 1: OVERVIEW */}
+        {/* TAB 1: OVERVIEW (100% LIVE METRICS) */}
         {/* ========================================================================= */}
         {tab === 'overview' && (
           <div>
-            {/* 10 KPI Cards */}
+            {/* Live Operational KPI Cards */}
             <div className="grid">
               {[
-                ['Visitors today', '2,480', '+15% vs yesterday', 'up'],
-                ['Installed app', '342', '+27 this week', 'up'],
-                ['Email subscribers', '1,284', '+96 this week', 'up'],
-                ['Submissions waiting', String(waitingSubs.length), waitingSubs.length > 0 ? 'Review in Inbox' : 'All clear', waitingSubs.length > 0 ? 'dn' : 'up'],
-                ['Assistant questions today', '186', '12% fell back to built-in help', 'mu'],
-                ['Error rate', '0.4%', 'Target under 1%', 'up'],
-                ['Returning visitors', '38%', '+4 points vs last month', 'up'],
-                ['Average time on page', '2m 41s', 'Exams hub: 4m 05s', 'mu'],
-                ['Tool completions', '6,120', 'This week: calculators and quizzes', 'up'],
-                ['Email open rate', '47%', 'Last roundup, 21 Nov', 'up'],
+                ['Published Jobs & Notices', String(liveStats?.publishedItems ?? items.filter((i) => i.st === 'published').length), `${liveStats?.jobsCount ?? items.filter((i) => i.k === 'job' && i.st === 'published').length} jobs · ${liveStats?.noticesCount ?? items.filter((i) => i.k === 'notice' && i.st === 'published').length} notices`, 'up'],
+                ['Published News Stories', String(cmsData.news.articles.length), 'Managed in Content & CMS', 'up'],
+                ['Courses & Study Packs', String(cmsData.courses.length + cmsData.learning.materials.length + cmsData.teaching.length), `${cmsData.courses.length} courses · ${cmsData.learning.materials.length} packs · ${cmsData.teaching.length} templates`, 'up'],
+                ['Submissions Waiting', String(waitingSubs.length), waitingSubs.length > 0 ? 'Review in Inbox' : 'Inbox clear', waitingSubs.length > 0 ? 'dn' : 'up'],
+                ['Registered Subscribers', String(liveStats?.subscribers ?? 0), 'Live subscribers database', 'up'],
+                ['Ask Mwalimu Questions', String(liveStats?.assistantTotal ?? 0), `${liveStats?.assistantToday ?? 0} today · ${liveStats?.fallbackRate ?? 0}% fallback`, 'mu'],
+                ['AI Tutor Sessions', String(liveStats?.tutorTotal ?? 0), `${liveStats?.tutorToday ?? 0} prompts today (${liveStats?.uniqueTutorSessions ?? 0} sessions)`, 'up'],
+                ['Tracked XP Learners', String(liveStats?.activeLearnersCount ?? 0), 'Leaderboard & streak profiles', 'up'],
               ].map((k, idx) => (
                 <div key={idx} className="card kpi">
                   <span className="mu">{k[0]}</span>
@@ -1060,27 +1164,38 @@ export default function AdminPage() {
               ))}
             </div>
 
-            {/* Visitors Chart */}
+            {/* Real 7-Day Platform Activity */}
             <div className="card">
-              <h2>Visitors, last 14 days</h2>
-              <svg viewBox="0 0 560 140" style={{ width: '100%', height: '140px' }} aria-label="Visitors chart">
-                <polyline
-                  fill="none"
-                  stroke="#2c5f2d"
-                  strokeWidth="3"
-                  points="20,105 58,98 97,100 135,88 174,92 212,110 251,115 290,75 328,68 367,72 405,52 444,38 483,18 521,5"
-                />
-                <circle cx="521" cy="5" r="4" fill="#2c5f2d" />
-                <text x="500" y="24" fontSize="11" fill="var(--mu)">2,480</text>
-              </svg>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', color: 'var(--mu)', marginTop: '0.4rem' }}>
-                <span>8 Nov 2026 (820 visitors)</span>
-                <span>Peak: Results prep season</span>
-                <span>Today: 21 Nov (2,480)</span>
-              </div>
+              <h2>Platform activity, last 7 days (live database records)</h2>
+              {Array.isArray(liveStats?.activity7d) && liveStats.activity7d.length > 0 ? (
+                <div className="sc">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Date</th>
+                        <th>AI &amp; Tutor Queries</th>
+                        <th>Form Submissions</th>
+                        <th>New Subscribers</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {liveStats.activity7d.map((day: any) => (
+                        <tr key={day.date}>
+                          <td><b>{day.label}</b></td>
+                          <td>{day.aiQueries}</td>
+                          <td>{day.submissions}</td>
+                          <td>{day.subscribers}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ) : (
+                <p className="mu" style={{ margin: 0 }}>Loading live 7-day activity metrics…</p>
+              )}
             </div>
 
-            {/* Alert Cards */}
+            {/* Live Action & Status Cards */}
             <div className="grid g2">
               <div className="card">
                 <h2>Needs attention</h2>
@@ -1090,25 +1205,40 @@ export default function AdminPage() {
                       <b style={{ color: 'var(--bad)' }}>{lateWaiting.length} form submission(s)</b> past the 48-hour response target in Inbox.
                     </li>
                   ) : (
-                    <li>All form submissions are within SLA.</li>
+                    <li>All inbox submissions ({waitingSubs.length} waiting) are within 48h SLA.</li>
                   )}
-                  <li>Grade 10 Senior School pathway guidelines need MoE verification.</li>
-                  <li>KUCCPS portal opens mid-January 2027; verify weighted cluster calculator before then.</li>
+                  {(liveStats?.draftItems ?? items.filter((i) => i.st === 'draft').length) > 0 && (
+                    <li>{liveStats?.draftItems ?? items.filter((i) => i.st === 'draft').length} draft job/notice item(s) waiting for publish review in Content.</li>
+                  )}
+                  {checks.filter((c) => !c.last).length > 0 && (
+                    <li>{checks.filter((c) => !c.last).length} editorial accuracy check(s) pending review in Health &amp; checks.</li>
+                  )}
+                  <li>
+                    AI Controls: AI Tutor is <b>{aiSettings.tutorEnabled ? 'Active' : 'Paused'}</b> · Ask Mwalimu is <b>{aiSettings.assistantEnabled ? 'Active' : 'Paused'}</b>.
+                  </li>
                 </ul>
               </div>
 
               <div className="card">
-                <h2>Results season</h2>
-                <p className="mu">
-                  Target release: <b>KJSEA</b> December 2026, <b>KCSE & KPSEA</b> January 2027.
-                </p>
-                <p className="mu">
-                  Announced 20 Nov 2026 by Education CS Julius Ogamba. 13,484 examiners at 24 centres marking KJSEA; 34,170 examiners at 41 centres marking KCSE.
-                </p>
+                <h2>Live AI &amp; System Status</h2>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.45rem' }}>
+                  <div className="al" style={{ justifyContent: 'space-between' }}>
+                    <span>Database Engine</span>
+                    <b>{liveStats?.systemStatus || 'Connecting…'}</b>
+                  </div>
+                  <div className="al" style={{ justifyContent: 'space-between' }}>
+                    <span>Gemini API Key</span>
+                    <b>{liveStats?.hasGeminiKey ? 'Configured' : 'Missing'}</b>
+                  </div>
+                  <div className="al" style={{ justifyContent: 'space-between' }}>
+                    <span>Emergency Scam Banner</span>
+                    <b>{bannerActive ? 'Visible on site' : 'Hidden'}</b>
+                  </div>
+                </div>
               </div>
             </div>
 
-            {/* Recent Activity */}
+            {/* AI Editorial & Operations Brief */}
             <div className="card">
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '0.6rem' }}>
                 <h2 style={{ margin: 0 }}>AI Editorial &amp; Operations Brief</h2>
@@ -1122,21 +1252,25 @@ export default function AdminPage() {
                 </div>
               ) : (
                 <p className="mu" style={{ margin: 0 }}>
-                  Click &ldquo;Generate AI Brief&rdquo; to summarize inbox SLA status, expiring notices, and editorial priorities.
+                  Click &ldquo;Generate AI Brief&rdquo; to summarize live inbox SLA status, expiring notices, and editorial priorities.
                 </p>
               )}
             </div>
 
             <div className="card">
               <h2>Recent activity</h2>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                {auditLogs.slice(0, 6).map((log, i) => (
-                  <div key={i} className="al">
-                    <span className="mu">{log.t || 'Just now'}</span>
-                    <span>{log.m || log.action}</span>
-                  </div>
-                ))}
-              </div>
+              {auditLogs.length > 0 ? (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                  {auditLogs.slice(0, 6).map((log, i) => (
+                    <div key={i} className="al">
+                      <span className="mu">{log.t || 'Just now'}</span>
+                      <span>{log.m || log.action}</span>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="mu" style={{ margin: 0 }}>No admin audit events recorded yet.</p>
+              )}
             </div>
           </div>
         )}
@@ -1575,199 +1709,191 @@ export default function AdminPage() {
         )}
 
         {/* ========================================================================= */}
-        {/* TAB 4: AUDIENCE */}
+        {/* TAB 4: AUDIENCE (REAL DATABASE AGGREGATIONS) */}
         {/* ========================================================================= */}
         {tab === 'audience' && (
           <div>
             <div className="grid g2">
               <div className="card">
-                <h2>Where visitors come from</h2>
-                {[
-                  ['Direct / bookmarks', 44],
-                  ['WhatsApp channels & groups', 29],
-                  ['Google search', 18],
-                  ['Facebook & X', 6],
-                  ['School portals', 3],
-                ].map(([label, pct], i) => (
-                  <div key={i} className="hb">
-                    <span>{label}</span>
-                    <i style={{ width: `${pct}%` }} />
-                    <b>{pct}%</b>
-                  </div>
-                ))}
+                <h2>Registered Subscribers by Channel ({liveStats?.subscribers ?? 0})</h2>
+                {Array.isArray(liveStats?.subscribersByChannel) && liveStats.subscribersByChannel.length > 0 ? (
+                  liveStats.subscribersByChannel.map(([chan, cnt]: [string, number], i: number) => (
+                    <div key={i} className="hb">
+                      <span>{chan}</span>
+                      <i style={{ width: `${Math.min(100, Math.round((cnt / Math.max(1, liveStats.subscribers)) * 100))}%` }} />
+                      <b>{cnt}</b>
+                    </div>
+                  ))
+                ) : (
+                  <p className="mu" style={{ margin: 0 }}>No subscriber records found in database yet.</p>
+                )}
               </div>
 
               <div className="card">
-                <h2>Devices</h2>
-                {[
-                  ['Mobile Android', 71],
-                  ['Mobile iPhone', 19],
-                  ['Desktop Chrome / Edge', 9],
-                  ['Other', 1],
-                ].map(([label, pct], i) => (
-                  <div key={i} className="hb">
-                    <span>{label}</span>
-                    <i style={{ width: `${pct}%` }} />
-                    <b>{pct}%</b>
-                  </div>
-                ))}
+                <h2>Community Submissions by Type ({liveStats?.totalSubmissions ?? submissions.length})</h2>
+                {Array.isArray(liveStats?.submissionsByType) && liveStats.submissionsByType.length > 0 ? (
+                  liveStats.submissionsByType.map(([lbl, cnt]: [string, number], i: number) => (
+                    <div key={i} className="hb">
+                      <span>{lbl}</span>
+                      <i style={{ width: `${Math.min(100, Math.round((cnt / Math.max(1, liveStats.totalSubmissions)) * 100))}%` }} />
+                      <b>{cnt}</b>
+                    </div>
+                  ))
+                ) : (
+                  <p className="mu" style={{ margin: 0 }}>No submissions logged yet.</p>
+                )}
               </div>
             </div>
 
             <div className="grid g2">
               <div className="card">
-                <h2>Top pages this week</h2>
-                {[
-                  ['Exams hub', 9420],
-                  ['KCSE grade calculator', 5310],
-                  ['Results scam alert', 4880],
-                  ['Parents’ hub', 3150],
-                  ['Library', 2740],
-                  ['KUCCPS cluster points', 2290],
-                ].map(([page, count], i) => (
-                  <div key={i} className="hb">
-                    <span>{page}</span>
-                    <i style={{ width: `${Math.round(((count as number) / 9420) * 100)}%` }} />
-                    <b>{(count as number).toLocaleString()}</b>
-                  </div>
-                ))}
+                <h2>Counties &amp; Locations in Profiles &amp; Listings</h2>
+                {Array.isArray(liveStats?.locationsBreakdown) && liveStats.locationsBreakdown.length > 0 ? (
+                  liveStats.locationsBreakdown.map(([loc, cnt]: [string, number], i: number) => (
+                    <div key={i} className="hb">
+                      <span>{loc}</span>
+                      <i style={{ width: `${Math.min(100, cnt * 15)}%` }} />
+                      <b>{cnt}</b>
+                    </div>
+                  ))
+                ) : (
+                  <p className="mu" style={{ margin: 0 }}>No location metadata recorded yet.</p>
+                )}
               </div>
 
               <div className="card">
-                <h2>Subscribers, last 6 weeks</h2>
-                <svg viewBox="0 0 560 140" style={{ width: '100%', height: '140px' }} aria-label="Subscribers growth">
-                  <polyline
-                    fill="none"
-                    stroke="#2c5f2d"
-                    strokeWidth="3"
-                    points="30,110 130,95 230,80 330,65 430,35 530,15"
-                  />
-                  <circle cx="530" cy="15" r="4" fill="#2c5f2d" />
-                  <text x="500" y="32" fontSize="11" fill="var(--mu)">1,284</text>
-                </svg>
-                <p className="mu">1,284 on email and WhatsApp. Add an unsubscribe link before bulk sends.</p>
-              </div>
-            </div>
-
-            <div className="grid g2">
-              <div className="card">
-                <h2>Top counties</h2>
-                {[
-                  ['Nairobi', 28],
-                  ['Kiambu', 14],
-                  ['Nakuru', 11],
-                  ['Mombasa', 9],
-                  ['Kisumu', 8],
-                  ['Machakos', 6],
-                  ['Uasin Gishu', 5],
-                  ['Other 40 counties', 19],
-                ].map(([county, pct], i) => (
-                  <div key={i} className="hb">
-                    <span>{county}</span>
-                    <i style={{ width: `${(pct as number) * 3}%` }} />
-                    <b>{pct}%</b>
+                <h2>Learner Engagement Overview</h2>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.45rem' }}>
+                  <div className="al" style={{ justifyContent: 'space-between' }}>
+                    <span>Tracked XP Learner Profiles</span>
+                    <b>{liveStats?.activeLearnersCount ?? 0}</b>
                   </div>
-                ))}
-              </div>
-
-              <div className="card">
-                <h2>New and returning</h2>
-                {[
-                  ['New visitors', 62],
-                  ['Returning visitors', 38],
-                ].map(([lbl, pct], i) => (
-                  <div key={i} className="hb">
-                    <span>{lbl}</span>
-                    <i style={{ width: `${pct}%` }} />
-                    <b>{pct}%</b>
+                  <div className="al" style={{ justifyContent: 'space-between' }}>
+                    <span>Unique AI Tutor Study Sessions</span>
+                    <b>{liveStats?.uniqueTutorSessions ?? 0}</b>
                   </div>
-                ))}
-                <h3 style={{ marginTop: '1.2rem', fontSize: '1.05rem' }}>Subscribers by channel</h3>
-                {[
-                  ['WhatsApp alerts', 812],
-                  ['Daily email roundup', 318],
-                  ['Weekly digest', 154],
-                ].map(([chan, cnt], i) => (
-                  <div key={i} className="hb">
-                    <span>{chan}</span>
-                    <i style={{ width: `${Math.round(((cnt as number) / 812) * 100)}%` }} />
-                    <b>{cnt}</b>
+                  <div className="al" style={{ justifyContent: 'space-between' }}>
+                    <span>Approved Community Submissions</span>
+                    <b>{liveStats?.submissionsApproved ?? approvedSubs.length}</b>
                   </div>
-                ))}
+                </div>
               </div>
             </div>
           </div>
         )}
 
         {/* ========================================================================= */}
-        {/* TAB 5: ASSISTANT */}
+        {/* TAB 5: AI TUTOR & ASSISTANT CONTROLS */}
         {/* ========================================================================= */}
         {tab === 'assistant' && (
           <div>
             <div className="grid">
               <div className="card kpi">
-                <span className="mu">Questions today</span>
-                <b>186</b>
-                <span className="up mu">+22% vs last week</span>
+                <span className="mu">Ask Mwalimu Total</span>
+                <b>{liveStats?.assistantTotal ?? 0}</b>
+                <span className="up mu">{liveStats?.assistantToday ?? 0} asked today</span>
               </div>
               <div className="card kpi">
-                <span className="mu">Avg latency</span>
-                <b>420 ms</b>
-                <span className="up mu">Fast edge response</span>
+                <span className="mu">AI Tutor Turns</span>
+                <b>{liveStats?.tutorTotal ?? 0}</b>
+                <span className="up mu">{liveStats?.tutorToday ?? 0} today · {liveStats?.uniqueTutorSessions ?? 0} sessions</span>
               </div>
               <div className="card kpi">
-                <span className="mu">Fallback rate</span>
-                <b>12%</b>
-                <span className="mu">Fell back to built-in facts</span>
+                <span className="mu">Fallback Rate</span>
+                <b>{liveStats?.fallbackRate ?? 0}%</b>
+                <span className="mu">Across logged queries</span>
               </div>
               <div className="card kpi">
-                <span className="mu">Daily cap</span>
-                <b>3,000</b>
-                <span className="mu">6.2% utilized</span>
+                <span className="mu">Daily Question Cap</span>
+                <b>{aiSettings.dailyCap.toLocaleString()}</b>
+                <span className="mu">
+                  {(liveStats?.assistantToday ?? 0) + (liveStats?.tutorToday ?? 0)} used today
+                </span>
               </div>
             </div>
 
             <div className="grid g2">
               <div className="card">
-                <h2>Most common topics today</h2>
-                {[
-                  ['KCSE results release dates', 28],
-                  ['KJSEA points conversion', 22],
-                  ['Grade 10 pathway choices', 18],
-                  ['KCSE cluster points calculation', 14],
-                  ['Bursary & HELB eligibility', 11],
-                  ['Teacher registration TSC', 7],
-                ].map(([topic, pct], i) => (
-                  <div key={i} className="hb">
-                    <span>{topic}</span>
-                    <i style={{ width: `${(pct as number) * 3}%` }} />
-                    <b>{pct}%</b>
-                  </div>
-                ))}
+                <h2>Most common logged topics</h2>
+                {Array.isArray(liveStats?.topTopics) && liveStats.topTopics.length > 0 ? (
+                  liveStats.topTopics.map(([topic, count]: [string, number], i: number) => {
+                    const maxCnt = liveStats.topTopics[0][1] || 1;
+                    return (
+                      <div key={i} className="hb">
+                        <span>{topic}</span>
+                        <i style={{ width: `${Math.round((count / maxCnt) * 100)}%` }} />
+                        <b>{count}</b>
+                      </div>
+                    );
+                  })
+                ) : (
+                  <p className="mu" style={{ margin: 0 }}>Topic distribution will populate as users query Ask Mwalimu and AI Tutor.</p>
+                )}
               </div>
 
               <div className="card">
-                <h2>Assistant settings</h2>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem', marginTop: '0.5rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem', flexWrap: 'wrap', gap: '0.4rem' }}>
+                  <h2 style={{ margin: 0 }}>AI Tutor &amp; Assistant Controls</h2>
+                  <Link href="/tutor" className="b s" style={{ textDecoration: 'none' }}>Open /tutor →</Link>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginTop: '0.5rem' }}>
                   <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                     <input
                       type="checkbox"
-                      checked={config.flags.ai}
-                      onChange={() => handleFlagToggle('ai')}
+                      checked={aiSettings.assistantEnabled}
+                      onChange={(e) => setAiSettings({ ...aiSettings, assistantEnabled: e.target.checked })}
                     />
-                    <b>Enable AI Assistant on site</b>
+                    <b>Enable Floating &ldquo;Ask Mwalimu&rdquo; Assistant</b>
                   </label>
                   <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <input type="checkbox" defaultChecked />
+                    <input
+                      type="checkbox"
+                      checked={aiSettings.tutorEnabled}
+                      onChange={(e) => setAiSettings({ ...aiSettings, tutorEnabled: e.target.checked })}
+                    />
+                    <b>Enable Full AI Tutor Workspace (/tutor)</b>
+                  </label>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <input
+                      type="checkbox"
+                      checked={aiSettings.allowFallback}
+                      onChange={(e) => setAiSettings({ ...aiSettings, allowFallback: e.target.checked })}
+                    />
                     <b>Automatic fallback to Kenyan CBE knowledge engine</b>
                   </label>
                   <div>
-                    <label>Daily question cap</label>
-                    <input type="number" defaultValue={3000} style={{ width: '120px', marginLeft: '0.5rem' }} />
+                    <label htmlFor="ai-daily-cap">Daily question cap (shared across Chat &amp; Tutor)</label>
+                    <input
+                      id="ai-daily-cap"
+                      type="number"
+                      min={10}
+                      max={100000}
+                      value={aiSettings.dailyCap}
+                      onChange={(e) => setAiSettings({ ...aiSettings, dailyCap: Number(e.target.value) || 3000 })}
+                      style={{ width: '140px', marginLeft: '0.5rem' }}
+                    />
                   </div>
-                  <p className="mu" style={{ fontSize: '0.85rem' }}>
-                    Strict moderation active: Never reveals personal learner data or ID numbers; flags and warns against results scams.
-                  </p>
+                  <div>
+                    <label htmlFor="ai-guidance">Editorial AI Prompt Guidance (appended to AI Tutor &amp; Assistant)</label>
+                    <textarea
+                      id="ai-guidance"
+                      rows={3}
+                      value={aiSettings.tutorGuidance}
+                      onChange={(e) => setAiSettings({ ...aiSettings, tutorGuidance: e.target.value })}
+                      placeholder="Optional term reminder, syllabus emphasis, or scam notice rule for the AI Tutor..."
+                      style={{ width: '100%' }}
+                    />
+                  </div>
+                  <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                    <button
+                      type="button"
+                      className="b"
+                      disabled={aiSettingsSaving}
+                      onClick={() => handleSaveAiSettings()}
+                    >
+                      {aiSettingsSaving ? 'Saving…' : 'Save AI Controls'}
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1798,6 +1924,29 @@ export default function AdminPage() {
               )}
             </div>
           </div>
+        )}
+
+        {/* ========================================================================= */}
+        {/* TAB: PRICING & M-PESA */}
+        {/* ========================================================================= */}
+        {tab === 'pricing' && (
+          <AdminPricingPanel
+            settings={pricingSettings}
+            onSave={handleSavePricingSettings}
+            saving={pricingSaving}
+          />
+        )}
+
+        {/* ========================================================================= */}
+        {/* TAB: LEADERBOARD & XP */}
+        {/* ========================================================================= */}
+        {tab === 'leaderboard' && (
+          <AdminLeaderboardPanel
+            settings={leaderboardSettings}
+            onSave={handleSaveLeaderboardSettings}
+            saving={leaderboardSaving}
+            onNotify={showToast}
+          />
         )}
 
         {/* ========================================================================= */}
@@ -1840,16 +1989,17 @@ export default function AdminPage() {
 
             <div className="grid g2">
               <div className="card">
-                <h2>Technical uptime & latency</h2>
+                <h2>Live system diagnostics</h2>
                 {[
-                  ['Next.js Application Engine', '100%'],
-                  ['Database Connection', '100%'],
-                  ['PWA Service Worker Cache', 'Healthy'],
-                  ['Static Assets CDN', '18 ms'],
-                ].map(([svc, stat], i) => (
+                  ['Health Endpoint (/api/health)', healthStatus?.status === 'ok' ? 'Healthy' : 'Checking…', healthStatus?.status === 'ok'],
+                  ['Supabase Database', liveStats?.systemStatus || 'Connecting…', liveStats?.systemStatus === 'Operational'],
+                  ['Gemini AI Engine Key', liveStats?.hasGeminiKey ? 'Configured' : 'Missing', Boolean(liveStats?.hasGeminiKey)],
+                  ['Admin Secret Key', liveStats?.hasAdminKey ? 'Configured' : 'Missing', Boolean(liveStats?.hasAdminKey)],
+                  ['AI Tutor Workspace (/tutor)', aiSettings.tutorEnabled ? 'Enabled' : 'Paused', aiSettings.tutorEnabled],
+                ].map(([svc, stat, ok], i) => (
                   <div key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '0.4rem 0', borderBottom: '1px solid var(--ln)' }}>
                     <span>{svc}</span>
-                    <b style={{ color: 'var(--ok)' }}>{stat}</b>
+                    <b style={{ color: ok ? 'var(--ok)' : 'var(--bad)' }}>{stat}</b>
                   </div>
                 ))}
               </div>

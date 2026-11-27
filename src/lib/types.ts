@@ -67,18 +67,56 @@ export interface SiteFlags {
   sw: boolean;      // Service worker PWA enabled
 }
 
+export interface AiSettings {
+  tutorEnabled: boolean;
+  assistantEnabled: boolean;
+  allowFallback: boolean;
+  dailyCap: number;
+  tutorGuidance: string;
+}
+
+export interface PricingPlanConfig {
+  id: 'free' | 'premium' | 'pro';
+  name: string;
+  subtitle: string;
+  price: number;
+  period: string;
+  popular?: boolean;
+  cta: string;
+  disabled?: boolean;
+  enabled: boolean;
+  features: string[];
+}
+
+export interface PricingSettings {
+  pricingEnabled: boolean;
+  mpesaEnabled: boolean;
+  heroTitle: string;
+  heroSubtitle: string;
+  pausedMessage: string;
+  plans: PricingPlanConfig[];
+}
+
+export interface LeaderboardSettings {
+  leaderboardEnabled: boolean;
+  showBadgesTab: boolean;
+  defaultPeriod: 'weekly' | 'monthly' | 'alltime';
+  maxEntries: number;
+  showSampleLeaders: boolean;
+  heroTitle: string;
+  heroSubtitle: string;
+  pausedMessage: string;
+}
+
 export interface SiteConfig {
   flags: SiteFlags;
   banner: {
     text: string;
     active: boolean;
   };
-  stats?: {
-    visitors: number;
-    subscribers: number;
-    installs: number;
-    toolCompletions: number;
-  };
+  aiSettings?: AiSettings;
+  pricingSettings?: PricingSettings;
+  leaderboardSettings?: LeaderboardSettings;
 }
 
 export interface AuditLogEntry {

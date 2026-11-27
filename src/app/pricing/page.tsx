@@ -1,73 +1,40 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { DEFAULT_PRICING_SETTINGS } from '@/lib/site-controls';
+import type { PricingSettings } from '@/lib/types';
+import { navigateBack } from '@/lib/navigation';
 
 type PlanType = 'free' | 'premium' | 'pro';
 
-const PLANS = [
-  {
-    id: 'free' as PlanType,
-    name: 'Mwanafunzi',
-    subtitle: 'Foundation access for every learner',
-    price: 0,
-    period: '',
-    features: [
-      'Daily Kenya education news & advisories',
-      'KCSE & KJSEA performance calculators',
-      'Official jobs & notices board',
-      'Ask Mwalimu assistant (5 questions/day)',
-      'Daily revision quizzes',
-    ],
-    cta: 'Get Started Free',
-    disabled: true,
-  },
-  {
-    id: 'premium' as PlanType,
-    name: 'Msomi',
-    subtitle: 'The ultimate study companion',
-    price: 199,
-    period: '/month',
-    popular: true,
-    features: [
-      'Everything in Mwanafunzi',
-      'AI Tutor — unlimited CBC & 8-4-4 questions',
-      'Subject-by-subject practice tests with solutions',
-      'KUCCPS cluster calculator & course advisor',
-      'Personalized study plans & exam countdown',
-      'WhatsApp exam alerts & revision drops',
-      'Completely ad-free experience',
-    ],
-    cta: 'Subscribe with M-Pesa',
-    disabled: false,
-  },
-  {
-    id: 'pro' as PlanType,
-    name: 'Profesa',
-    subtitle: 'Complete academic acceleration',
-    price: 499,
-    period: '/month',
-    features: [
-      'Everything in Msomi',
-      'Photo-solve homework with step-by-step guidance',
-      'Weekly live group masterclasses with top teachers',
-      'Priority verification for tutoring requests',
-      'School & county mean-score performance analytics',
-      'Downloadable revision notes & marking schemes',
-      'Verified Certificate of Completion',
-    ],
-    cta: 'Subscribe with M-Pesa',
-    disabled: false,
-  },
-];
-
 export default function PricingPage() {
+  const router = useRouter();
+  const [pricingSettings, setPricingSettings] = useState<PricingSettings>(DEFAULT_PRICING_SETTINGS);
   const [selectedPlan, setSelectedPlan] = useState<PlanType | null>(null);
   const [phone, setPhone] = useState('');
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error' | 'info'; text: string } | null>(null);
 
+  useEffect(() => {
+    fetch('/api/config', { cache: 'no-store' })
+      .then((r) => r.json())
+      .then((data) => {
+        if (data?.ok && data.pricingSettings) {
+          setPricingSettings(data.pricingSettings);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  const visiblePlans = pricingSettings.plans.filter((p) => p.enabled !== false);
+
   const handleSubscribeClick = (plan: PlanType) => {
+    if (!pricingSettings.mpesaEnabled) {
+      setMessage({ type: 'error', text: pricingSettings.pausedMessage || 'M-Pesa checkout is currently paused.' });
+      return;
+    }
     setSelectedPlan(plan);
     setMessage(null);
   };
@@ -75,7 +42,7 @@ export default function PricingPage() {
   const handlePay = async () => {
     if (!phone || !selectedPlan) return;
 
-    const planData = PLANS.find((p) => p.id === selectedPlan);
+    const planData = visiblePlans.find((p) => p.id === selectedPlan);
     if (!planData) return;
 
     setLoading(true);
@@ -172,7 +139,7 @@ export default function PricingPage() {
           <div style={{ display: 'flex', justifyContent: 'center', gap: '0.6rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
             <button
               type="button"
-              onClick={() => typeof window !== 'undefined' && window.history.length > 1 ? window.history.back() : window.location.assign('/')}
+              onClick={() => navigateBack(router, '/')}
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
@@ -197,7 +164,7 @@ export default function PricingPage() {
             margin: '0.8rem 0 0.5rem',
             fontWeight: 700,
           }}>
-            Invest in Academic Excellence 🇰🇪
+            {pricingSettings.heroTitle} 🇰🇪
           </h1>
           <p style={{
             fontSize: '1.05rem',
@@ -206,12 +173,21 @@ export default function PricingPage() {
             margin: '0 auto',
             lineHeight: 1.6,
           }}>
-            Unlock unlimited AI tutoring, CBC practice questions, and KCSE/KUCCPS course advisors.
-            Pay effortlessly and securely with <b>M-Pesa</b>.
+            {pricingSettings.heroSubtitle}
           </p>
         </div>
       </div>
 
+      {!pricingSettings.pricingEnabled ? (
+        <div style={{ maxWidth: '680px', margin: '2rem auto', padding: '1.75rem', background: '#fff', borderRadius: '16px', border: '1px solid #e2ded5', textAlign: 'center' }}>
+          <h2 style={{ fontFamily: 'Fraunces, Georgia, serif', color: '#143215', marginTop: 0 }}>Subscriptions Temporarily Paused</h2>
+          <p style={{ color: '#4b5563', lineHeight: 1.6 }}>{pricingSettings.pausedMessage}</p>
+          <Link href="/" style={{ display: 'inline-block', marginTop: '0.75rem', padding: '0.65rem 1.3rem', background: '#143215', color: '#fff', borderRadius: '999px', textDecoration: 'none', fontWeight: 700 }}>
+            Return Home
+          </Link>
+        </div>
+      ) : (
+      <>
       {/* Pricing Cards */}
       <div style={{
         maxWidth: '1050px',
@@ -221,7 +197,7 @@ export default function PricingPage() {
         gridTemplateColumns: 'repeat(auto-fit, minmax(min(280px, 100%), 1fr))',
         gap: '1.25rem',
       }}>
-        {PLANS.map((plan) => (
+        {visiblePlans.map((plan) => (
           <div
             key={plan.id}
             style={{
@@ -355,8 +331,8 @@ export default function PricingPage() {
               Pay via Safaricom M-Pesa
             </h2>
             <p style={{ color: '#555', fontSize: '0.92rem', margin: '0 0 1.4rem' }}>
-              Subscribing to <b>{PLANS.find((p) => p.id === selectedPlan)?.name}</b> — KES{' '}
-              {PLANS.find((p) => p.id === selectedPlan)?.price} for 30 days
+              Subscribing to <b>{visiblePlans.find((p) => p.id === selectedPlan)?.name}</b> — KES{' '}
+              {visiblePlans.find((p) => p.id === selectedPlan)?.price} for 30 days
             </p>
 
             <div style={{ textAlign: 'left', marginBottom: '1.2rem' }}>
@@ -474,6 +450,8 @@ export default function PricingPage() {
           </div>
         </div>
       </div>
+      </>
+      )}
     </div>
   );
 }

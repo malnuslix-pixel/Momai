@@ -2,7 +2,11 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { ALL_BADGES, getLevelName, getStreakEmoji, getXPProgress } from '@/lib/gamification';
+import { navigateBack } from '@/lib/navigation';
+import { DEFAULT_LEADERBOARD_SETTINGS } from '@/lib/site-controls';
+import type { LeaderboardSettings } from '@/lib/types';
 import {
   LearnerProfile,
   getLearnerProfile,
@@ -28,6 +32,8 @@ const KENYA_COUNTIES = [
 ];
 
 export default function LeaderboardPage() {
+  const router = useRouter();
+  const [lbSettings, setLbSettings] = useState<LeaderboardSettings>(DEFAULT_LEADERBOARD_SETTINGS);
   const [leaderboard, setLeaderboard] = useState<LeaderEntry[]>([]);
   const [period, setPeriod] = useState<'weekly' | 'monthly' | 'alltime'>('weekly');
   const [activeTab, setActiveTab] = useState<'leaderboard' | 'badges'>('leaderboard');
@@ -36,6 +42,20 @@ export default function LeaderboardPage() {
   const [editName, setEditName] = useState('');
   const [editCounty, setEditCounty] = useState('Nairobi');
   const [profileSaved, setProfileSaved] = useState(false);
+
+  useEffect(() => {
+    fetch('/api/config', { cache: 'no-store' })
+      .then((r) => r.json())
+      .then((data) => {
+        if (data?.ok && data.leaderboardSettings) {
+          setLbSettings(data.leaderboardSettings);
+          if (data.leaderboardSettings.defaultPeriod) {
+            setPeriod(data.leaderboardSettings.defaultPeriod);
+          }
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   const fetchLeaderboard = useCallback(async () => {
     setLoading(true);
@@ -46,8 +66,15 @@ export default function LeaderboardPage() {
       setEditName(currentProfile.displayName);
       setEditCounty(currentProfile.county);
 
-      const res = await fetch(`/api/gamification?action=leaderboard&period=${period}&limit=20`);
+      const res = await fetch(`/api/gamification?action=leaderboard&period=${period}`, { cache: 'no-store' });
       const data = await res.json();
+      if (data.settings) {
+        setLbSettings(data.settings);
+      }
+      if (data.disabled) {
+        setLeaderboard([]);
+        return;
+      }
       if (data.ok && Array.isArray(data.leaderboard)) {
         const list: LeaderEntry[] = data.leaderboard.map((e: any) => ({
           ...e,
@@ -123,7 +150,7 @@ export default function LeaderboardPage() {
           <div style={{ display: 'flex', justifyContent: 'center', gap: '0.6rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
             <button
               type="button"
-              onClick={() => typeof window !== 'undefined' && window.history.length > 1 ? window.history.back() : window.location.assign('/')}
+              onClick={() => navigateBack(router, '/')}
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
@@ -147,14 +174,24 @@ export default function LeaderboardPage() {
             fontSize: 'clamp(2rem, 4vw, 2.6rem)',
             margin: '0.8rem 0 0.3rem',
           }}>
-            🏆 Academic Leaderboard
+            🏆 {lbSettings.heroTitle}
           </h1>
           <p style={{ opacity: 0.9, margin: 0, fontSize: '0.95rem' }}>
-            Earn XP and study streaks by completing daily quizzes, asking Mwalimu AI questions, and mastering Kenyan syllabus topics.
+            {lbSettings.heroSubtitle}
           </p>
         </div>
       </div>
 
+      {!lbSettings.leaderboardEnabled ? (
+        <div style={{ maxWidth: '640px', margin: '2rem auto', padding: '1.75rem', background: '#fff', borderRadius: '16px', border: '1px solid #e2ded5', textAlign: 'center' }}>
+          <h2 style={{ fontFamily: 'Fraunces, Georgia, serif', color: '#143215', marginTop: 0 }}>Leaderboard Paused</h2>
+          <p style={{ color: '#4b5563', lineHeight: 1.6 }}>{lbSettings.pausedMessage}</p>
+          <Link href="/" style={{ display: 'inline-block', marginTop: '0.75rem', padding: '0.65rem 1.3rem', background: '#143215', color: '#fff', borderRadius: '999px', textDecoration: 'none', fontWeight: 700 }}>
+            Return Home
+          </Link>
+        </div>
+      ) : (
+      <>
       {/* Tab Switcher */}
       <div style={{
         display: 'flex',
@@ -165,7 +202,7 @@ export default function LeaderboardPage() {
       }}>
         {[
           { id: 'leaderboard' as const, label: '🏆 National Rankings' },
-          { id: 'badges' as const, label: '🎖️ Badges & Achievements' },
+          ...(lbSettings.showBadgesTab ? [{ id: 'badges' as const, label: '🎖️ Badges & Achievements' }] : []),
         ].map((t) => (
           <button
             key={t.id}
@@ -358,6 +395,12 @@ export default function LeaderboardPage() {
               border: '1px solid #e2ded5',
               overflow: 'hidden',
             }}>
+              {leaderboard.length === 0 && !loading ? (
+                <div style={{ padding: '2rem 1.25rem', textAlign: 'center', color: '#555' }}>
+                  <p style={{ margin: '0 0 0.4rem', fontWeight: 700, color: '#143215' }}>No rankings recorded for this period yet.</p>
+                  <p style={{ margin: 0, fontSize: '0.88rem' }}>Complete a lesson, quiz, or AI Tutor session to claim the #1 spot!</p>
+                </div>
+              ) : null}
               {leaderboard.map((entry, i) => (
                 <div
                   key={i}
@@ -472,6 +515,8 @@ export default function LeaderboardPage() {
           </Link>
         </div>
       </div>
+      </>
+      )}
     </div>
   );
 }

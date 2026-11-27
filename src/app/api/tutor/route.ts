@@ -4,6 +4,7 @@ export const dynamic = 'force-dynamic';
 import { getAdminClient } from '@/lib/supabase';
 import { buildTutorSystemPrompt, getFallbackResponse, generatePracticeQuestion } from '@/lib/tutor-engine';
 import { generateAIResponse } from '@/lib/ai';
+import { countTodayAiTurns, loadAiSettingsServer } from '@/lib/ai-config-server';
 
 export async function POST(req: NextRequest) {
   try {
@@ -11,6 +12,25 @@ export async function POST(req: NextRequest) {
 
     if (!message || !session_id) {
       return NextResponse.json({ ok: false, error: 'Message and session_id are required' }, { status: 400 });
+    }
+
+    const [{ aiSettings }, todayTurns] = await Promise.all([
+      loadAiSettingsServer(),
+      countTodayAiTurns(),
+    ]);
+
+    if (!aiSettings.tutorEnabled) {
+      return NextResponse.json(
+        { ok: false, disabled: true, error: 'Mwalimu AI Tutor is currently paused by administration.' },
+        { status: 403 }
+      );
+    }
+
+    if (todayTurns >= aiSettings.dailyCap) {
+      return NextResponse.json(
+        { ok: false, error: 'Daily AI question limit reached. Please try again tomorrow.' },
+        { status: 429 }
+      );
     }
 
     const ctx = {
@@ -34,14 +54,25 @@ export async function POST(req: NextRequest) {
       });
     } catch {}
 
-    // Determine AI response via unified AI engine
-    const systemPrompt = buildTutorSystemPrompt(ctx);
+    // Determine AI response via unified AI engine + optional admin guidance
+    const basePrompt = buildTutorSystemPrompt(ctx);
+    const systemPrompt = aiSettings.tutorGuidance
+      ? `${basePrompt}\n\nAdmin Editorial Guidance:\n${aiSettings.tutorGuidance}`
+      : basePrompt;
+
     const ai = await generateAIResponse({
       system: systemPrompt,
       prompt: message,
       temperature: 0.65,
       maxTokens: 800,
     });
+
+    if (!ai.text && !aiSettings.allowFallback) {
+      return NextResponse.json(
+        { ok: false, error: 'Live AI model unavailable and fallback is disabled by administration.' },
+        { status: 503 }
+      );
+    }
 
     const reply = ai.text || getFallbackResponse(message, ctx);
 
@@ -57,7 +88,7 @@ export async function POST(req: NextRequest) {
       });
     } catch {}
 
-    return NextResponse.json({ ok: true, reply, mode });
+    return NextResponse.json({ ok: true, reply, mode, provider: ai.provider });
   } catch (error: any) {
     return NextResponse.json({ ok: false, error: error.message || 'Server error' }, { status: 500 });
   }

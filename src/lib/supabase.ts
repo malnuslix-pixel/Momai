@@ -208,11 +208,12 @@ export const SEED_CONFIG: SiteConfig = {
     text: 'KNEC Official Alert: Results checking is free via official Ministry and KNEC SMS/web portals. Never send money to individuals claiming early access.',
     active: true,
   },
-  stats: {
-    visitors: 2480,
-    subscribers: 1284,
-    installs: 342,
-    toolCompletions: 6120,
+  aiSettings: {
+    tutorEnabled: true,
+    assistantEnabled: true,
+    allowFallback: true,
+    dailyCap: 3000,
+    tutorGuidance: '',
   },
 };
 

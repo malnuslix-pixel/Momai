@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { navigateBack } from '@/lib/navigation';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import FloatingWidgets from '@/components/FloatingWidgets';
@@ -53,7 +54,7 @@ export default function NewsPage() {
             <div className="pbn-actions">
               <button
                 type="button"
-                onClick={() => typeof window !== 'undefined' && window.history.length > 1 ? router.back() : router.push('/')}
+                onClick={() => navigateBack(router, '/')}
                 className="pbn-btn-back"
                 aria-label="Go back to previous page"
               >

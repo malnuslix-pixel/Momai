@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getAdminClient } from '@/lib/supabase';
 import { generateAIResponse } from '@/lib/ai';
+import { countTodayAiTurns, loadAiSettingsServer } from '@/lib/ai-config-server';
 
 export const dynamic = 'force-dynamic';
 
@@ -65,12 +66,39 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'invalid' }, { status: 400 });
     }
 
+    const [{ aiSettings }, todayTurns] = await Promise.all([
+      loadAiSettingsServer(),
+      countTodayAiTurns(),
+    ]);
+
+    if (!aiSettings.assistantEnabled) {
+      return NextResponse.json(
+        { ok: false, disabled: true, reply: 'Ask Mwalimu assistant is currently paused by administration.' },
+        { status: 403 }
+      );
+    }
+
+    if (todayTurns >= aiSettings.dailyCap) {
+      return NextResponse.json(
+        { ok: false, reply: 'Daily AI question cap reached for today. Browse our Library & Help sections!' },
+        { status: 429 }
+      );
+    }
+
+    const guidanceNote = aiSettings.tutorGuidance ? ` Additional guidance: ${aiSettings.tutorGuidance}` : '';
     const ai = await generateAIResponse({
-      system: `You are "Ask Mwalimu", the AI educational assistant on Mwalimu Family (mwalimufamily.com), Kenya's trusted education and curriculum platform. Answer in under 120 words in warm, factual Kenyan educational English or Kiswahili if asked. Reference: ${SITE_FACTS.join(' ')}`,
+      system: `You are "Ask Mwalimu", the AI educational assistant on Mwalimu Family (mwalimufamily.com), Kenya's trusted education and curriculum platform. Answer in under 120 words in warm, factual Kenyan educational English or Kiswahili if asked. Reference: ${SITE_FACTS.join(' ')}${guidanceNote}`,
       prompt: message,
       temperature: 0.45,
       maxTokens: 300,
     });
+
+    if (!ai.text && !aiSettings.allowFallback) {
+      return NextResponse.json(
+        { ok: false, reply: 'Live AI model unavailable right now. Please check official portals or try again shortly.' },
+        { status: 503 }
+      );
+    }
 
     const reply = ai.text || getKnowledgeReply(message);
     const usedModel = ai.model || (ai.provider === 'anthropic' ? 'claude-3-haiku' : 'knowledge-engine');

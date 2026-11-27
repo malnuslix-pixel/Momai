@@ -23,6 +23,7 @@ import {
 } from 'lucide-react';
 import TutorMarkdown from '@/components/TutorMarkdown';
 import { awardLearnerXP, getLearnerProfile } from '@/lib/learner-profile';
+import { navigateBack } from '@/lib/navigation';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -90,6 +91,18 @@ function TutorClient() {
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
   const [speakingIndex, setSpeakingIndex] = useState<number | null>(null);
   const [questionsCount, setQuestionsCount] = useState<number>(0);
+  const [tutorEnabled, setTutorEnabled] = useState(true);
+
+  useEffect(() => {
+    fetch('/api/config', { cache: 'no-store' })
+      .then((r) => r.json())
+      .then((data) => {
+        if (data?.ok && data.aiSettings) {
+          setTutorEnabled(data.aiSettings.tutorEnabled !== false);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   const chatEndRef = useRef<HTMLDivElement>(null);
   const initialHandled = useRef(false);
@@ -236,9 +249,12 @@ function TutorClient() {
       });
 
       const data = await res.json();
+      if (data.disabled) {
+        setTutorEnabled(false);
+      }
       const replyText = data.ok
         ? data.reply
-        : "I ran into a temporary issue. Please rephrase or try another topic!";
+        : data.error || "I ran into a temporary issue. Please rephrase or try another topic!";
 
       const updatedHistory = [
         ...newHistory,
@@ -308,7 +324,7 @@ function TutorClient() {
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', flexWrap: 'wrap' }}>
             <button
               type="button"
-              onClick={() => typeof window !== 'undefined' && window.history.length > 1 ? window.history.back() : router.push('/')}
+              onClick={() => navigateBack(router, '/')}
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
@@ -779,6 +795,11 @@ function TutorClient() {
         borderTop: '1px solid rgba(255, 255, 255, 0.16)',
         padding: '0.75rem 1rem calc(0.85rem + env(safe-area-inset-bottom, 0px))',
       }}>
+        {!tutorEnabled ? (
+          <div style={{ maxWidth: '960px', margin: '0 auto', textAlign: 'center', color: '#fde68a', fontSize: '0.92rem', padding: '0.35rem 0' }}>
+            Mwalimu AI Tutor is currently paused by the Site Administrator. Check back soon or explore <Link href="/learn" style={{ color: '#f4a261', textDecoration: 'underline' }}>Learning Library</Link>.
+          </div>
+        ) : (
         <div style={{
           maxWidth: '960px',
           width: '100%',
@@ -835,6 +856,7 @@ function TutorClient() {
             <Send size={16} /> Send
           </button>
         </div>
+        )}
       </footer>
     </div>
   );
